@@ -1,7 +1,7 @@
 export function App() {
   return (
-    <div>
-      <h1>Terrano</h1>
+    <div className="flex items-center justify-center h-screen">
+      <h1 className="text-4xl font-bold">Terrano</h1>
     </div>
   );
 }
