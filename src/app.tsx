@@ -1,7 +1,16 @@
+import { RouterProvider, createRouter } from "@tanstack/react-router";
+import { routeTree } from "./routeTree.gen";
+import { TooltipProvider } from "./components/ui/tooltip";
+
+const router = createRouter({
+  routeTree,
+});
+
 export function App() {
   return (
-    <div className="flex items-center justify-center h-screen">
-      <h1 className="text-4xl font-bold">Terrano</h1>
-    </div>
+    <>
+      <RouterProvider router={router} />
+      <TooltipProvider />
+    </>
   );
 }
