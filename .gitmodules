@@ -1,0 +1,3 @@
+[submodule "terrano-backend"]
+	path = terrano-backend
+	url = https://github.com/Sexteto-Fantastico/terrano-backend.git
