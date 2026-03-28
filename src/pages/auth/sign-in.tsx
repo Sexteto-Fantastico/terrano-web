@@ -16,16 +16,16 @@ import {
 } from "@/components/ui/field";
 
 export const Route = createFileRoute("/auth/sign-in")({
-  component: RouteComponent,
+  component: SignInPage,
 });
 
 const signInSchema = z.object({
   email: z.email("Email inválido"),
-  password: z.string().min(6, "A senha deve ter pelo menos 6 caracteres"),
+  password: z.string().min(8, "A senha deve ter pelo menos 8 caracteres"),
   rememberMe: z.boolean(),
 });
 
-function RouteComponent() {
+function SignInPage() {
   const signInForm = useForm({
     defaultValues: {
       email: "",
@@ -33,7 +33,7 @@ function RouteComponent() {
       rememberMe: false,
     },
     validators: {
-      onChange: signInSchema,
+      onSubmit: signInSchema,
     },
     onSubmit: async ({ value }) => {
       toast.success("Login realizado com sucesso");
@@ -64,9 +64,8 @@ function RouteComponent() {
               Bem-vindo! Por favor, insira suas informações.
             </FieldDescription>
             <FieldGroup>
-              <signInForm.Field
-                name="email"
-                children={(field) => (
+              <signInForm.Field name="email">
+                {(field) => (
                   <Field>
                     <FieldLabel htmlFor={field.name}>Email</FieldLabel>
                     <Input
@@ -83,11 +82,10 @@ function RouteComponent() {
                     <FieldError errors={field.state.meta.errors} />
                   </Field>
                 )}
-              />
+              </signInForm.Field>
 
-              <signInForm.Field
-                name="password"
-                children={(field) => (
+              <signInForm.Field name="password">
+                {(field) => (
                   <Field>
                     <FieldLabel htmlFor={field.name}>Senha</FieldLabel>
                     <Input
@@ -104,12 +102,10 @@ function RouteComponent() {
                     <FieldError errors={field.state.meta.errors} />
                   </Field>
                 )}
-              />
-
-              <div className="grid grid-cols-2 gap-2">
-                <signInForm.Field
-                  name="rememberMe"
-                  children={(field) => (
+              </signInForm.Field>
+              <div className="flex items-center justify-between">
+                <signInForm.Field name="rememberMe">
+                  {(field) => (
                     <Field orientation="horizontal">
                       <Checkbox
                         id={field.name}
@@ -128,15 +124,8 @@ function RouteComponent() {
                       </FieldLabel>
                     </Field>
                   )}
-                />
-                <div className="flex items-center justify-end">
-                  <Link
-                    to={"/auth/forgot-password"}
-                    className="text-sm text-primary underline-offset-4 hover:underline"
-                  >
-                    Esqueci minha senha
-                  </Link>
-                </div>
+                </signInForm.Field>
+                <Link to={"/"}>Esqueci minha senha</Link>
               </div>
             </FieldGroup>
 
