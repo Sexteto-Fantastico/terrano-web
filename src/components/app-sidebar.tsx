@@ -53,49 +53,47 @@ const MENU_DATA: MenuGroup[] = [
     title: "Cadastros",
     icon: CircleFadingPlusIcon,
     items: [
-      { title: "Produto", href: "/produto" },
-      { title: "Marca", href: "/marca" },
-      { title: "Categoria", href: "/categoria" },
-      { title: "Unidade de Medida", href: "/unidade-medida" },
-      { title: "Estoque", href: "/estoque" },
-      { title: "Fornecedor", href: "/fornecedor" },
-      { title: "Departamento", href: "/departamento" },
-      { title: "Centro de Custo", href: "/centro-custo" },
+      { title: "Produto", href: "/product" },
+      { title: "Marca", href: "/brand" },
+      { title: "Categoria", href: "/category" },
+      { title: "Unidade de Medida", href: "/unit" },
+      { title: "Estoque", href: "/stock" },
+      { title: "Fornecedor", href: "/supplier" },
+      { title: "Departamento", href: "/department" },
+      { title: "Centro de Custo", href: "/cost-center" },
     ],
   },
   {
     title: "Transações",
     icon: TrendingUpIcon,
     items: [
-      { title: "Compra", href: "/compra" },
-      { title: "Entrada de Estoque", href: "/entrada-estoque" },
-      { title: "Saída de Estoque", href: "/saida-estoque" },
+      { title: "Compra", href: "/purchase" },
+      { title: "Entrada de Estoque", href: "/stock-in" },
+      { title: "Saída de Estoque", href: "/stock-out" },
     ],
   },
   {
     title: "Requisições",
     icon: ArrowRightLeftIcon,
-    items: [
-      { title: "Solicitação de Material", href: "/solicitacao-material" },
-    ],
+    items: [{ title: "Solicitação de Material", href: "/material-request" }],
   },
   {
     title: "Relatórios",
     icon: FileTextIcon,
-    items: [{ title: "Relatórios", href: "/relatorio" }],
+    items: [{ title: "Relatórios", href: "/report" }],
   },
   {
     title: "Controle de Acesso",
     icon: UserCogIcon,
     items: [
-      { title: "Usuário", href: "/usuario" },
-      { title: "Perfil de Acesso", href: "/perfil-acesso" },
+      { title: "Usuário", href: "/user" },
+      { title: "Perfil de Acesso", href: "/access-profile" },
     ],
   },
   {
     title: "Notificações",
     icon: BadgeAlertIcon,
-    items: [{ title: "Alertas", href: "/alerta" }],
+    items: [{ title: "Alertas", href: "/alert" }],
   },
 ];
 
@@ -174,7 +172,10 @@ function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     {group.items.map((item) => (
                       <SidebarMenuSubItem key={item.title}>
                         <SidebarMenuSubButton asChild>
-                          <Link to={item.href}>
+                          <Link
+                            to={item.href}
+                            activeProps={{ className: "bg-sidebar-accent" }}
+                          >
                             <span>{item.title}</span>
                           </Link>
                         </SidebarMenuSubButton>
