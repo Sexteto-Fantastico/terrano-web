@@ -1,20 +1,19 @@
-import {Button} from "@/components/ui/button.tsx";
+import {Button,type ButtonProps} from "@/components/ui/button.tsx";
 import {SlidersHorizontal} from "lucide-react";
 import {Badge} from "@/components/ui/badge.tsx";
+import {cn} from "@/lib/utils";
 
-interface Props {
+interface FilterButtonProps extends ButtonProps {
     filters?: string[];
 }
 
-export const FilterButton = ({ filters = []}: Props) => {
-    const filtersApplied : boolean = filters && filters.length > 0;
+export const FilterButton = ({ filters = [], variant = "outline", className, ...props}: FilterButtonProps) => {
+    const filtersApplied : boolean = filters.length > 0;
 
     return (
-        <Button variant={filtersApplied ? "filtered" : "defaultTerrano"} >
+        <Button variant={variant} className={cn(filtersApplied && "border-foreground text-foreground", className)} {...props}>
             <SlidersHorizontal className="size-4"/>
-
             <span>Filtros</span>
-
             {filtersApplied && filters.length > 0 && (
                 <Badge
                     className="w-4 h-4 tabular-nums"
