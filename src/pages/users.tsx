@@ -11,6 +11,20 @@ import { sortByToState, stateToSortBy } from "@/utils/table-sort-mapper";
 import { useMemo } from "react";
 import { fetchUsers, type User } from "@/api/user";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import {
+  EyeIcon,
+  MoreHorizontal,
+  SquarePenIcon,
+  Trash2Icon,
+} from "lucide-react";
 
 export const Route = createFileRoute("/users")({
   component: RouteComponent,
@@ -33,10 +47,22 @@ function RouteComponent() {
   };
 
   const { data } = useQuery({
-    queryKey: ["user", filters],
+    queryKey: ["users", filters],
     queryFn: () => fetchUsers(filters),
     placeholderData: keepPreviousData,
   });
+
+  function handleView(userId: number) {
+    console.log("Visualizar usuário", userId);
+  }
+
+  function handleEdit(userId: number) {
+    console.log("Editar usuário", userId);
+  }
+
+  function handleDelete(userId: number) {
+    console.log("Excluir usuário", userId);
+  }
 
   const columns: ColumnDef<User>[] = useMemo(
     () => [
@@ -59,6 +85,41 @@ function RouteComponent() {
       {
         accessorKey: "age",
         header: "Idade",
+      },
+      {
+        id: "actions",
+        header: "Ações",
+        cell: ({ row }) => {
+          const user = row.original;
+          return (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <span className="sr-only">Abrir menu</span>
+                  <MoreHorizontal className="size-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Ações</DropdownMenuLabel>
+                <DropdownMenuItem onClick={() => handleView(user.id)}>
+                  <EyeIcon className="size-4" />
+                  Ver detalhes
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleEdit(user.id)}>
+                  <SquarePenIcon className="size-4" />
+                  Editar
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  variant="destructive"
+                  onClick={() => handleDelete(user.id)}
+                >
+                  <Trash2Icon className="size-4" />
+                  Excluir
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          );
+        },
       },
     ],
     []
