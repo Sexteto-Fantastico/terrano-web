@@ -14,8 +14,18 @@ export function DynamicBreadcrumb() {
 
   if (!matches.length) return null;
 
+  const currentMatch = matches[matches.length - 1];
+  const route = router.routesById[currentMatch.routeId];
+
+  const pageTitle =
+    route?.options.head?.()?.meta?.[0]?.title ||
+    currentMatch.pathname.split("/").filter(Boolean).pop() ||
+    "Terrano";
+
   return (
     <div className="flex flex-col gap-2">
+      <h1 className="text-2xl font-bold text-foreground">{pageTitle}</h1>
+
       <Breadcrumb>
         <BreadcrumbList>
           {matches.map((match, index) => {
