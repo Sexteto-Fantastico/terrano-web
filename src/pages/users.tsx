@@ -127,7 +127,6 @@ function RouteComponent() {
 
   return (
     <div className="flex h-screen flex-col">
-      <h1 className="mb-6 text-2xl font-bold">Usuários</h1>
       <DynamicBreadcrumb />
 
       <div className="flex-1 overflow-auto p-6">
