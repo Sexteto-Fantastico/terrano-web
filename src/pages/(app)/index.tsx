@@ -4,7 +4,7 @@ import { ExportButton } from "@/components/feature/shared/components/export-butt
 import { FilterButton } from "@/components/feature/shared/components/filter-button";
 import { ImportButton } from "@/components/feature/shared/components/import-button";
 
-export const Route = createFileRoute("/_app/")({
+export const Route = createFileRoute("/(app)/")({
   component: RouteComponent,
 });
 

@@ -1,4 +1,4 @@
-import type { Filters } from "@/components/data-table";
+import type { ColumnFiltersState } from "@tanstack/react-table";
 
 export type User = {
   id: number;
@@ -6,6 +6,11 @@ export type User = {
   email: string;
   role: string;
   age: number;
+};
+
+type FetchUsersParams = {
+  search?: string;
+  filters?: ColumnFiltersState;
 };
 
 const MOCK_USERS: User[] = [
@@ -75,7 +80,61 @@ const MOCK_USERS: User[] = [
   },
 ];
 
-export async function fetchUsers(filtersAndPagination: Filters<User>) {
+export async function fetchUsers({ search, filters }: FetchUsersParams = {}) {
   await new Promise((resolve) => setTimeout(resolve, 500));
-  return MOCK_USERS;
+  
+  let result = [...MOCK_USERS];
+  
+  if (search) {
+    result = result.filter(
+      (user) =>
+        user.name.toLowerCase().includes(search.toLowerCase()) ||
+        user.email.toLowerCase().includes(search.toLowerCase())
+    );
+  }
+  
+  if (filters && filters.length > 0) {
+    for (const filter of filters) {
+      const value = filter.value;
+      
+      switch (filter.id) {
+        case "id":
+          if (typeof value === "string") {
+            result = result.filter((user) => user.id.toString().includes(value));
+          }
+          break;
+        case "name":
+          if (typeof value === "string") {
+            result = result.filter((user) =>
+              user.name.toLowerCase().includes(value.toLowerCase())
+            );
+          }
+          break;
+        case "email":
+          if (typeof value === "string") {
+            result = result.filter((user) =>
+              user.email.toLowerCase().includes(value.toLowerCase())
+            );
+          }
+          break;
+        case "role":
+          if (typeof value === "string") {
+            result = result.filter((user) =>
+              user.role.toLowerCase().includes(value.toLowerCase())
+            );
+          }
+          break;
+        case "age":
+          if (typeof value === "string") {
+            const ageNum = parseInt(value, 10);
+            if (!Number.isNaN(ageNum)) {
+              result = result.filter((user) => user.age === ageNum);
+            }
+          }
+          break;
+      }
+    }
+  }
+  
+  return result;
 }
