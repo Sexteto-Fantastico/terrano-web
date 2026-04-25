@@ -23,9 +23,6 @@ export function createActionColumn<TData>(
     id: "actions",
     header: "",
     enablePinning: true,
-    meta: {
-      pinned: "right",
-    },
     size: 40,
     cell: ({ row }) => {
       return (

@@ -1,46 +1,59 @@
-import type { DataTableConfig } from "@/components/ui/data-table/data-table-config";
-import type { FilterItemSchema } from "@/components/ui/data-table/data-table-parsers";
-import type { ColumnSort, FilterFn, Row, RowData } from "@tanstack/react-table";
+import type { PaginationState, RowData } from "@tanstack/react-table";
 
-declare module "@tanstack/react-table" {
-  interface ColumnMeta<TData extends RowData, TValue> {
-    label?: string;
-    placeholder?: string;
-    variant?: FilterVariant;
-    options?: Option[];
-    range?: [number, number];
-    unit?: string;
-    icon?: React.FC<React.SVGProps<SVGSVGElement>>;
-    pinned?: "left" | "right";
-    bold?: boolean;
-    hidden?: boolean;
-  }
+export type PaginatedData<T> = {
+  result: T[];
+  rowCount: number;
+};
 
-  interface FilterFns {
-    isWithinRange: FilterFn<unknown>;
-  }
-}
+export type PaginationParams = PaginationState;
+export type SortParams = { sortBy: `${string}.${"asc" | "desc"}` };
+export type Filters<T> = Partial<T & PaginationParams & SortParams>;
 
-export interface Option {
+export const DataTableFilter = {
+  variants: [
+    "text",
+    "number",
+    "range",
+    "date",
+    "dateRange",
+    "boolean",
+    "select",
+    "multiSelect",
+  ] as const,
+} as const;
+
+export type DataTableFilterVariant = (typeof DataTableFilter.variants)[number];
+
+export type DataTableFilterOption = {
   label: string;
   value: string;
   count?: number;
   icon?: React.FC<React.SVGProps<SVGSVGElement>>;
-}
+};
 
-export type FilterOperator = DataTableConfig["operators"][number];
-export type FilterVariant = DataTableConfig["filterVariants"][number];
-export type JoinOperator = DataTableConfig["joinOperators"][number];
+export type DataTableFilterProps = {
+  className?: string;
+  inputProps?: Omit<
+    React.ComponentProps<"input">,
+    "value" | "defaultValue" | "onChange" | "type"
+  >;
+  selectProps?: {
+    className?: string;
+    placeholder?: string;
+  };
+};
 
-export interface ExtendedColumnSort<TData> extends Omit<ColumnSort, "id"> {
-  id: Extract<keyof TData, string>;
-}
+export type DataTableFilterConfig = {
+  label?: string;
+  variant: DataTableFilterVariant;
+  placeholder?: string;
+  options?: DataTableFilterOption[];
+  hidden?: boolean;
+  props?: DataTableFilterProps;
+};
 
-export interface ExtendedColumnFilter<TData> extends FilterItemSchema {
-  id: Extract<keyof TData, string>;
-}
-
-export interface DataTableRowAction<TData> {
-  row: Row<TData>;
-  variant: "update" | "delete";
+declare module "@tanstack/react-table" {
+  interface ColumnMeta<TData extends RowData, TValue> {
+    filter?: DataTableFilterConfig;
+  }
 }

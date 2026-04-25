@@ -1,7 +1,6 @@
-import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
-import type { Table as ITable } from "@tanstack/react-table";
-import { flexRender } from "@tanstack/react-table";
+import { flexRender, type Table as TanstackTable } from "@tanstack/react-table";
+import type * as React from "react";
+
 import {
   Table,
   TableBody,
@@ -9,37 +8,21 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../table";
-import { getCommonPinningStyles } from "./data-table-helpers";
-import { DataTablePagination } from "./data-table-pagination";
+} from "@/components/ui/table";
+import { getColumnPinningStyle } from "@/lib/data-table";
+import { cn } from "@/lib/utils";
 
-export interface DataTableProps<TData> {
-  table: ITable<TData>;
-  className?: string;
-  loading?: boolean;
-  empty?: {
-    title: string;
-    description: string;
-  };
-  onRowClick?: (row: import("@tanstack/react-table").Row<TData>) => void;
-}
-
-declare module "@tanstack/react-table" {
-  interface ColumnMeta<TData, TValue> {
-    pinned?: "left" | "right";
-    bold?: boolean;
-  }
+interface DataTableProps<TData> extends React.ComponentProps<"div"> {
+  table: TanstackTable<TData>;
+  isLoading?: boolean;
+  actionBar?: React.ReactNode;
 }
 
 export function DataTable<TData>({
   table,
-  loading,
+  isLoading,
+  actionBar,
   className,
-  onRowClick,
-  empty = {
-    title: "No data",
-    description: "We could not find any data here yet",
-  },
   ...props
 }: DataTableProps<TData>) {
   return (
@@ -47,6 +30,7 @@ export function DataTable<TData>({
       className={cn("flex w-full flex-col gap-2.5 overflow-auto", className)}
       {...props}
     >
+      {actionBar}
       <div className="overflow-hidden rounded-md border">
         <Table>
           <TableHeader>
@@ -57,9 +41,7 @@ export function DataTable<TData>({
                     key={header.id}
                     colSpan={header.colSpan}
                     style={{
-                      ...getCommonPinningStyles({
-                        column: header.column,
-                      }),
+                      ...getColumnPinningStyle({ column: header.column }),
                     }}
                   >
                     {header.isPlaceholder
@@ -79,28 +61,17 @@ export function DataTable<TData>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  onClick={onRowClick ? () => onRowClick(row) : undefined}
-                  className={onRowClick ? "cursor-pointer" : undefined}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
                       style={{
-                        ...getCommonPinningStyles({
-                          column: cell.column,
-                        }),
+                        ...getColumnPinningStyle({ column: cell.column }),
                       }}
-                      className={cn(
-                        cell.column.columnDef.meta?.bold && "font-medium"
-                      )}
                     >
-                      {loading ? (
-                        <Skeleton className="h-4 w-3/5" />
-                      ) : (
-                        flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
                       )}
                     </TableCell>
                   ))}
@@ -112,22 +83,13 @@ export function DataTable<TData>({
                   colSpan={table.getAllColumns().length}
                   className="h-24 text-center"
                 >
-                  <div className="text-sm font-medium">{empty.title}</div>
-                  <div className="text-sm text-muted-foreground">
-                    {empty.description}
-                  </div>
+                  No results.
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
       </div>
-      {table.getPageCount() > 1 && (
-        <>
-          <DataTablePagination table={table} />
-          <div className="h-20" />
-        </>
-      )}
     </div>
   );
 }

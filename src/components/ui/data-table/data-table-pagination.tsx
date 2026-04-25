@@ -1,115 +1,137 @@
-import type { Table } from "@tanstack/react-table";
-import {
-  ChevronFirstIcon,
-  ChevronLastIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-} from "lucide-react";
-import { Button } from "../button";
-import { Input } from "../input";
+import * as React from "react";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../select";
+} from "@/components/ui/select";
+import { cn } from "@/lib/utils";
+import type { Table } from "@tanstack/react-table";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ChevronsLeftIcon,
+  ChevronsRightIcon,
+} from "lucide-react";
 
-export const DEFAULT_PAGE_SIZES = [10, 20, 30, 40, 50];
+export const DEFAULT_PAGE_INDEX = 0;
+export const DEFAULT_PAGE_SIZE = 10;
 
-type DataTablePaginationProps<T> = {
-  table: Table<T>;
-  pageSizeOptions?: number[];
+const defaultPageSizeOptions = [10, 20, 30, 40, 50] as const;
+
+type DataTablePaginationProps<TData> = {
+  table: Table<TData>;
+  isLoading?: boolean;
+  className?: string;
+  pageSizeOptions?: readonly number[];
 };
 
-export function DataTablePagination<T>({
+export function DataTablePagination<TData>({
   table,
-  pageSizeOptions = DEFAULT_PAGE_SIZES,
-}: DataTablePaginationProps<T>) {
+  isLoading = false,
+  className,
+  pageSizeOptions = defaultPageSizeOptions,
+}: DataTablePaginationProps<TData>) {
+  const id = React.useId();
+  const pageSizeLabelId = `${id}-page-size-label`;
+
+  const pageSize = table.getState().pagination.pageSize;
+  const pageIndex = table.getState().pagination.pageIndex;
+  const pageCount = table.getPageCount();
+  const currentPage = pageIndex + 1;
+
   return (
     <nav
-      className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-2"
-      aria-label="Navegação da tabela"
+      className={cn(
+        "my-2 flex flex-wrap items-center justify-end gap-4",
+        className
+      )}
+      aria-label="Paginação da tabela"
     >
-      <div className="flex items-center space-x-2">
-        <span className="text-sm" id="page-size-label">
-          Mostrar por página
+      <div className="flex items-center gap-2">
+        <span id={pageSizeLabelId} className="text-sm">
+          Linhas por página
         </span>
         <Select
-          value={String(table.getState().pagination.pageSize)}
-          onValueChange={(value) => {
-            table.setPageSize(Number(value));
-          }}
+          value={String(pageSize)}
+          onValueChange={(v) => table.setPageSize(Number(v))}
+          disabled={isLoading}
         >
-          <SelectTrigger aria-labelledby="page-size-label">
-            <SelectValue placeholder="Select page size" />
+          <SelectTrigger
+            size="sm"
+            className="min-w-12"
+            aria-labelledby={pageSizeLabelId}
+          >
+            <SelectValue placeholder={`${pageSize}`} />
           </SelectTrigger>
-          <SelectContent>
-            {pageSizeOptions.map((pageSize) => (
-              <SelectItem key={pageSize} value={String(pageSize)}>
-                {pageSize}
+          <SelectContent className="min-w-12">
+            {pageSizeOptions.map((size) => (
+              <SelectItem key={size} value={String(size)}>
+                {size}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
       </div>
 
-      <div className="flex items-center gap-2">
-        <label className="text-sm">Página</label>
-        <Input
-          min={1}
-          max={table.getPageCount()}
-          type="number"
-          aria-label="Número da página"
-          className="w-12"
-          value={table.getState().pagination.pageIndex + 1}
-          onChange={(e) => {
-            const value = e.target.value;
-            const page = value ? Number(value) - 1 : 0;
-            table.setPageIndex(page);
-          }}
-        />
-        <span className="text-sm whitespace-nowrap" aria-hidden="true">
-          de <span className="font-bold">{table.getPageCount()}</span>
-        </span>
-      </div>
+      <p
+        className="flex items-center gap-1 text-sm"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        <span className="text-muted-foreground">Página</span>
+        <strong>
+          {currentPage} de {pageCount}
+        </strong>
+      </p>
 
-      <div className="flex items-center gap-1">
+      <div
+        className="flex flex-wrap items-center gap-2"
+        role="group"
+        aria-label="Navegação entre páginas"
+      >
         <Button
+          type="button"
           variant="outline"
-          size="icon"
+          size="icon-sm"
           onClick={() => table.setPageIndex(0)}
-          disabled={!table.getCanPreviousPage()}
+          disabled={isLoading || !table.getCanPreviousPage()}
           aria-label="Ir para a primeira página"
         >
-          <ChevronFirstIcon className="size-4" aria-hidden="true" />
+          <ChevronsLeftIcon className="size-4" aria-hidden="true" />
         </Button>
         <Button
+          type="button"
           variant="outline"
-          size="icon"
+          size="icon-sm"
           onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
+          disabled={isLoading || !table.getCanPreviousPage()}
           aria-label="Ir para a página anterior"
         >
           <ChevronLeftIcon className="size-4" aria-hidden="true" />
         </Button>
         <Button
+          type="button"
           variant="outline"
-          size="icon"
+          size="icon-sm"
           onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-          aria-label="Ir para a próxima página"
+          disabled={isLoading || !table.getCanNextPage()}
+          aria-label="Ir para a página seguinte"
         >
           <ChevronRightIcon className="size-4" aria-hidden="true" />
         </Button>
         <Button
+          type="button"
           variant="outline"
-          size="icon"
+          size="icon-sm"
           onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-          disabled={!table.getCanNextPage()}
+          disabled={isLoading || !table.getCanNextPage()}
           aria-label="Ir para a última página"
         >
-          <ChevronLastIcon className="size-4" aria-hidden="true" />
+          <ChevronsRightIcon className="size-4" aria-hidden="true" />
         </Button>
       </div>
     </nav>
