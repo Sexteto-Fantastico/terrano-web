@@ -16,12 +16,14 @@ interface DataTableProps<TData> extends React.ComponentProps<"div"> {
   table: TanstackTable<TData>;
   isLoading?: boolean;
   actionBar?: React.ReactNode;
+  getRowClassName?: (row: import("@tanstack/react-table").Row<TData>) => string;
 }
 
 export function DataTable<TData>({
   table,
   isLoading,
   actionBar,
+  getRowClassName,
   className,
   ...props
 }: DataTableProps<TData>) {
@@ -61,6 +63,7 @@ export function DataTable<TData>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  className={getRowClassName ? getRowClassName(row) : ""}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
