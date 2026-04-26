@@ -8,7 +8,7 @@ import {
   BreadcrumbLink,
 } from "./ui/breadcrumb";
 
-export function DynamicBreadcrumb() {
+export function Header() {
   const matches = useMatches();
   const router = useRouter();
 
