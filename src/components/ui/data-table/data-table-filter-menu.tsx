@@ -1,18 +1,10 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { DataTableFilterInput } from "@/components/ui/data-table/data-table-filter-input";
 import { cn } from "@/lib/utils";
-import type { DataTableFilterVariant } from "@/types/data-table";
+import type { DataTableFilterVariant } from "@/components/ui/data-table/@types";
 import { useForm } from "@tanstack/react-form";
 import type { Table } from "@tanstack/react-table";
 import { useEffect, useMemo } from "react";
-import { XIcon } from "lucide-react";
 
 type ColumnFilter = {
   id: string;
@@ -23,7 +15,10 @@ type ColumnFilter = {
   className: string | undefined;
 };
 
-type DataTableFiltersProps<TData, TFilters extends Record<string, unknown>> = {
+type DataTableFilterMenuProps<
+  TData,
+  TFilters extends Record<string, unknown>,
+> = {
   table: Table<TData>;
   filters: TFilters;
   onFilter: (partialFilters: Partial<TFilters>) => void;
@@ -32,9 +27,7 @@ type DataTableFiltersProps<TData, TFilters extends Record<string, unknown>> = {
   className?: string;
 };
 
-const variantsUsingSelect: DataTableFilterVariant[] = ["select", "boolean"];
-
-export function DataTableFilters<
+export function DataTableFilterMenu<
   TData,
   TFilters extends Record<string, unknown>,
 >({
@@ -44,7 +37,7 @@ export function DataTableFilters<
   onClearFilters,
   isLoading = false,
   className,
-}: DataTableFiltersProps<TData, TFilters>) {
+}: DataTableFilterMenuProps<TData, TFilters>) {
   const filterableColumns = useMemo<ColumnFilter[]>(
     () =>
       table
@@ -167,56 +160,20 @@ export function DataTableFilters<
               </label>
               <form.Field
                 name={column.id}
-                children={(field) =>
-                  variantsUsingSelect.includes(column.variant) ? (
-                    <div className="flex items-center gap-2">
-                      <Select
-                        value={(field.state.value as string) ?? ""}
-                        onValueChange={(nextValue) =>
-                          field.handleChange(nextValue)
-                        }
-                        disabled={isLoading}
-                      >
-                        <SelectTrigger className="min-w-0 flex-1">
-                          <SelectValue
-                            placeholder={
-                              column.placeholder ??
-                              `Selecione ${column.label.toLowerCase()}`
-                            }
-                          />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {(column.options ?? []).map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon-sm"
-                        onClick={() => field.handleChange("")}
-                        disabled={isLoading || !(field.state.value as string)}
-                        aria-label={`Limpar seleção de ${column.label}`}
-                      >
-                        <XIcon className="size-4" aria-hidden="true" />
-                      </Button>
-                    </div>
-                  ) : (
-                    <Input
-                      type={column.variant === "number" ? "number" : "text"}
-                      value={(field.state.value as string) ?? ""}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      placeholder={
-                        column.placeholder ??
-                        `Filtrar por ${column.label.toLowerCase()}`
-                      }
-                      disabled={isLoading}
-                    />
-                  )
-                }
+                children={(field) => (
+                  <DataTableFilterInput
+                    field={field}
+                    variant={column.variant}
+                    label={column.label}
+                    placeholder={column.placeholder}
+                    options={column.options?.map((opt) => ({
+                      ...opt,
+                      value: opt.value,
+                    }))}
+                    disabled={isLoading}
+                    className="min-w-0"
+                  />
+                )}
               />
             </div>
           );

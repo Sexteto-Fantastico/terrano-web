@@ -1,4 +1,7 @@
-import { type Filters, type PaginatedData } from "@/types/data-table";
+import {
+  type Filters,
+  type PaginatedData,
+} from "@/components/ui/data-table/data-table";
 
 import {
   DEFAULT_PAGE_INDEX,

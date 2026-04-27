@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { type ColumnDef } from "@tanstack/react-table";
-import { DataTableFilters } from "@/components/ui/data-table/data-table-filters";
+import { DataTableFilterMenu } from "@/components/ui/data-table/data-table-filter-menu";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
 import { useMemo } from "react";
 import { fetchUsers, type User } from "@/api/user";
@@ -8,7 +8,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { DataView } from "@/components/views/data-view";
 import { useFilters } from "@/hooks/use-filters";
 import { DataTable } from "@/components/ui/data-table/data-table";
-import type { Filters } from "@/types/data-table";
+import type { Filters } from "@/components/ui/data-table/@types";
 import { useDataTable } from "@/hooks/use-data-table";
 import { Separator } from "@/components/ui/separator";
 import { DataTableToolbar } from "@/components/ui/data-table/data-table-toolbar";
@@ -18,6 +18,8 @@ import {
   createActionColumn,
   createHeaderColumn,
 } from "@/components/ui/data-table/data-table-helpers";
+import { AddButton } from "@/components/feature/shared/components/add-button";
+import { ExportButton } from "@/components/feature/shared/components/export-button";
 
 export const Route = createFileRoute("/_app/user/")({
   component: UserPage,
@@ -151,8 +153,9 @@ function UserPage() {
 
   return (
     <DataView>
-      <DataTableFilters
+      <DataTableFilterMenu
         table={table}
+        isLoading={isLoading}
         filters={filters}
         onFilter={setTableFilters}
         onClearFilters={resetFilters}
@@ -161,13 +164,13 @@ function UserPage() {
       <DataTable
         table={table}
         actionBar={
-          <DataTableToolbar
-            table={table}
-            onClickAdd={() => navigate({ to: "/user/new" })}
-          />
+          <DataTableToolbar table={table}>
+            <ExportButton />
+            <AddButton />
+          </DataTableToolbar>
         }
       />
-      <DataTablePagination table={table} />
+      <DataTablePagination table={table} isLoading={isLoading} />
     </DataView>
   );
 }
