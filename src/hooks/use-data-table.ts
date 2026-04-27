@@ -1,4 +1,7 @@
-import { type PaginatedData, type Filters } from "@/types/data-table";
+import {
+  type PaginatedData,
+  type Filters,
+} from "@/components/ui/data-table/@types";
 import { sortByToState, stateToSortBy } from "@/lib/filters";
 import {
   getCoreRowModel,

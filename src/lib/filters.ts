@@ -2,7 +2,7 @@ import {
   DEFAULT_PAGE_INDEX,
   DEFAULT_PAGE_SIZE,
 } from "@/components/ui/data-table/data-table-pagination";
-import type { SortParams } from "@/types/data-table";
+import type { SortParams } from "@/components/ui/data-table/@types";
 import type { SortingState } from "@tanstack/react-table";
 
 export const cleanEmptyParams = <T extends Record<string, unknown>>(
