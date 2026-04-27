@@ -42,13 +42,13 @@ function SignInPage() {
   });
 
   return (
-    <div className="grid md:grid-cols-2 h-screen grid-cols-1">
-      <aside className="bg-primary items-center justify-center md:flex hidden">
+    <div className="grid h-screen grid-cols-1 md:grid-cols-2">
+      <aside className="hidden items-center justify-center bg-primary md:flex">
         <h1 className="text-4xl font-semibold text-primary-foreground">
           Terrano
         </h1>
       </aside>
-      <div className="flex items-center justify-center p-6 w-full">
+      <div className="flex w-full items-center justify-center p-6">
         <form
           id="sign-in-form"
           className="w-full max-w-sm"
@@ -125,7 +125,9 @@ function SignInPage() {
                     </Field>
                   )}
                 </signInForm.Field>
-                <Link to={"/"}>Esqueci minha senha</Link>
+                <Button variant="link" asChild>
+                  {/* <Link to="/">Esqueci minha senha</Link> */}
+                </Button>
               </div>
             </FieldGroup>
 
