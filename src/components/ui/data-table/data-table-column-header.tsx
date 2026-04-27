@@ -83,16 +83,6 @@ export function DataTableColumnHeader<TData, TValue>({
             )}
           </>
         )}
-        {column.getCanHide() && (
-          <DropdownMenuCheckboxItem
-            className="relative pr-8 pl-2 [&_svg]:text-muted-foreground [&>span:first-child]:right-2 [&>span:first-child]:left-auto"
-            checked={!column.getIsVisible()}
-            onClick={() => column.toggleVisibility(false)}
-          >
-            <EyeOffIcon className="size-4" />
-            Hide
-          </DropdownMenuCheckboxItem>
-        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );
