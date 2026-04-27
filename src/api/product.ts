@@ -1,4 +1,7 @@
-import { type Filters, type PaginatedData } from "@/types/data-table";
+import {
+  type Filters,
+  type PaginatedData,
+} from "@/components/ui/data-table/@types";
 
 import {
   DEFAULT_PAGE_INDEX,
@@ -80,7 +83,9 @@ export async function fetchProducts(
   };
 }
 
-export async function createProduct(data: CreateProductRequestDTO): Promise<Product> {
+export async function createProduct(
+  data: CreateProductRequestDTO
+): Promise<Product> {
   const response = await fetch("http://localhost:3000/api/products", {
     method: "POST",
     headers: {
@@ -96,14 +101,19 @@ export async function createProduct(data: CreateProductRequestDTO): Promise<Prod
   return response.json();
 }
 
-export async function updateProduct(data: ProductUpdateRequestDTO): Promise<Product> {
-  const response = await fetch(`http://localhost:3000/api/products/${data.id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
+export async function updateProduct(
+  data: ProductUpdateRequestDTO
+): Promise<Product> {
+  const response = await fetch(
+    `http://localhost:3000/api/products/${data.id}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    }
+  );
 
   if (!response.ok) {
     throw new Error("Failed to update product");

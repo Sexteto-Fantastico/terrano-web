@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getColumnPinningStyle } from "@/lib/data-table";
+import { getCommonPinningStyles } from "./data-table-helpers";
 import { cn } from "@/lib/utils";
 
 interface DataTableProps<TData> extends React.ComponentProps<"div"> {
@@ -29,7 +29,7 @@ export function DataTable<TData>({
 }: DataTableProps<TData>) {
   return (
     <div
-      className={cn("flex w-full flex-col gap-2.5 overflow-auto", className)}
+      className={cn("flex w-full flex-col gap-4 overflow-auto", className)}
       {...props}
     >
       {actionBar}
@@ -43,7 +43,7 @@ export function DataTable<TData>({
                     key={header.id}
                     colSpan={header.colSpan}
                     style={{
-                      ...getColumnPinningStyle({ column: header.column }),
+                      ...getCommonPinningStyles({ column: header.column }),
                     }}
                   >
                     {header.isPlaceholder
@@ -69,7 +69,7 @@ export function DataTable<TData>({
                     <TableCell
                       key={cell.id}
                       style={{
-                        ...getColumnPinningStyle({ column: cell.column }),
+                        ...getCommonPinningStyles({ column: cell.column }),
                       }}
                     >
                       {flexRender(
@@ -86,7 +86,7 @@ export function DataTable<TData>({
                   colSpan={table.getAllColumns().length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  Sem resultados.
                 </TableCell>
               </TableRow>
             )}

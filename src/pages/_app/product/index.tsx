@@ -1,26 +1,40 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { type ColumnDef } from "@tanstack/react-table";
-import { DataTableFilters } from "@/components/ui/data-table/data-table-filters";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
 import { useMemo, useState } from "react";
-import { deleteProduct, fetchProducts, updateProduct, type Product } from "@/api/product";
-import { keepPreviousData, useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  deleteProduct,
+  fetchProducts,
+  updateProduct,
+  type Product,
+} from "@/api/product";
+import {
+  keepPreviousData,
+  useQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { DataView } from "@/components/views/data-view";
 import { useFilters } from "@/hooks/use-filters";
 import { DataTable } from "@/components/ui/data-table/data-table";
-import type { Filters } from "@/types/data-table";
+import type { Filters } from "@/components/ui/data-table/@types";
 import { useDataTable } from "@/hooks/use-data-table";
 import { Separator } from "@/components/ui/separator";
 import { DataTableToolbar } from "@/components/ui/data-table/data-table-toolbar";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { MoreHorizontalIcon, SquarePenIcon, Trash2Icon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  createHeaderColumn,
-} from "@/components/ui/data-table/data-table-helpers";
+import { createHeaderColumn } from "@/components/ui/data-table/data-table-helpers";
 import { ProductFormDialog } from "./-components/product-form-dialog";
 import { Switch } from "@/components/ui/switch";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { DataTableFilterMenu } from "@/components/ui/data-table/data-table-filter-menu";
+import { AddButton } from "@/components/feature/shared/components/add-button";
 
 export const Route = createFileRoute("/_app/product/")({
   component: ProductPage,
@@ -58,7 +72,9 @@ function ProductPage() {
         return {
           ...old,
           result: old.result.map((p: Product) =>
-            p.id === productId ? { ...p, deleted_at: new Date().toISOString() } : p
+            p.id === productId
+              ? { ...p, deleted_at: new Date().toISOString() }
+              : p
           ),
         };
       });
@@ -83,7 +99,9 @@ function ProductPage() {
         return {
           ...old,
           result: old.result.map((p: Product) =>
-            p.id === variables.id ? { ...p, deleted_at: variables.deleted_at } : p
+            p.id === variables.id
+              ? { ...p, deleted_at: variables.deleted_at }
+              : p
           ),
         };
       });
@@ -236,7 +254,7 @@ function ProductPage() {
 
   return (
     <DataView>
-      <DataTableFilters
+      <DataTableFilterMenu
         table={table}
         filters={filters}
         onFilter={setTableFilters}
@@ -246,22 +264,23 @@ function ProductPage() {
       <DataTable
         table={table}
         isLoading={isLoading}
-        getRowClassName={(row) => row.original.deleted_at ? "line-through text-muted-foreground" : ""}
+        getRowClassName={(row) =>
+          row.original.deleted_at ? "line-through text-muted-foreground" : ""
+        }
         actionBar={
-          <DataTableToolbar
-            table={table}
-            onClickAdd={() => setIsDialogOpen(true)}
-          />
+          <DataTableToolbar table={table}>
+            <AddButton onClick={() => setIsDialogOpen(true)} />
+          </DataTableToolbar>
         }
       />
       <DataTablePagination table={table} />
-      <ProductFormDialog 
-        open={isDialogOpen} 
+      <ProductFormDialog
+        open={isDialogOpen}
         onOpenChange={(open) => {
           setIsDialogOpen(open);
           if (!open) setProductToEdit(undefined);
-        }} 
-        productToEdit={productToEdit} 
+        }}
+        productToEdit={productToEdit}
       />
       <ConfirmDialog
         open={!!productToDelete}
