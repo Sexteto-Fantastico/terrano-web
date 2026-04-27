@@ -105,8 +105,6 @@ export function DataTableFilterInput({
   className,
   inputProps,
 }: DataTableFilterInputProps) {
-  const baseInputClass = "h-9 w-full";
-
   switch (variant) {
     case "text":
       return (
@@ -116,7 +114,7 @@ export function DataTableFilterInput({
           onChange={(e) => field.handleChange(e.target.value)}
           placeholder={placeholder ?? `Filtrar por ${label.toLowerCase()}`}
           disabled={disabled}
-          className={cn(baseInputClass, className)}
+          className={cn("w-full", className)}
           {...inputProps}
         />
       );
@@ -129,7 +127,7 @@ export function DataTableFilterInput({
           onChange={(e) => field.handleChange(e.target.value)}
           placeholder={placeholder ?? `Filtrar por ${label.toLowerCase()}`}
           disabled={disabled}
-          className={cn(baseInputClass, className)}
+          className={cn("w-full", className)}
           {...inputProps}
         />
       );
@@ -151,7 +149,7 @@ export function DataTableFilterInput({
             }}
             placeholder="Min"
             disabled={disabled}
-            className={cn(baseInputClass, "min-w-0 flex-1")}
+            className={cn("w-full", "min-w-0 flex-1")}
             {...inputProps}
           />
           <span className="text-sm text-muted-foreground">-</span>
@@ -168,7 +166,7 @@ export function DataTableFilterInput({
             }}
             placeholder="Max"
             disabled={disabled}
-            className={cn(baseInputClass, "min-w-0 flex-1")}
+            className={cn("w-full", "min-w-0 flex-1")}
             {...inputProps}
           />
           {(range.min !== undefined || range.max !== undefined) && (
@@ -197,7 +195,6 @@ export function DataTableFilterInput({
               variant="outline"
               role="combobox"
               className={cn(
-                baseInputClass,
                 "w-full justify-between font-normal",
                 !selectedDate && "text-muted-foreground",
                 className
@@ -239,7 +236,7 @@ export function DataTableFilterInput({
               variant="outline"
               role="combobox"
               className={cn(
-                baseInputClass,
+                "w-full",
                 "w-full justify-between font-normal",
                 !range.from && "text-muted-foreground",
                 className
@@ -289,9 +286,7 @@ export function DataTableFilterInput({
           onValueChange={(value) => field.handleChange(value)}
           disabled={disabled}
         >
-          <SelectTrigger
-            className={cn(baseInputClass, "min-w-0 flex-1", className)}
-          >
+          <SelectTrigger className={cn("w-full", "min-w-0 flex-1", className)}>
             <SelectValue
               placeholder={placeholder ?? `Selecione ${label.toLowerCase()}`}
             />
@@ -315,9 +310,7 @@ export function DataTableFilterInput({
           onValueChange={(value) => field.handleChange(value)}
           disabled={disabled}
         >
-          <SelectTrigger
-            className={cn(baseInputClass, "min-w-0 flex-1", className)}
-          >
+          <SelectTrigger className={cn("w-full", className)}>
             <SelectValue
               placeholder={placeholder ?? `Selecione ${label.toLowerCase()}`}
             />
@@ -349,7 +342,7 @@ export function DataTableFilterInput({
           defaultValue={selectedValues}
           placeholder={placeholder ?? `Selecione ${label.toLowerCase()}`}
           disabled={disabled}
-          className={cn(baseInputClass, className)}
+          className={cn("w-full", className)}
           hideSelectAll
           searchable={false}
           maxCount={3}
