@@ -8,15 +8,16 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './pages/__root'
-import { Route as AppLayoutRouteImport } from './pages/_app/layout'
-import { Route as AppIndexRouteImport } from './pages/_app/index'
-import { Route as AppUserIndexRouteImport } from './pages/_app/user/index'
-import { Route as AppProductIndexRouteImport } from './pages/_app/product/index'
-import { Route as AppUserNewRouteImport } from './pages/_app/user/new'
+import { Route as rootRouteImport } from "./pages/__root";
+import { Route as AppLayoutRouteImport } from "./pages/_app/layout";
+import { Route as AppIndexRouteImport } from "./pages/_app/index";
+import { Route as AuthSignInRouteImport } from "./pages/auth/sign-in";
+import { Route as AppUserIndexRouteImport } from "./pages/_app/user/index";
+import { Route as AppProductIndexRouteImport } from "./pages/_app/product/index";
+import { Route as AppUserNewRouteImport } from "./pages/_app/user/new";
 
 const AppLayoutRoute = AppLayoutRouteImport.update({
-  id: '/_app',
+  id: "/_app",
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppIndexRoute = AppIndexRouteImport.update({
@@ -25,20 +26,25 @@ const AppIndexRoute = AppIndexRouteImport.update({
   getParentRoute: () => AppLayoutRoute,
 } as any)
 const AppUserIndexRoute = AppUserIndexRouteImport.update({
-  id: '/user/',
-  path: '/user/',
+  id: "/user/",
+  path: "/user/",
   getParentRoute: () => AppLayoutRoute,
-} as any)
+} as any);
+const AuthSignInRoute = AuthSignInRouteImport.update({
+  id: "/auth/sign-in",
+  path: "/auth/sign-in",
+  getParentRoute: () => rootRouteImport,
+} as any);
 const AppProductIndexRoute = AppProductIndexRouteImport.update({
-  id: '/product/',
-  path: '/product/',
+  id: "/product/",
+  path: "/product/",
   getParentRoute: () => AppLayoutRoute,
-} as any)
+} as any);
 const AppUserNewRoute = AppUserNewRouteImport.update({
-  id: '/user/new',
-  path: '/user/new',
+  id: "/user/new",
+  path: "/user/new",
   getParentRoute: () => AppLayoutRoute,
-} as any)
+} as any);
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
@@ -75,10 +81,11 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  AppLayoutRoute: typeof AppLayoutRouteWithChildren
+  AppLayoutRoute: typeof AppLayoutRouteWithChildren;
+  AuthSignInRoute: typeof AuthSignInRoute;
 }
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
     '/_app': {
       id: '/_app'
@@ -130,15 +137,16 @@ const AppLayoutRouteChildren: AppLayoutRouteChildren = {
   AppUserNewRoute: AppUserNewRoute,
   AppProductIndexRoute: AppProductIndexRoute,
   AppUserIndexRoute: AppUserIndexRoute,
-}
+};
 
 const AppLayoutRouteWithChildren = AppLayoutRoute._addFileChildren(
-  AppLayoutRouteChildren,
-)
+  AppLayoutRouteChildren
+);
 
 const rootRouteChildren: RootRouteChildren = {
   AppLayoutRoute: AppLayoutRouteWithChildren,
-}
+  AuthSignInRoute: AuthSignInRoute,
+};
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+  ._addFileTypes<FileRouteTypes>();
