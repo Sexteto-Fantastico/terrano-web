@@ -4,7 +4,7 @@ import { PlusIcon } from "lucide-react";
 interface AddButtonProps extends ButtonProps {}
 
 export const AddButton = ({
-  variant = "outline",
+  variant = "default",
   ...props
 }: AddButtonProps) => {
   return (

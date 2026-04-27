@@ -8,113 +8,146 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './pages/__root'
-import { Route as AppLayoutRouteImport } from './pages/_app/layout'
-import { Route as AppIndexRouteImport } from './pages/_app/index'
-import { Route as AuthSignInRouteImport } from './pages/auth/sign-in'
-import { Route as AppProductIndexRouteImport } from './pages/_app/product/index'
+import { Route as rootRouteImport } from "./pages/__root";
+import { Route as AppLayoutRouteImport } from "./pages/_app/layout";
+import { Route as AppIndexRouteImport } from "./pages/_app/index";
+import { Route as AuthSignInRouteImport } from "./pages/auth/sign-in";
+import { Route as AppUserIndexRouteImport } from "./pages/_app/user/index";
+import { Route as AppProductIndexRouteImport } from "./pages/_app/product/index";
+import { Route as AppUserNewRouteImport } from "./pages/_app/user/new";
 
 const AppLayoutRoute = AppLayoutRouteImport.update({
-  id: '/_app',
+  id: "/_app",
   getParentRoute: () => rootRouteImport,
-} as any)
-const AppIndexRoute = AppIndexRouteImport.update({
-  id: '/',
-  path: '/',
+} as any);
+const AppUserIndexRoute = AppUserIndexRouteImport.update({
+  id: "/user/",
+  path: "/user/",
   getParentRoute: () => AppLayoutRoute,
-} as any)
+} as any);
 const AuthSignInRoute = AuthSignInRouteImport.update({
-  id: '/auth/sign-in',
-  path: '/auth/sign-in',
+  id: "/auth/sign-in",
+  path: "/auth/sign-in",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AppProductIndexRoute = AppProductIndexRouteImport.update({
-  id: '/product/',
-  path: '/product/',
+  id: "/product/",
+  path: "/product/",
   getParentRoute: () => AppLayoutRoute,
-} as any)
+} as any);
+const AppUserNewRoute = AppUserNewRouteImport.update({
+  id: "/user/new",
+  path: "/user/new",
+  getParentRoute: () => AppLayoutRoute,
+} as any);
 
 export interface FileRoutesByFullPath {
-  '/': typeof AppIndexRoute
-  '/auth/sign-in': typeof AuthSignInRoute
-  '/product/': typeof AppProductIndexRoute
+  "/": typeof AppIndexRoute;
+  "/auth/sign-in": typeof AuthSignInRoute;
+  "/": typeof AppLayoutRouteWithChildren;
+  "/user/new": typeof AppUserNewRoute;
+  "/product/": typeof AppProductIndexRoute;
+  "/user/": typeof AppUserIndexRoute;
 }
 export interface FileRoutesByTo {
-  '/auth/sign-in': typeof AuthSignInRoute
-  '/': typeof AppIndexRoute
-  '/product': typeof AppProductIndexRoute
+  "/auth/sign-in": typeof AuthSignInRoute;
+  "/": typeof AppIndexRoute;
+  "/": typeof AppLayoutRouteWithChildren;
+  "/user/new": typeof AppUserNewRoute;
+  "/product": typeof AppProductIndexRoute;
+  "/user": typeof AppUserIndexRoute;
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport
-  '/_app': typeof AppLayoutRouteWithChildren
-  '/auth/sign-in': typeof AuthSignInRoute
-  '/_app/': typeof AppIndexRoute
-  '/_app/product/': typeof AppProductIndexRoute
+  __root__: typeof rootRouteImport;
+  "/_app": typeof AppLayoutRouteWithChildren;
+  "/auth/sign-in": typeof AuthSignInRoute;
+  "/_app/": typeof AppIndexRoute;
+  "/_app/user/new": typeof AppUserNewRoute;
+  "/_app/product/": typeof AppProductIndexRoute;
+  "/_app/user/": typeof AppUserIndexRoute;
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth/sign-in' | '/product/'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/auth/sign-in' | '/' | '/product'
-  id: '__root__' | '/_app' | '/auth/sign-in' | '/_app/' | '/_app/product/'
-  fileRoutesById: FileRoutesById
+  fileRoutesByFullPath: FileRoutesByFullPath;
+  fullPaths: "/" | "/auth/sign-in" | "/product/";
+  fileRoutesByTo: FileRoutesByTo;
+  to: "/auth/sign-in" | "/" | "/product";
+  id: "__root__" | "/_app" | "/auth/sign-in" | "/_app/" | "/_app/product/";
+  fullPaths: "/" | "/user/new" | "/product/" | "/user/";
+  fileRoutesByTo: FileRoutesByTo;
+  to: "/" | "/user/new" | "/product" | "/user";
+  id:
+    | "__root__"
+    | "/_app"
+    | "/_app/user/new"
+    | "/_app/product/"
+    | "/_app/user/";
+  fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
-  AppLayoutRoute: typeof AppLayoutRouteWithChildren
-  AuthSignInRoute: typeof AuthSignInRoute
+  AppLayoutRoute: typeof AppLayoutRouteWithChildren;
+  AuthSignInRoute: typeof AuthSignInRoute;
 }
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    '/_app': {
-      id: '/_app'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AppLayoutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_app/': {
-      id: '/_app/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof AppIndexRouteImport
-      parentRoute: typeof AppLayoutRoute
-    }
-    '/auth/sign-in': {
-      id: '/auth/sign-in'
-      path: '/auth/sign-in'
-      fullPath: '/auth/sign-in'
-      preLoaderRoute: typeof AuthSignInRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_app/product/': {
-      id: '/_app/product/'
-      path: '/product'
-      fullPath: '/product/'
-      preLoaderRoute: typeof AppProductIndexRouteImport
-      parentRoute: typeof AppLayoutRoute
-    }
+    "/_app": {
+      id: "/_app";
+      path: "";
+      fullPath: "/";
+      preLoaderRoute: typeof AppLayoutRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/_app/user/": {
+      id: "/_app/user/";
+      path: "/user";
+      fullPath: "/user/";
+      preLoaderRoute: typeof AppUserIndexRouteImport;
+      parentRoute: typeof AppLayoutRoute;
+    };
+    "/auth/sign-in": {
+      id: "/auth/sign-in";
+      path: "/auth/sign-in";
+      fullPath: "/auth/sign-in";
+      preLoaderRoute: typeof AuthSignInRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/_app/product/": {
+      id: "/_app/product/";
+      path: "/product";
+      fullPath: "/product/";
+      preLoaderRoute: typeof AppProductIndexRouteImport;
+      parentRoute: typeof AppLayoutRoute;
+    };
+    "/_app/user/new": {
+      id: "/_app/user/new";
+      path: "/user/new";
+      fullPath: "/user/new";
+      preLoaderRoute: typeof AppUserNewRouteImport;
+      parentRoute: typeof AppLayoutRoute;
+    };
   }
 }
 
 interface AppLayoutRouteChildren {
-  AppIndexRoute: typeof AppIndexRoute
-  AppProductIndexRoute: typeof AppProductIndexRoute
+  AppUserNewRoute: typeof AppUserNewRoute;
+  AppProductIndexRoute: typeof AppProductIndexRoute;
+  AppUserIndexRoute: typeof AppUserIndexRoute;
 }
 
 const AppLayoutRouteChildren: AppLayoutRouteChildren = {
-  AppIndexRoute: AppIndexRoute,
+  AppUserNewRoute: AppUserNewRoute,
   AppProductIndexRoute: AppProductIndexRoute,
-}
+  AppUserIndexRoute: AppUserIndexRoute,
+};
 
 const AppLayoutRouteWithChildren = AppLayoutRoute._addFileChildren(
-  AppLayoutRouteChildren,
-)
+  AppLayoutRouteChildren
+);
 
 const rootRouteChildren: RootRouteChildren = {
   AppLayoutRoute: AppLayoutRouteWithChildren,
   AuthSignInRoute: AuthSignInRoute,
-}
+};
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+  ._addFileTypes<FileRouteTypes>();
