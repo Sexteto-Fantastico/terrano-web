@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Link } from "@/components/ui/link";
 import { useForm } from "@tanstack/react-form";
@@ -27,7 +26,6 @@ const forgotPasswordSchema = z.object({
 
 function ForgotPasswordPage() {
   const navigate = useNavigate();
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm({
     defaultValues: {
@@ -38,14 +36,14 @@ function ForgotPasswordPage() {
     },
     onSubmit: async ({ value }) => {
       try {
-        setIsSubmitting(true);
         await forgotPassword(value);
         navigate({ to: "/check-email" });
       } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : "Erro ao enviar link de redefinição";
+        const message =
+          error instanceof Error
+            ? error.message
+            : "Erro ao enviar link de redefinição";
         toast.error(message);
-      } finally {
-        setIsSubmitting(false);
       }
     },
   });
@@ -80,7 +78,7 @@ function ForgotPasswordPage() {
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                   aria-invalid={field.state.meta.errors.length > 0}
-                  disabled={isSubmitting}
+                  disabled={form.state.isSubmitting}
                 />
                 <FieldError errors={field.state.meta.errors} />
               </Field>
@@ -88,7 +86,12 @@ function ForgotPasswordPage() {
           </form.Field>
         </FieldGroup>
 
-        <Button type="submit" form="forgot-password-form" className="w-full" disabled={isSubmitting}>
+        <Button
+          type="submit"
+          form="forgot-password-form"
+          className="w-full"
+          disabled={form.state.isSubmitting}
+        >
           Enviar link de redefinição
         </Button>
 

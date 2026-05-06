@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Link } from "@/components/ui/link";
 import { useForm } from "@tanstack/react-form";
@@ -19,9 +18,6 @@ import { useAuth } from "@/hooks/use-auth";
 import { login } from "@/api/auth";
 
 export const Route = createFileRoute("/_auth/sign-in")({
-  validateSearch: (search) => ({
-    redirect: (search.redirect as string) || "/",
-  }),
   component: SignInPage,
 });
 
@@ -32,9 +28,7 @@ const signInSchema = z.object({
 
 function SignInPage() {
   const { setToken, setMustResetPassword } = useAuth();
-  const { redirect } = Route.useSearch();
   const navigate = useNavigate();
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const signInForm = useForm({
     defaultValues: {
@@ -46,21 +40,18 @@ function SignInPage() {
     },
     onSubmit: async ({ value }) => {
       try {
-        setIsSubmitting(true);
         const response = await login(value);
         setToken(response.token);
-        setMustResetPassword(response.must_reset_password ?? false);
-        if (response.must_reset_password) {
+        setMustResetPassword(response.mustResetPassword ?? false);
+        if (response.mustResetPassword) {
           navigate({ to: "/define-password" });
         } else {
-          navigate({ to: redirect });
+          navigate({ to: "/" });
         }
       } catch (error: unknown) {
         const message =
           error instanceof Error ? error.message : "Erro ao fazer login";
         toast.error(message);
-      } finally {
-        setIsSubmitting(false);
       }
     },
   });
@@ -95,7 +86,7 @@ function SignInPage() {
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                   aria-invalid={field.state.meta.errors.length > 0}
-                  disabled={isSubmitting}
+                  disabled={signInForm.state.isSubmitting}
                 />
                 <FieldError errors={field.state.meta.errors} />
               </Field>
@@ -116,7 +107,7 @@ function SignInPage() {
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                   aria-invalid={field.state.meta.errors.length > 0}
-                  disabled={isSubmitting}
+                  disabled={signInForm.state.isSubmitting}
                 />
                 <FieldError errors={field.state.meta.errors} />
               </Field>
@@ -128,7 +119,7 @@ function SignInPage() {
           type="submit"
           form="sign-in-form"
           className="w-full"
-          disabled={isSubmitting}
+          disabled={signInForm.state.isSubmitting}
         >
           Entrar
         </Button>

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   createFileRoute,
   useSearch,
@@ -40,7 +39,6 @@ const resetPasswordSchema = z
 function ResetPasswordPage() {
   const search = useSearch({ from: "/_auth/reset-password" });
   const navigate = useNavigate();
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm({
     defaultValues: {
@@ -52,15 +50,13 @@ function ResetPasswordPage() {
     },
     onSubmit: async ({ value }) => {
       try {
-        setIsSubmitting(true);
         await resetPassword({ token: search.token, password: value.password });
         toast.success("Senha redefinida com sucesso");
         navigate({ to: "/sign-in" });
       } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : "Erro ao redefinir senha";
+        const message =
+          error instanceof Error ? error.message : "Erro ao redefinir senha";
         toast.error(message);
-      } finally {
-        setIsSubmitting(false);
       }
     },
   });
@@ -93,7 +89,7 @@ function ResetPasswordPage() {
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                   aria-invalid={field.state.meta.errors.length > 0}
-                  disabled={isSubmitting}
+                  disabled={form.state.isSubmitting}
                 />
                 <FieldError errors={field.state.meta.errors} />
               </Field>
@@ -114,7 +110,7 @@ function ResetPasswordPage() {
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                   aria-invalid={field.state.meta.errors.length > 0}
-                  disabled={isSubmitting}
+                  disabled={form.state.isSubmitting}
                 />
                 <FieldError errors={field.state.meta.errors} />
               </Field>
@@ -122,7 +118,12 @@ function ResetPasswordPage() {
           </form.Field>
         </FieldGroup>
 
-        <Button type="submit" form="reset-password-form" className="w-full" disabled={isSubmitting}>
+        <Button
+          type="submit"
+          form="reset-password-form"
+          className="w-full"
+          disabled={form.state.isSubmitting}
+        >
           Redefinir senha
         </Button>
       </FieldSet>

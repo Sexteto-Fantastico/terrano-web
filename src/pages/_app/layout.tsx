@@ -5,12 +5,12 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 export const Route = createFileRoute("/_app")({
   beforeLoad: ({ context, location }) => {
     if (!context.auth.token) {
-      throw redirect({
-        to: "/sign-in",
-        search: { redirect: location.href },
-      });
+      throw redirect({ to: "/sign-in" });
     }
-    if (context.auth.mustResetPassword && location.pathname !== "/define-password") {
+    if (
+      context.auth.mustResetPassword &&
+      location.pathname !== "/define-password"
+    ) {
       throw redirect({ to: "/define-password" });
     }
   },

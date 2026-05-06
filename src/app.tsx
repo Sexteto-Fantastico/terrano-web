@@ -3,13 +3,12 @@ import {
   createRouter,
   RouterContextProvider,
 } from "@tanstack/react-router";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { TooltipProvider } from "./components/ui/tooltip";
 import { routeTree } from "./routeTree.gen";
 import { AuthProvider } from "./context/auth-context";
 import { useAuth } from "./hooks/use-auth";
-
-const queryClient = new QueryClient();
+import { queryClient } from "./lib/react-query";
 
 const router = createRouter({
   routeTree,

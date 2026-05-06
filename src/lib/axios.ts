@@ -1,7 +1,9 @@
-import axios from 'axios';
+import { env } from "@/env";
+import axios from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: env.VITE_API_BASE_URL,
+  withCredentials: true,
 });
 
 let getAuthToken: (() => string | null) | null = null;
@@ -33,7 +35,7 @@ api.interceptors.response.use(
       onUnauthorized?.();
     }
     throw error;
-  },
+  }
 );
 
 export default api;

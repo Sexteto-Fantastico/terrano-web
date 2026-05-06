@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
@@ -34,7 +33,6 @@ const definePasswordSchema = z
 function DefinePasswordPage() {
   const { setMustResetPassword } = useAuth();
   const navigate = useNavigate();
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm({
     defaultValues: {
@@ -46,16 +44,14 @@ function DefinePasswordPage() {
     },
     onSubmit: async ({ value }) => {
       try {
-        setIsSubmitting(true);
         await definePassword({ password: value.password });
         setMustResetPassword(false);
         toast.success("Senha atualizada com sucesso");
         navigate({ to: "/" });
       } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : "Erro ao atualizar senha";
+        const message =
+          error instanceof Error ? error.message : "Erro ao atualizar senha";
         toast.error(message);
-      } finally {
-        setIsSubmitting(false);
       }
     },
   });
@@ -91,7 +87,7 @@ function DefinePasswordPage() {
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
                     aria-invalid={field.state.meta.errors.length > 0}
-                    disabled={isSubmitting}
+                    disabled={form.state.isSubmitting}
                   />
                   <FieldError errors={field.state.meta.errors} />
                 </Field>
@@ -112,7 +108,7 @@ function DefinePasswordPage() {
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
                     aria-invalid={field.state.meta.errors.length > 0}
-                    disabled={isSubmitting}
+                    disabled={form.state.isSubmitting}
                   />
                   <FieldError errors={field.state.meta.errors} />
                 </Field>
@@ -120,7 +116,12 @@ function DefinePasswordPage() {
             </form.Field>
           </FieldGroup>
 
-          <Button type="submit" form="define-password-form" className="w-full" disabled={isSubmitting}>
+          <Button
+            type="submit"
+            form="define-password-form"
+            className="w-full"
+            disabled={form.state.isSubmitting}
+          >
             Definir senha
           </Button>
         </FieldSet>
