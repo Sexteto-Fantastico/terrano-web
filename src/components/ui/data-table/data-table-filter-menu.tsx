@@ -1,25 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { DataTableFilterInput } from "@/components/ui/data-table/data-table-filter-input";
 import { cn } from "@/lib/utils";
-import type { DataTableFilterVariant } from "@/components/ui/data-table/@types";
+import type { DataTableFilterConfigItem } from "@/components/ui/data-table/@types";
 import { useForm } from "@tanstack/react-form";
-import type { Table } from "@tanstack/react-table";
 import { useEffect, useMemo } from "react";
+import { Search, SearchIcon, XIcon } from "lucide-react";
 
-type ColumnFilter = {
-  id: string;
-  label: string;
-  placeholder: string | undefined;
-  variant: DataTableFilterVariant;
-  options: { label: string; value: string }[] | undefined;
-  className: string | undefined;
-};
-
-type DataTableFilterMenuProps<
-  TData,
-  TFilters extends Record<string, unknown>,
-> = {
-  table: Table<TData>;
+type DataTableFilterMenuProps<TFilters extends Record<string, unknown>> = {
+  filterConfig: DataTableFilterConfigItem[];
   filters: TFilters;
   onFilter: (partialFilters: Partial<TFilters>) => void;
   onClearFilters: () => void;
@@ -27,48 +15,39 @@ type DataTableFilterMenuProps<
   className?: string;
 };
 
-export function DataTableFilterMenu<
-  TData,
-  TFilters extends Record<string, unknown>,
->({
-  table,
+export function DataTableFilterMenu<TFilters extends Record<string, unknown>>({
+  filterConfig,
   filters,
   onFilter,
   onClearFilters,
   isLoading = false,
   className,
-}: DataTableFilterMenuProps<TData, TFilters>) {
-  const filterableColumns = useMemo<ColumnFilter[]>(
+}: DataTableFilterMenuProps<TFilters>) {
+  const filterableColumns = useMemo(
     () =>
-      table
-        .getAllLeafColumns()
-        .map((column) => {
-          const meta = column.columnDef.meta;
-          const filter = meta?.filter;
-          if (!filter || filter.hidden) return undefined;
-
-          const variant = filter.variant;
-
-          const label = filter.label ?? column.id;
+      filterConfig
+        .filter((config) => !config.hidden)
+        .map((config) => {
+          const variant = config.variant;
+          const label = config.label ?? config.id;
           const options =
             variant === "boolean"
               ? [
                   { label: "Sim", value: "true" },
                   { label: "Não", value: "false" },
                 ]
-              : filter.options;
+              : config.options;
 
           return {
-            id: column.id,
+            id: config.id,
             label,
-            placeholder: filter.placeholder,
+            placeholder: config.placeholder,
             variant,
             options,
-            className: filter.props?.className,
-          } satisfies ColumnFilter;
-        })
-        .filter((value): value is ColumnFilter => value !== undefined),
-    [table]
+            className: config.props?.className,
+          };
+        }),
+    [filterConfig]
   );
 
   const initialValues = useMemo(
@@ -158,9 +137,8 @@ export function DataTableFilterMenu<
               <label className="text-sm font-medium text-foreground">
                 {column.label}
               </label>
-              <form.Field
-                name={column.id}
-                children={(field) => (
+              <form.Field name={column.id}>
+                {(field) => (
                   <DataTableFilterInput
                     field={field}
                     variant={column.variant}
@@ -174,7 +152,7 @@ export function DataTableFilterMenu<
                     className="min-w-0"
                   />
                 )}
-              />
+              </form.Field>
             </div>
           );
         })}
@@ -182,6 +160,7 @@ export function DataTableFilterMenu<
 
       <div className="flex flex-col gap-2 md:items-stretch">
         <Button type="submit" disabled={isLoading} className="w-full">
+          <SearchIcon />
           Filtrar
         </Button>
         <Button
@@ -202,6 +181,7 @@ export function DataTableFilterMenu<
           }}
           disabled={isLoading}
         >
+          <XIcon />
           Limpar filtros
         </Button>
       </div>
