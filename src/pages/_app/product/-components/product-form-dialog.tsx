@@ -8,7 +8,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
@@ -18,13 +17,14 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
-import { 
-  createProduct, 
-  updateProduct, 
-  fetchProductCategories, 
-  fetchProductBrands, 
+import {
+  createProduct,
+  updateProduct,
+  fetchProductCategories,
+  fetchProductBrands,
+  fetchMeasurementUnits,
   type CreateProductRequestDTO,
-  type Product 
+  type Product,
 } from "@/api/product";
 
 interface ProductFormDialogProps {
@@ -35,7 +35,7 @@ interface ProductFormDialogProps {
 
 export function ProductFormDialog({ open, onOpenChange, productToEdit }: ProductFormDialogProps) {
   const queryClient = useQueryClient();
-  
+
   const { data: categories = [] } = useQuery({
     queryKey: ["product-categories"],
     queryFn: fetchProductCategories,
@@ -44,6 +44,11 @@ export function ProductFormDialog({ open, onOpenChange, productToEdit }: Product
   const { data: brands = [] } = useQuery({
     queryKey: ["product-brands"],
     queryFn: fetchProductBrands,
+  });
+
+  const { data: measurementUnits = [] } = useQuery({
+    queryKey: ["measurement-units"],
+    queryFn: fetchMeasurementUnits,
   });
 
   const createMutation = useMutation({
@@ -68,14 +73,16 @@ export function ProductFormDialog({ open, onOpenChange, productToEdit }: Product
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    
+
     const payload: CreateProductRequestDTO = {
       name: formData.get("name") as string,
       code: formData.get("code") as string,
-      description: formData.get("description") as string,
+      description: formData.get("description") as string || undefined,
       categoryId: Number(formData.get("categoryId")),
-      brandId: formData.get("brandId") ? Number(formData.get("brandId")) : undefined,
-      min_stock: Number(formData.get("minStock")) || undefined,
+      measurementUnitId: Number(formData.get("measurementUnitId")),
+      brandId: Number(formData.get("brandId")),
+      minStock: Number(formData.get("minStock")) || undefined,
+      maxStock: Number(formData.get("maxStock")) || undefined,
     };
 
     if (isEditing) {
@@ -109,7 +116,7 @@ export function ProductFormDialog({ open, onOpenChange, productToEdit }: Product
             <div className="grid grid-cols-[1fr_1fr_auto] gap-4 items-end">
               <div className="flex flex-col gap-2">
                 <Label>Categoria</Label>
-                <Select name="categoryId" defaultValue={productToEdit?.category?.id?.toString()}>
+                <Select name="categoryId" defaultValue={productToEdit?.category?.id?.toString()} required>
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Selecione" />
                   </SelectTrigger>
@@ -124,7 +131,7 @@ export function ProductFormDialog({ open, onOpenChange, productToEdit }: Product
               </div>
               <div className="flex flex-col gap-2">
                 <Label>Marca</Label>
-                <Select name="brandId" defaultValue={productToEdit?.brand?.id?.toString()}>
+                <Select name="brandId" defaultValue={productToEdit?.brand?.id?.toString()} required>
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Selecione" />
                   </SelectTrigger>
@@ -137,27 +144,27 @@ export function ProductFormDialog({ open, onOpenChange, productToEdit }: Product
                   </SelectContent>
                 </Select>
               </div>
-              <div className="flex flex-col gap-2 pb-2">
-                <Label className="mb-1">Ativo</Label>
-                <Switch name="active" defaultChecked={productToEdit ? !productToEdit.deleted_at : true} />
-              </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="flex flex-col gap-2">
                 <Label>Unidade de Medida</Label>
-                <Select name="unitOfMeasure" defaultValue={productToEdit?.unitOfMeasure}>
+                <Select name="measurementUnitId" defaultValue={productToEdit?.measurementUnit?.id?.toString()} required>
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Selecione" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="un1">Unidade 1</SelectItem>
+                    {measurementUnits.map((unit) => (
+                      <SelectItem key={unit.id} value={unit.id.toString()}>
+                        {unit.name} ({unit.symbol})
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
               <div className="flex flex-col gap-2">
                 <Label htmlFor="estoqueMin">Estoque Mínimo</Label>
-                <Input id="estoqueMin" name="minStock" defaultValue={productToEdit?.min_stock} type="number" placeholder="Mínimo" />
+                <Input id="estoqueMin" name="minStock" defaultValue={productToEdit?.minStock} type="number" placeholder="Mínimo" />
               </div>
               <div className="flex flex-col gap-2">
                 <Label htmlFor="estoqueMax">Estoque Máximo</Label>
@@ -172,17 +179,6 @@ export function ProductFormDialog({ open, onOpenChange, productToEdit }: Product
                 name="description"
                 defaultValue={productToEdit?.description}
                 placeholder="Descreva o produto"
-                className="h-24 resize-none"
-              />
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="anotacoes">Anotações Internas</Label>
-              <Textarea
-                id="anotacoes"
-                name="internalNotes"
-                defaultValue={productToEdit?.internalNotes}
-                placeholder="Crie anotações internas"
                 className="h-24 resize-none"
               />
             </div>

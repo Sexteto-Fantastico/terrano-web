@@ -12,6 +12,7 @@ type ColumnFilter = {
   placeholder: string | undefined;
   variant: DataTableFilterVariant;
   options: { label: string; value: string }[] | undefined;
+  defaultValue: string | undefined;
   className: string | undefined;
 };
 
@@ -38,45 +39,44 @@ export function DataTableFilterMenu<
   isLoading = false,
   className,
 }: DataTableFilterMenuProps<TData, TFilters>) {
-  const filterableColumns = useMemo<ColumnFilter[]>(
-    () =>
-      table
-        .getAllLeafColumns()
-        .map((column) => {
-          const meta = column.columnDef.meta;
-          const filter = meta?.filter;
-          if (!filter || filter.hidden) return undefined;
+  const filterableColumns: ColumnFilter[] = table
+    .getAllLeafColumns()
+    .map((column) => {
+      const meta = column.columnDef.meta;
+      const filter = meta?.filter;
+      if (!filter || filter.hidden) return undefined;
 
-          const variant = filter.variant;
+      const variant = filter.variant;
 
-          const label = filter.label ?? column.id;
-          const options =
-            variant === "boolean"
-              ? [
-                  { label: "Sim", value: "true" },
-                  { label: "Não", value: "false" },
-                ]
-              : filter.options;
+      const label = filter.label ?? column.id;
+      const options =
+        variant === "boolean"
+          ? [
+            { label: "Sim", value: "true" },
+            { label: "Não", value: "false" },
+          ]
+          : filter.options;
 
-          return {
-            id: column.id,
-            label,
-            placeholder: filter.placeholder,
-            variant,
-            options,
-            className: filter.props?.className,
-          } satisfies ColumnFilter;
-        })
-        .filter((value): value is ColumnFilter => value !== undefined),
-    [table]
-  );
+      return {
+        id: column.id,
+        label,
+        placeholder: filter.placeholder,
+        variant,
+        options,
+        defaultValue: filter.defaultValue,
+        className: filter.props?.className,
+      } satisfies ColumnFilter;
+    })
+    .filter((value): value is ColumnFilter => value !== undefined);
 
   const initialValues = useMemo(
     () =>
       filterableColumns.reduce<Record<string, string>>((acc, column) => {
         const rawValue = filters[column.id as keyof TFilters];
         acc[column.id] =
-          rawValue === undefined || rawValue === null ? "" : String(rawValue);
+          rawValue === undefined || rawValue === null
+            ? (column.defaultValue ?? "")
+            : String(rawValue);
         return acc;
       }, {}),
     [filterableColumns, filters]
@@ -88,6 +88,12 @@ export function DataTableFilterMenu<
       const nextFilters = filterableColumns.reduce<Partial<TFilters>>(
         (acc, column) => {
           const draftValue = value[column.id] ?? "";
+
+          if (column.variant === "checkbox") {
+            acc[column.id as keyof TFilters] =
+              (draftValue || "false") as TFilters[keyof TFilters];
+            return acc;
+          }
 
           if (!draftValue.trim()) {
             acc[column.id as keyof TFilters] =
@@ -125,7 +131,9 @@ export function DataTableFilterMenu<
       (acc, column) => {
         const rawValue = filters[column.id as keyof TFilters];
         acc[column.id] =
-          rawValue === undefined || rawValue === null ? "" : String(rawValue);
+          rawValue === undefined || rawValue === null
+            ? (column.defaultValue ?? "")
+            : String(rawValue);
         return acc;
       },
       {}
@@ -155,9 +163,11 @@ export function DataTableFilterMenu<
               key={column.id}
               className={cn("flex min-w-0 flex-col gap-1", column.className)}
             >
-              <label className="text-sm font-medium text-foreground">
-                {column.label}
-              </label>
+              {column.variant !== "checkbox" && (
+                <label className="text-sm font-medium text-foreground">
+                  {column.label}
+                </label>
+              )}
               <form.Field
                 name={column.id}
                 children={(field) => (
@@ -192,7 +202,7 @@ export function DataTableFilterMenu<
             form.reset(
               filterableColumns.reduce<Record<string, string>>(
                 (acc, column) => {
-                  acc[column.id] = "";
+                  acc[column.id] = column.defaultValue ?? "";
                   return acc;
                 },
                 {}

@@ -1,5 +1,4 @@
 import {
-  type Filters,
   type PaginatedData,
 } from "@/components/ui/data-table/@types";
 
@@ -18,24 +17,24 @@ export type ProductBrand = {
   name: string;
 };
 
+export type MeasurementUnit = {
+  id: number;
+  name: string;
+  symbol: string;
+  type: string;
+};
+
 export type Product = {
   id: number;
   name: string;
   code: string;
   description?: string;
-  category: {
-    id: number;
-    name: string;
-  };
-  min_stock?: number;
-  brand?: {
-    id: number;
-    name: string;
-  };
-  unitOfMeasure?: string;
+  category: ProductCategory;
+  measurementUnit: MeasurementUnit;
+  brand: ProductBrand;
+  minStock?: number;
   maxStock?: number;
-  internalNotes?: string;
-  deleted_at?: string | null;
+  deletedAt?: string | null;
 };
 
 export type CreateProductRequestDTO = {
@@ -43,8 +42,10 @@ export type CreateProductRequestDTO = {
   code: string;
   description?: string;
   categoryId: number;
-  brandId?: number;
-  min_stock?: number;
+  measurementUnitId: number;
+  brandId: number;
+  minStock?: number;
+  maxStock?: number;
 };
 
 export type ProductUpdateRequestDTO = {
@@ -53,24 +54,48 @@ export type ProductUpdateRequestDTO = {
   code?: string;
   description?: string;
   categoryId?: number;
+  measurementUnitId?: number;
   brandId?: number;
-  min_stock?: number;
-  deleted_at?: string | null;
+  minStock?: number;
+  maxStock?: number;
+  deletedAt?: string | null;
+};
+
+export type ProductFilters = {
+  name?: string;
+  code?: string;
+  brandId?: string;
+  categoryId?: string;
+  activeOnly?: string;
+  pageIndex?: number;
+  pageSize?: number;
+  sortBy?: string;
 };
 
 export async function fetchProducts(
-  filters: Filters<Product>
+  filters: ProductFilters
 ): Promise<PaginatedData<Product>> {
-  const response = await fetch("http://localhost:3000/api/products");
+  const params = new URLSearchParams();
+
+  if (filters.name) params.set("name", filters.name);
+  if (filters.code) params.set("code", filters.code);
+  if (filters.brandId) params.set("brandId", filters.brandId);
+  if (filters.categoryId) params.set("categoryId", filters.categoryId);
+
+  const activeOnly = filters.activeOnly === "false" ? "false" : "true";
+  params.set("activeOnly", activeOnly);
+
+  const pageIndex = filters.pageIndex ?? DEFAULT_PAGE_INDEX;
+  const pageSize = filters.pageSize ?? DEFAULT_PAGE_SIZE;
+
+  const url = `http://localhost:3000/api/products?${params.toString()}`;
+  const response = await fetch(url);
 
   if (!response.ok) {
     throw new Error("Failed to fetch products");
   }
 
   const allProducts: Product[] = await response.json();
-
-  const pageIndex = filters.pageIndex ?? DEFAULT_PAGE_INDEX;
-  const pageSize = filters.pageSize ?? DEFAULT_PAGE_SIZE;
 
   const start = pageIndex * pageSize;
   const end = start + pageSize;
@@ -132,6 +157,19 @@ export async function deleteProduct(id: number): Promise<void> {
   }
 }
 
+export async function restoreProduct(id: number): Promise<Product> {
+  const response = await fetch(
+    `http://localhost:3000/api/products/${id}/restore`,
+    { method: "POST" }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to restore product");
+  }
+
+  return response.json();
+}
+
 export async function fetchProductCategories(): Promise<ProductCategory[]> {
   const response = await fetch("http://localhost:3000/api/product-categories");
   if (!response.ok) {
@@ -144,6 +182,14 @@ export async function fetchProductBrands(): Promise<ProductBrand[]> {
   const response = await fetch("http://localhost:3000/api/product-brands");
   if (!response.ok) {
     throw new Error("Failed to fetch product brands");
+  }
+  return response.json();
+}
+
+export async function fetchMeasurementUnits(): Promise<MeasurementUnit[]> {
+  const response = await fetch("http://localhost:3000/api/measurement-units");
+  if (!response.ok) {
+    throw new Error("Failed to fetch measurement units");
   }
   return response.json();
 }

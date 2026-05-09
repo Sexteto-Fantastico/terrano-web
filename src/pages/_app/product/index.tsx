@@ -5,8 +5,11 @@ import { useMemo, useState } from "react";
 import {
   deleteProduct,
   fetchProducts,
-  updateProduct,
+  fetchProductBrands,
+  fetchProductCategories,
+  restoreProduct,
   type Product,
+  type ProductFilters,
 } from "@/api/product";
 import {
   keepPreviousData,
@@ -17,7 +20,6 @@ import {
 import { DataView } from "@/components/views/data-view";
 import { useFilters } from "@/hooks/use-filters";
 import { DataTable } from "@/components/ui/data-table/data-table";
-import type { Filters } from "@/components/ui/data-table/@types";
 import { useDataTable } from "@/hooks/use-data-table";
 import { Separator } from "@/components/ui/separator";
 import { DataTableToolbar } from "@/components/ui/data-table/data-table-toolbar";
@@ -38,7 +40,7 @@ import { AddButton } from "@/components/feature/shared/components/add-button";
 
 export const Route = createFileRoute("/_app/product/")({
   component: ProductPage,
-  validateSearch: () => ({}) as Filters<Product>,
+  validateSearch: (): ProductFilters => ({}),
   head: () => ({
     meta: [
       {
@@ -51,6 +53,16 @@ export const Route = createFileRoute("/_app/product/")({
 function ProductPage() {
   const { filters, setFilters, resetFilters } = useFilters(Route.id);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const { data: categories = [] } = useQuery({
+    queryKey: ["product-categories"],
+    queryFn: fetchProductCategories,
+  });
+
+  const { data: brands = [] } = useQuery({
+    queryKey: ["product-brands"],
+    queryFn: fetchProductBrands,
+  });
 
   const { data, isLoading } = useQuery({
     queryKey: ["products", filters],
@@ -73,7 +85,7 @@ function ProductPage() {
           ...old,
           result: old.result.map((p: Product) =>
             p.id === productId
-              ? { ...p, deleted_at: new Date().toISOString() }
+              ? { ...p, deletedAt: new Date().toISOString() }
               : p
           ),
         };
@@ -89,9 +101,9 @@ function ProductPage() {
     },
   });
 
-  const updateMutation = useMutation({
-    mutationFn: updateProduct,
-    onMutate: async (variables) => {
+  const restoreMutation = useMutation({
+    mutationFn: restoreProduct,
+    onMutate: async (productId) => {
       await queryClient.cancelQueries({ queryKey: ["products"] });
       const previousData = queryClient.getQueryData(["products", filters]);
       queryClient.setQueryData(["products", filters], (old: any) => {
@@ -99,15 +111,15 @@ function ProductPage() {
         return {
           ...old,
           result: old.result.map((p: Product) =>
-            p.id === variables.id
-              ? { ...p, deleted_at: variables.deleted_at }
+            p.id === productId
+              ? { ...p, deletedAt: null }
               : p
           ),
         };
       });
       return { previousData };
     },
-    onError: (_err, _variables, context) => {
+    onError: (_err, _productId, context) => {
       queryClient.setQueryData(["products", filters], context?.previousData);
     },
     onSettled: () => {
@@ -130,6 +142,16 @@ function ProductPage() {
     }
   }
 
+  const categoryOptions = useMemo(
+    () => categories.map((c) => ({ label: c.name, value: String(c.id) })),
+    [categories]
+  );
+
+  const brandOptions = useMemo(
+    () => brands.map((b) => ({ label: b.name, value: String(b.id) })),
+    [brands]
+  );
+
   const columns: ColumnDef<Product>[] = useMemo(
     () => [
       {
@@ -144,35 +166,49 @@ function ProductPage() {
         },
       },
       {
-        id: "category",
+        accessorKey: "code",
+        header: createHeaderColumn("Código"),
+        meta: {
+          filter: {
+            label: "Código",
+            variant: "text",
+            placeholder: "Filtrar por código",
+          },
+        },
+      },
+      {
+        id: "categoryId",
         accessorFn: (row) => row.category.name,
         header: createHeaderColumn("Categoria"),
         meta: {
           filter: {
             label: "Categoria",
-            variant: "text",
+            variant: "select",
             placeholder: "Filtrar por categoria",
+            options: categoryOptions,
           },
         },
       },
       {
-        id: "brand",
+        id: "brandId",
         accessorFn: (row) => row.brand?.name,
         header: createHeaderColumn("Marca"),
         meta: {
           filter: {
             label: "Marca",
-            variant: "text",
+            variant: "select",
             placeholder: "Filtrar por marca",
+            options: brandOptions,
           },
         },
       },
       {
-        accessorKey: "unitOfMeasure",
+        id: "measurementUnit",
+        accessorFn: (row) => row.measurementUnit?.symbol ?? row.measurementUnit?.name,
         header: createHeaderColumn("Unid. Medida"),
       },
       {
-        accessorKey: "min_stock",
+        accessorKey: "minStock",
         header: createHeaderColumn("Estoque Mín"),
       },
       {
@@ -180,37 +216,29 @@ function ProductPage() {
         header: createHeaderColumn("Estoque Máx"),
       },
       {
-        accessorKey: "description",
-        header: createHeaderColumn("Descrição"),
-        meta: {
-          filter: {
-            label: "Descrição",
-            variant: "text",
-            placeholder: "Filtrar por descrição",
-          },
-        },
-      },
-      {
-        accessorKey: "internalNotes",
-        header: createHeaderColumn("Anot. Internas"),
-      },
-      {
-        id: "active",
-        accessorFn: (row) => !row.deleted_at,
+        id: "activeOnly",
+        accessorFn: (row) => !row.deletedAt,
         header: createHeaderColumn("Ativo"),
         enableSorting: false,
         enableHiding: false,
         size: 80,
+        meta: {
+          filter: {
+            label: "Ativo",
+            variant: "checkbox",
+            defaultValue: "true",
+          },
+        },
         cell: ({ row }) => {
           const product = row.original;
-          const isActive = !product.deleted_at;
+          const isActive = !product.deletedAt;
           return (
             <div className="flex items-center justify-between gap-4">
               <Switch
                 checked={isActive}
                 onCheckedChange={(checked) => {
                   if (checked) {
-                    updateMutation.mutate({ id: product.id, deleted_at: null });
+                    restoreMutation.mutate(product.id);
                   } else {
                     deleteMutation.mutate(product.id);
                   }
@@ -242,21 +270,21 @@ function ProductPage() {
         },
       },
     ],
-    []
+    [categoryOptions, brandOptions]
   );
 
   const { table, setTableFilters } = useDataTable({
     data,
     columns,
-    filters,
-    setFilters,
+    filters: filters as any,
+    setFilters: setFilters as any,
   });
 
   return (
     <DataView>
       <DataTableFilterMenu
         table={table}
-        filters={filters}
+        filters={filters as any}
         onFilter={setTableFilters}
         onClearFilters={resetFilters}
       />
@@ -265,7 +293,7 @@ function ProductPage() {
         table={table}
         isLoading={isLoading}
         getRowClassName={(row) =>
-          row.original.deleted_at ? "line-through text-muted-foreground" : ""
+          row.original.deletedAt ? "line-through text-muted-foreground" : ""
         }
         actionBar={
           <DataTableToolbar table={table}>
