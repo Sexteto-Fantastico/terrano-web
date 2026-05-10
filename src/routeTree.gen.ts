@@ -11,7 +11,11 @@
 import { Route as rootRouteImport } from './pages/__root'
 import { Route as AppLayoutRouteImport } from './pages/_app/layout'
 import { Route as AppIndexRouteImport } from './pages/_app/index'
+import { Route as AuthUnauthorizedRouteImport } from './pages/auth/unauthorized'
+import { Route as AuthSignInRouteImport } from './pages/auth/sign-in'
+import { Route as AppUserIndexRouteImport } from './pages/_app/user/index'
 import { Route as AppProductIndexRouteImport } from './pages/_app/product/index'
+import { Route as AppUserNewRouteImport } from './pages/_app/user/new'
 
 const AppLayoutRoute = AppLayoutRouteImport.update({
   id: '/_app',
@@ -22,36 +26,90 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppLayoutRoute,
 } as any)
+const AuthUnauthorizedRoute = AuthUnauthorizedRouteImport.update({
+  id: '/auth/unauthorized',
+  path: '/auth/unauthorized',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthSignInRoute = AuthSignInRouteImport.update({
+  id: '/auth/sign-in',
+  path: '/auth/sign-in',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppUserIndexRoute = AppUserIndexRouteImport.update({
+  id: '/user/',
+  path: '/user/',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
 const AppProductIndexRoute = AppProductIndexRouteImport.update({
   id: '/product/',
   path: '/product/',
   getParentRoute: () => AppLayoutRoute,
 } as any)
+const AppUserNewRoute = AppUserNewRouteImport.update({
+  id: '/user/new',
+  path: '/user/new',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
+  '/auth/sign-in': typeof AuthSignInRoute
+  '/auth/unauthorized': typeof AuthUnauthorizedRoute
+  '/user/new': typeof AppUserNewRoute
   '/product/': typeof AppProductIndexRoute
+  '/user/': typeof AppUserIndexRoute
 }
 export interface FileRoutesByTo {
+  '/auth/sign-in': typeof AuthSignInRoute
+  '/auth/unauthorized': typeof AuthUnauthorizedRoute
   '/': typeof AppIndexRoute
+  '/user/new': typeof AppUserNewRoute
   '/product': typeof AppProductIndexRoute
+  '/user': typeof AppUserIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppLayoutRouteWithChildren
+  '/auth/sign-in': typeof AuthSignInRoute
+  '/auth/unauthorized': typeof AuthUnauthorizedRoute
   '/_app/': typeof AppIndexRoute
+  '/_app/user/new': typeof AppUserNewRoute
   '/_app/product/': typeof AppProductIndexRoute
+  '/_app/user/': typeof AppUserIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/product/'
+  fullPaths:
+    | '/'
+    | '/auth/sign-in'
+    | '/auth/unauthorized'
+    | '/user/new'
+    | '/product/'
+    | '/user/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/product'
-  id: '__root__' | '/_app' | '/_app/' | '/_app/product/'
+  to:
+    | '/auth/sign-in'
+    | '/auth/unauthorized'
+    | '/'
+    | '/user/new'
+    | '/product'
+    | '/user'
+  id:
+    | '__root__'
+    | '/_app'
+    | '/auth/sign-in'
+    | '/auth/unauthorized'
+    | '/_app/'
+    | '/_app/user/new'
+    | '/_app/product/'
+    | '/_app/user/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   AppLayoutRoute: typeof AppLayoutRouteWithChildren
+  AuthSignInRoute: typeof AuthSignInRoute
+  AuthUnauthorizedRoute: typeof AuthUnauthorizedRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -70,6 +128,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppLayoutRoute
     }
+    '/auth/unauthorized': {
+      id: '/auth/unauthorized'
+      path: '/auth/unauthorized'
+      fullPath: '/auth/unauthorized'
+      preLoaderRoute: typeof AuthUnauthorizedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/sign-in': {
+      id: '/auth/sign-in'
+      path: '/auth/sign-in'
+      fullPath: '/auth/sign-in'
+      preLoaderRoute: typeof AuthSignInRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app/user/': {
+      id: '/_app/user/'
+      path: '/user'
+      fullPath: '/user/'
+      preLoaderRoute: typeof AppUserIndexRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
     '/_app/product/': {
       id: '/_app/product/'
       path: '/product'
@@ -77,17 +156,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProductIndexRouteImport
       parentRoute: typeof AppLayoutRoute
     }
+    '/_app/user/new': {
+      id: '/_app/user/new'
+      path: '/user/new'
+      fullPath: '/user/new'
+      preLoaderRoute: typeof AppUserNewRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
   }
 }
 
 interface AppLayoutRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
+  AppUserNewRoute: typeof AppUserNewRoute
   AppProductIndexRoute: typeof AppProductIndexRoute
+  AppUserIndexRoute: typeof AppUserIndexRoute
 }
 
 const AppLayoutRouteChildren: AppLayoutRouteChildren = {
   AppIndexRoute: AppIndexRoute,
+  AppUserNewRoute: AppUserNewRoute,
   AppProductIndexRoute: AppProductIndexRoute,
+  AppUserIndexRoute: AppUserIndexRoute,
 }
 
 const AppLayoutRouteWithChildren = AppLayoutRoute._addFileChildren(
@@ -96,6 +186,8 @@ const AppLayoutRouteWithChildren = AppLayoutRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   AppLayoutRoute: AppLayoutRouteWithChildren,
+  AuthSignInRoute: AuthSignInRoute,
+  AuthUnauthorizedRoute: AuthUnauthorizedRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
