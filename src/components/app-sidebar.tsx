@@ -36,7 +36,6 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Link } from "@tanstack/react-router";
-import { Avatar, AvatarFallback } from "./ui/avatar";
 
 interface MenuItem {
   title: string;

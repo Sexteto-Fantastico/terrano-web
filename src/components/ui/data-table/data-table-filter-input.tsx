@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import { MultiSelect } from "@/components/ui/multi-select";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Popover,
   PopoverContent,
@@ -259,9 +260,9 @@ export function DataTableFilterInput({
                 field.handleChange(
                   dateRange
                     ? serializeDateRangeValue({
-                        from: dateRange.from,
-                        to: dateRange.to,
-                      })
+                      from: dateRange.from,
+                      to: dateRange.to,
+                    })
                     : ""
                 );
               }}
@@ -347,6 +348,29 @@ export function DataTableFilterInput({
           searchable={false}
           maxCount={3}
         />
+      );
+    }
+
+    case "checkbox": {
+      const checked = field.state.value === "true";
+      return (
+        <label
+          className={cn(
+            "flex h-9 cursor-pointer items-center gap-2.5 rounded-md border border-input bg-transparent px-3 py-2 text-sm transition-colors",
+            "hover:bg-accent hover:text-accent-foreground",
+            checked && "border-primary bg-primary/5 text-primary",
+            disabled && "cursor-not-allowed opacity-50",
+            className
+          )}
+        >
+          <Checkbox
+            checked={checked}
+            onCheckedChange={(value) => field.handleChange(value ? "true" : "")}
+            disabled={disabled}
+            aria-label={label}
+          />
+          <span className="select-none leading-none">{label}</span>
+        </label>
       );
     }
 
