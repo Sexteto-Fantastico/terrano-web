@@ -12,7 +12,7 @@ import { Route as rootRouteImport } from './pages/__root'
 import { Route as AuthLayoutRouteImport } from './pages/_auth/layout'
 import { Route as AppLayoutRouteImport } from './pages/_app/layout'
 import { Route as AppIndexRouteImport } from './pages/_app/index'
-import { Route as AuthUnauthorizedRouteImport } from './pages/auth/unauthorized'
+import { Route as AuthUnauthorizedRouteImport } from './pages/_auth/unauthorized'
 import { Route as AuthSignInRouteImport } from './pages/_auth/sign-in'
 import { Route as AuthResetPasswordRouteImport } from './pages/_auth/reset-password'
 import { Route as AuthForgotPasswordRouteImport } from './pages/_auth/forgot-password'
@@ -36,9 +36,9 @@ const AppIndexRoute = AppIndexRouteImport.update({
   getParentRoute: () => AppLayoutRoute,
 } as any)
 const AuthUnauthorizedRoute = AuthUnauthorizedRouteImport.update({
-  id: '/auth/unauthorized',
-  path: '/auth/unauthorized',
-  getParentRoute: () => rootRouteImport,
+  id: '/unauthorized',
+  path: '/unauthorized',
+  getParentRoute: () => AuthLayoutRoute,
 } as any)
 const AuthSignInRoute = AuthSignInRouteImport.update({
   id: '/sign-in',
@@ -88,7 +88,7 @@ export interface FileRoutesByFullPath {
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
-  '/auth/unauthorized': typeof AuthUnauthorizedRoute
+  '/unauthorized': typeof AuthUnauthorizedRoute
   '/user/new': typeof AppUserNewRoute
   '/product/': typeof AppProductIndexRoute
   '/user/': typeof AppUserIndexRoute
@@ -100,7 +100,7 @@ export interface FileRoutesByTo {
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
-  '/auth/unauthorized': typeof AuthUnauthorizedRoute
+  '/unauthorized': typeof AuthUnauthorizedRoute
   '/user/new': typeof AppUserNewRoute
   '/product': typeof AppProductIndexRoute
   '/user': typeof AppUserIndexRoute
@@ -114,7 +114,7 @@ export interface FileRoutesById {
   '/_auth/forgot-password': typeof AuthForgotPasswordRoute
   '/_auth/reset-password': typeof AuthResetPasswordRoute
   '/_auth/sign-in': typeof AuthSignInRoute
-  '/auth/unauthorized': typeof AuthUnauthorizedRoute
+  '/_auth/unauthorized': typeof AuthUnauthorizedRoute
   '/_app/': typeof AppIndexRoute
   '/_app/user/new': typeof AppUserNewRoute
   '/_app/product/': typeof AppProductIndexRoute
@@ -129,7 +129,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/reset-password'
     | '/sign-in'
-    | '/auth/unauthorized'
+    | '/unauthorized'
     | '/user/new'
     | '/product/'
     | '/user/'
@@ -141,7 +141,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/reset-password'
     | '/sign-in'
-    | '/auth/unauthorized'
+    | '/unauthorized'
     | '/user/new'
     | '/product'
     | '/user'
@@ -154,7 +154,7 @@ export interface FileRouteTypes {
     | '/_auth/forgot-password'
     | '/_auth/reset-password'
     | '/_auth/sign-in'
-    | '/auth/unauthorized'
+    | '/_auth/unauthorized'
     | '/_app/'
     | '/_app/user/new'
     | '/_app/product/'
@@ -164,7 +164,6 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AppLayoutRoute: typeof AppLayoutRouteWithChildren
   AuthLayoutRoute: typeof AuthLayoutRouteWithChildren
-  AuthUnauthorizedRoute: typeof AuthUnauthorizedRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -190,12 +189,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppLayoutRoute
     }
-    '/auth/unauthorized': {
-      id: '/auth/unauthorized'
-      path: '/auth/unauthorized'
-      fullPath: '/auth/unauthorized'
+    '/_auth/unauthorized': {
+      id: '/_auth/unauthorized'
+      path: '/unauthorized'
+      fullPath: '/unauthorized'
       preLoaderRoute: typeof AuthUnauthorizedRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthLayoutRoute
     }
     '/_auth/sign-in': {
       id: '/_auth/sign-in'
@@ -281,6 +280,7 @@ interface AuthLayoutRouteChildren {
   AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
   AuthResetPasswordRoute: typeof AuthResetPasswordRoute
   AuthSignInRoute: typeof AuthSignInRoute
+  AuthUnauthorizedRoute: typeof AuthUnauthorizedRoute
 }
 
 const AuthLayoutRouteChildren: AuthLayoutRouteChildren = {
@@ -288,6 +288,7 @@ const AuthLayoutRouteChildren: AuthLayoutRouteChildren = {
   AuthForgotPasswordRoute: AuthForgotPasswordRoute,
   AuthResetPasswordRoute: AuthResetPasswordRoute,
   AuthSignInRoute: AuthSignInRoute,
+  AuthUnauthorizedRoute: AuthUnauthorizedRoute,
 }
 
 const AuthLayoutRouteWithChildren = AuthLayoutRoute._addFileChildren(
@@ -297,7 +298,6 @@ const AuthLayoutRouteWithChildren = AuthLayoutRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   AppLayoutRoute: AppLayoutRouteWithChildren,
   AuthLayoutRoute: AuthLayoutRouteWithChildren,
-  AuthUnauthorizedRoute: AuthUnauthorizedRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
