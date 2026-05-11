@@ -17,7 +17,7 @@ import {
   DEFAULT_PAGE_SIZE,
 } from "@/components/ui/data-table/data-table-pagination";
 
-type BaseRow = Record<string, string | number>;
+type BaseRow = Record<string, any>;
 
 type UseDataTableOptions<
   TData extends BaseRow,
