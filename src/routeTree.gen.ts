@@ -15,6 +15,7 @@ import { Route as AuthUnauthorizedRouteImport } from './pages/auth/unauthorized'
 import { Route as AuthSignInRouteImport } from './pages/auth/sign-in'
 import { Route as AppUserIndexRouteImport } from './pages/_app/user/index'
 import { Route as AppProductIndexRouteImport } from './pages/_app/product/index'
+import { Route as AppBrandIndexRouteImport } from './pages/_app/brand/index'
 import { Route as AppUserNewRouteImport } from './pages/_app/user/new'
 
 const AppLayoutRoute = AppLayoutRouteImport.update({
@@ -46,6 +47,11 @@ const AppProductIndexRoute = AppProductIndexRouteImport.update({
   path: '/product/',
   getParentRoute: () => AppLayoutRoute,
 } as any)
+const AppBrandIndexRoute = AppBrandIndexRouteImport.update({
+  id: '/brand/',
+  path: '/brand/',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
 const AppUserNewRoute = AppUserNewRouteImport.update({
   id: '/user/new',
   path: '/user/new',
@@ -57,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/unauthorized': typeof AuthUnauthorizedRoute
   '/user/new': typeof AppUserNewRoute
+  '/brand/': typeof AppBrandIndexRoute
   '/product/': typeof AppProductIndexRoute
   '/user/': typeof AppUserIndexRoute
 }
@@ -65,6 +72,7 @@ export interface FileRoutesByTo {
   '/auth/unauthorized': typeof AuthUnauthorizedRoute
   '/': typeof AppIndexRoute
   '/user/new': typeof AppUserNewRoute
+  '/brand': typeof AppBrandIndexRoute
   '/product': typeof AppProductIndexRoute
   '/user': typeof AppUserIndexRoute
 }
@@ -75,6 +83,7 @@ export interface FileRoutesById {
   '/auth/unauthorized': typeof AuthUnauthorizedRoute
   '/_app/': typeof AppIndexRoute
   '/_app/user/new': typeof AppUserNewRoute
+  '/_app/brand/': typeof AppBrandIndexRoute
   '/_app/product/': typeof AppProductIndexRoute
   '/_app/user/': typeof AppUserIndexRoute
 }
@@ -85,6 +94,7 @@ export interface FileRouteTypes {
     | '/auth/sign-in'
     | '/auth/unauthorized'
     | '/user/new'
+    | '/brand/'
     | '/product/'
     | '/user/'
   fileRoutesByTo: FileRoutesByTo
@@ -93,6 +103,7 @@ export interface FileRouteTypes {
     | '/auth/unauthorized'
     | '/'
     | '/user/new'
+    | '/brand'
     | '/product'
     | '/user'
   id:
@@ -102,6 +113,7 @@ export interface FileRouteTypes {
     | '/auth/unauthorized'
     | '/_app/'
     | '/_app/user/new'
+    | '/_app/brand/'
     | '/_app/product/'
     | '/_app/user/'
   fileRoutesById: FileRoutesById
@@ -156,6 +168,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProductIndexRouteImport
       parentRoute: typeof AppLayoutRoute
     }
+    '/_app/brand/': {
+      id: '/_app/brand/'
+      path: '/brand'
+      fullPath: '/brand/'
+      preLoaderRoute: typeof AppBrandIndexRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
     '/_app/user/new': {
       id: '/_app/user/new'
       path: '/user/new'
@@ -169,6 +188,7 @@ declare module '@tanstack/react-router' {
 interface AppLayoutRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
   AppUserNewRoute: typeof AppUserNewRoute
+  AppBrandIndexRoute: typeof AppBrandIndexRoute
   AppProductIndexRoute: typeof AppProductIndexRoute
   AppUserIndexRoute: typeof AppUserIndexRoute
 }
@@ -176,6 +196,7 @@ interface AppLayoutRouteChildren {
 const AppLayoutRouteChildren: AppLayoutRouteChildren = {
   AppIndexRoute: AppIndexRoute,
   AppUserNewRoute: AppUserNewRoute,
+  AppBrandIndexRoute: AppBrandIndexRoute,
   AppProductIndexRoute: AppProductIndexRoute,
   AppUserIndexRoute: AppUserIndexRoute,
 }
