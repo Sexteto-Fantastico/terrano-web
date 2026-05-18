@@ -36,7 +36,7 @@ import { ProductFormDialog } from "./-components/product-form-dialog";
 import { Switch } from "@/components/ui/switch";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { DataTableFilterMenu } from "@/components/ui/data-table/data-table-filter-menu";
-import { AddButton } from "@/components/feature/shared/components/add-button";
+import { AddButton } from "@/components/button/add-button";
 
 export const Route = createFileRoute("/_app/product/")({
   component: ProductPage,
@@ -111,9 +111,7 @@ function ProductPage() {
         return {
           ...old,
           result: old.result.map((p: Product) =>
-            p.id === productId
-              ? { ...p, deletedAt: null }
-              : p
+            p.id === productId ? { ...p, deletedAt: null } : p
           ),
         };
       });
@@ -204,7 +202,8 @@ function ProductPage() {
       },
       {
         id: "measurementUnit",
-        accessorFn: (row) => row.measurementUnit?.symbol ?? row.measurementUnit?.name,
+        accessorFn: (row) =>
+          row.measurementUnit?.symbol ?? row.measurementUnit?.name,
         header: createHeaderColumn("Unid. Medida"),
       },
       {
