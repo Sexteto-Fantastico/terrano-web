@@ -9,14 +9,23 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './pages/__root'
+import { Route as AuthLayoutRouteImport } from './pages/_auth/layout'
 import { Route as AppLayoutRouteImport } from './pages/_app/layout'
 import { Route as AppIndexRouteImport } from './pages/_app/index'
-import { Route as AuthUnauthorizedRouteImport } from './pages/auth/unauthorized'
-import { Route as AuthSignInRouteImport } from './pages/auth/sign-in'
+import { Route as AuthUnauthorizedRouteImport } from './pages/_auth/unauthorized'
+import { Route as AuthSignInRouteImport } from './pages/_auth/sign-in'
+import { Route as AuthResetPasswordRouteImport } from './pages/_auth/reset-password'
+import { Route as AuthForgotPasswordRouteImport } from './pages/_auth/forgot-password'
+import { Route as AuthCheckEmailRouteImport } from './pages/_auth/check-email'
+import { Route as AppDefinePasswordRouteImport } from './pages/_app/define-password'
 import { Route as AppUserIndexRouteImport } from './pages/_app/user/index'
 import { Route as AppProductIndexRouteImport } from './pages/_app/product/index'
 import { Route as AppUserNewRouteImport } from './pages/_app/user/new'
 
+const AuthLayoutRoute = AuthLayoutRouteImport.update({
+  id: '/_auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppLayoutRoute = AppLayoutRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
@@ -27,14 +36,34 @@ const AppIndexRoute = AppIndexRouteImport.update({
   getParentRoute: () => AppLayoutRoute,
 } as any)
 const AuthUnauthorizedRoute = AuthUnauthorizedRouteImport.update({
-  id: '/auth/unauthorized',
-  path: '/auth/unauthorized',
-  getParentRoute: () => rootRouteImport,
+  id: '/unauthorized',
+  path: '/unauthorized',
+  getParentRoute: () => AuthLayoutRoute,
 } as any)
 const AuthSignInRoute = AuthSignInRouteImport.update({
-  id: '/auth/sign-in',
-  path: '/auth/sign-in',
-  getParentRoute: () => rootRouteImport,
+  id: '/sign-in',
+  path: '/sign-in',
+  getParentRoute: () => AuthLayoutRoute,
+} as any)
+const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => AuthLayoutRoute,
+} as any)
+const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => AuthLayoutRoute,
+} as any)
+const AuthCheckEmailRoute = AuthCheckEmailRouteImport.update({
+  id: '/check-email',
+  path: '/check-email',
+  getParentRoute: () => AuthLayoutRoute,
+} as any)
+const AppDefinePasswordRoute = AppDefinePasswordRouteImport.update({
+  id: '/define-password',
+  path: '/define-password',
+  getParentRoute: () => AppLayoutRoute,
 } as any)
 const AppUserIndexRoute = AppUserIndexRouteImport.update({
   id: '/user/',
@@ -54,16 +83,24 @@ const AppUserNewRoute = AppUserNewRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
-  '/auth/sign-in': typeof AuthSignInRoute
-  '/auth/unauthorized': typeof AuthUnauthorizedRoute
+  '/define-password': typeof AppDefinePasswordRoute
+  '/check-email': typeof AuthCheckEmailRoute
+  '/forgot-password': typeof AuthForgotPasswordRoute
+  '/reset-password': typeof AuthResetPasswordRoute
+  '/sign-in': typeof AuthSignInRoute
+  '/unauthorized': typeof AuthUnauthorizedRoute
   '/user/new': typeof AppUserNewRoute
   '/product/': typeof AppProductIndexRoute
   '/user/': typeof AppUserIndexRoute
 }
 export interface FileRoutesByTo {
-  '/auth/sign-in': typeof AuthSignInRoute
-  '/auth/unauthorized': typeof AuthUnauthorizedRoute
   '/': typeof AppIndexRoute
+  '/define-password': typeof AppDefinePasswordRoute
+  '/check-email': typeof AuthCheckEmailRoute
+  '/forgot-password': typeof AuthForgotPasswordRoute
+  '/reset-password': typeof AuthResetPasswordRoute
+  '/sign-in': typeof AuthSignInRoute
+  '/unauthorized': typeof AuthUnauthorizedRoute
   '/user/new': typeof AppUserNewRoute
   '/product': typeof AppProductIndexRoute
   '/user': typeof AppUserIndexRoute
@@ -71,8 +108,13 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppLayoutRouteWithChildren
-  '/auth/sign-in': typeof AuthSignInRoute
-  '/auth/unauthorized': typeof AuthUnauthorizedRoute
+  '/_auth': typeof AuthLayoutRouteWithChildren
+  '/_app/define-password': typeof AppDefinePasswordRoute
+  '/_auth/check-email': typeof AuthCheckEmailRoute
+  '/_auth/forgot-password': typeof AuthForgotPasswordRoute
+  '/_auth/reset-password': typeof AuthResetPasswordRoute
+  '/_auth/sign-in': typeof AuthSignInRoute
+  '/_auth/unauthorized': typeof AuthUnauthorizedRoute
   '/_app/': typeof AppIndexRoute
   '/_app/user/new': typeof AppUserNewRoute
   '/_app/product/': typeof AppProductIndexRoute
@@ -82,24 +124,37 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/auth/sign-in'
-    | '/auth/unauthorized'
+    | '/define-password'
+    | '/check-email'
+    | '/forgot-password'
+    | '/reset-password'
+    | '/sign-in'
+    | '/unauthorized'
     | '/user/new'
     | '/product/'
     | '/user/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/auth/sign-in'
-    | '/auth/unauthorized'
     | '/'
+    | '/define-password'
+    | '/check-email'
+    | '/forgot-password'
+    | '/reset-password'
+    | '/sign-in'
+    | '/unauthorized'
     | '/user/new'
     | '/product'
     | '/user'
   id:
     | '__root__'
     | '/_app'
-    | '/auth/sign-in'
-    | '/auth/unauthorized'
+    | '/_auth'
+    | '/_app/define-password'
+    | '/_auth/check-email'
+    | '/_auth/forgot-password'
+    | '/_auth/reset-password'
+    | '/_auth/sign-in'
+    | '/_auth/unauthorized'
     | '/_app/'
     | '/_app/user/new'
     | '/_app/product/'
@@ -108,12 +163,18 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   AppLayoutRoute: typeof AppLayoutRouteWithChildren
-  AuthSignInRoute: typeof AuthSignInRoute
-  AuthUnauthorizedRoute: typeof AuthUnauthorizedRoute
+  AuthLayoutRoute: typeof AuthLayoutRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthLayoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_app': {
       id: '/_app'
       path: ''
@@ -128,19 +189,47 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppLayoutRoute
     }
-    '/auth/unauthorized': {
-      id: '/auth/unauthorized'
-      path: '/auth/unauthorized'
-      fullPath: '/auth/unauthorized'
+    '/_auth/unauthorized': {
+      id: '/_auth/unauthorized'
+      path: '/unauthorized'
+      fullPath: '/unauthorized'
       preLoaderRoute: typeof AuthUnauthorizedRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthLayoutRoute
     }
-    '/auth/sign-in': {
-      id: '/auth/sign-in'
-      path: '/auth/sign-in'
-      fullPath: '/auth/sign-in'
+    '/_auth/sign-in': {
+      id: '/_auth/sign-in'
+      path: '/sign-in'
+      fullPath: '/sign-in'
       preLoaderRoute: typeof AuthSignInRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
+    '/_auth/reset-password': {
+      id: '/_auth/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof AuthResetPasswordRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
+    '/_auth/forgot-password': {
+      id: '/_auth/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof AuthForgotPasswordRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
+    '/_auth/check-email': {
+      id: '/_auth/check-email'
+      path: '/check-email'
+      fullPath: '/check-email'
+      preLoaderRoute: typeof AuthCheckEmailRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
+    '/_app/define-password': {
+      id: '/_app/define-password'
+      path: '/define-password'
+      fullPath: '/define-password'
+      preLoaderRoute: typeof AppDefinePasswordRouteImport
+      parentRoute: typeof AppLayoutRoute
     }
     '/_app/user/': {
       id: '/_app/user/'
@@ -167,6 +256,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppLayoutRouteChildren {
+  AppDefinePasswordRoute: typeof AppDefinePasswordRoute
   AppIndexRoute: typeof AppIndexRoute
   AppUserNewRoute: typeof AppUserNewRoute
   AppProductIndexRoute: typeof AppProductIndexRoute
@@ -174,6 +264,7 @@ interface AppLayoutRouteChildren {
 }
 
 const AppLayoutRouteChildren: AppLayoutRouteChildren = {
+  AppDefinePasswordRoute: AppDefinePasswordRoute,
   AppIndexRoute: AppIndexRoute,
   AppUserNewRoute: AppUserNewRoute,
   AppProductIndexRoute: AppProductIndexRoute,
@@ -184,10 +275,29 @@ const AppLayoutRouteWithChildren = AppLayoutRoute._addFileChildren(
   AppLayoutRouteChildren,
 )
 
-const rootRouteChildren: RootRouteChildren = {
-  AppLayoutRoute: AppLayoutRouteWithChildren,
+interface AuthLayoutRouteChildren {
+  AuthCheckEmailRoute: typeof AuthCheckEmailRoute
+  AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
+  AuthResetPasswordRoute: typeof AuthResetPasswordRoute
+  AuthSignInRoute: typeof AuthSignInRoute
+  AuthUnauthorizedRoute: typeof AuthUnauthorizedRoute
+}
+
+const AuthLayoutRouteChildren: AuthLayoutRouteChildren = {
+  AuthCheckEmailRoute: AuthCheckEmailRoute,
+  AuthForgotPasswordRoute: AuthForgotPasswordRoute,
+  AuthResetPasswordRoute: AuthResetPasswordRoute,
   AuthSignInRoute: AuthSignInRoute,
   AuthUnauthorizedRoute: AuthUnauthorizedRoute,
+}
+
+const AuthLayoutRouteWithChildren = AuthLayoutRoute._addFileChildren(
+  AuthLayoutRouteChildren,
+)
+
+const rootRouteChildren: RootRouteChildren = {
+  AppLayoutRoute: AppLayoutRouteWithChildren,
+  AuthLayoutRoute: AuthLayoutRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
