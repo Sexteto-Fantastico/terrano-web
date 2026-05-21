@@ -1,6 +1,16 @@
 import api from "@/lib/axios";
 import type { Filters, PaginatedData } from "@/components/ui/data-table/@types";
 
+export type Role = {
+  id: number;
+  name: string;
+};
+
+export type Department = {
+  id: number;
+  name: string;
+};
+
 export type User = {
   id: number;
   name: string;
@@ -16,7 +26,7 @@ export type User = {
 };
 
 export async function fetchUsers(
-  filters: Record<string, unknown>
+  filters: Filters<User>
 ): Promise<PaginatedData<User>> {
   const { data } = await api.get("/users", { params: filters });
   return data;
