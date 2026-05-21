@@ -7,12 +7,19 @@ import {
   DEFAULT_PAGE_INDEX,
   DEFAULT_PAGE_SIZE,
 } from "@/components/ui/data-table/data-table-pagination";
-import {
-  createMockList,
-  oneOf,
-  randomInt,
-  withNetworkDelay,
-} from "@/utils/mock-factory";
+
+import { createMockList, oneOf, withNetworkDelay } from "@/utils/mock-factory";
+
+export type Role = {
+  id: number;
+  name: string;
+};
+
+export type Department = {
+  id: number;
+  name: string;
+};
+
 export type User = {
   id: number;
   name: string;
@@ -34,8 +41,9 @@ const MOCK_USERS: User[] = createMockList(
     id,
     name: `Usuário ${id}`,
     email: `usuario${id}@terrano.com.br`,
-    role: oneOf(ROLES),
-    age: randomInt(18, 65),
+    username: `user${id}`,
+    role: { id, name: oneOf(ROLES) },
+    isActive: true,
   }),
   50
 );
@@ -63,15 +71,11 @@ export async function fetchUsers(
 
   if (cpf) {
     const term = cpf.toLowerCase();
-    result = result.filter((user) =>
-      user.cpf?.toLowerCase().includes(term)
-    );
+    result = result.filter((user) => user.cpf?.toLowerCase().includes(term));
   }
 
   if (department) {
-    result = result.filter(
-      (user) => user.department?.name === department
-    );
+    result = result.filter((user) => user.department?.name === department);
   }
 
   if (role) {
@@ -101,7 +105,9 @@ export async function fetchUsers(
         return (aValue - bValue) * direction;
       }
 
-      return String(aValue ?? "").localeCompare(String(bValue ?? "")) * direction;
+      return (
+        String(aValue ?? "").localeCompare(String(bValue ?? "")) * direction
+      );
     });
   }
 
