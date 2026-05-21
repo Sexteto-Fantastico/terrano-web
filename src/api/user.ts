@@ -7,19 +7,12 @@ import {
   DEFAULT_PAGE_INDEX,
   DEFAULT_PAGE_SIZE,
 } from "@/components/ui/data-table/data-table-pagination";
-
-import { MOCK_USERS } from "./mocks/user";
-
-export type Role = {
-  id: number;
-  name: string;
-};
-
-export type Department = {
-  id: number;
-  name: string;
-};
-
+import {
+  createMockList,
+  oneOf,
+  randomInt,
+  withNetworkDelay,
+} from "@/utils/mock-factory";
 export type User = {
   id: number;
   name: string;
@@ -34,11 +27,22 @@ export type User = {
   requiresPasswordReset?: boolean;
 };
 
+const ROLES = ["Admin", "User", "Manager"];
+
+const MOCK_USERS: User[] = createMockList(
+  (id) => ({
+    id,
+    name: `Usuário ${id}`,
+    email: `usuario${id}@terrano.com.br`,
+    role: oneOf(ROLES),
+    age: randomInt(18, 65),
+  }),
+  50
+);
+
 export async function fetchUsers(
   filters: Record<string, unknown>
 ): Promise<PaginatedData<User>> {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
   const {
     pageIndex = DEFAULT_PAGE_INDEX,
     pageSize = DEFAULT_PAGE_SIZE,
@@ -104,5 +108,8 @@ export async function fetchUsers(
   const start = pageIndex * pageSize;
   const end = start + pageSize;
 
-  return { result: result.slice(start, end), rowCount: result.length };
+  return withNetworkDelay({
+    result: result.slice(start, end),
+    rowCount: result.length,
+  });
 }

@@ -55,7 +55,9 @@ export function DataTableFilterMenu<TFilters extends Record<string, unknown>>({
       filterableColumns.reduce<Record<string, string>>((acc, column) => {
         const rawValue = filters[column.id as keyof TFilters];
         acc[column.id] =
-          rawValue === undefined || rawValue === null ? "" : String(rawValue);
+          rawValue === undefined || rawValue === null
+            ? (column.defaultValue ?? "")
+            : String(rawValue);
         return acc;
       }, {}),
     [filterableColumns, filters]
@@ -67,6 +69,12 @@ export function DataTableFilterMenu<TFilters extends Record<string, unknown>>({
       const nextFilters = filterableColumns.reduce<Partial<TFilters>>(
         (acc, column) => {
           const draftValue = value[column.id] ?? "";
+
+          if (column.variant === "checkbox") {
+            acc[column.id as keyof TFilters] =
+              (draftValue || "false") as TFilters[keyof TFilters];
+            return acc;
+          }
 
           if (!draftValue.trim()) {
             acc[column.id as keyof TFilters] =
@@ -104,7 +112,9 @@ export function DataTableFilterMenu<TFilters extends Record<string, unknown>>({
       (acc, column) => {
         const rawValue = filters[column.id as keyof TFilters];
         acc[column.id] =
-          rawValue === undefined || rawValue === null ? "" : String(rawValue);
+          rawValue === undefined || rawValue === null
+            ? (column.defaultValue ?? "")
+            : String(rawValue);
         return acc;
       },
       {}
@@ -171,7 +181,7 @@ export function DataTableFilterMenu<TFilters extends Record<string, unknown>>({
             form.reset(
               filterableColumns.reduce<Record<string, string>>(
                 (acc, column) => {
-                  acc[column.id] = "";
+                  acc[column.id] = column.defaultValue ?? "";
                   return acc;
                 },
                 {}

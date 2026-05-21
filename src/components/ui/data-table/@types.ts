@@ -19,6 +19,7 @@ export const DataTableFilter = {
     "boolean",
     "select",
     "multiSelect",
+    "checkbox"
   ] as const,
 } as const;
 
@@ -49,6 +50,7 @@ export type DataTableFilterConfig = {
   placeholder?: string;
   options?: DataTableFilterOption[];
   hidden?: boolean;
+  defaultValue?: string;
   props?: DataTableFilterProps;
 };
 
