@@ -11,8 +11,8 @@ import type { Filters } from "@/components/ui/data-table/@types";
 import { useDataTable } from "@/hooks/use-data-table";
 import { Separator } from "@/components/ui/separator";
 import { DataTableToolbar } from "@/components/ui/data-table/data-table-toolbar";
-import { AddButton } from "@/components/feature/shared/components/add-button";
-import { ExportButton } from "@/components/feature/shared/components/export-button";
+import { AddButton } from "@/components/button/add-button";
+import { ExportButton } from "@/components/button/export-button";
 import { getUserTableColumns } from "./-components/user-table-columns";
 import { userFilterConfig } from "./-components/user-filter-config";
 
