@@ -145,7 +145,7 @@ function BrandPage() {
         },
       },
       {
-        id: "active",
+        id: "activeOnly",
         accessorFn: (row) => !row.deletedAt,
         header: createHeaderColumn("Ativo"),
         enableSorting: false,
@@ -160,7 +160,7 @@ function BrandPage() {
         },
         cell: ({ row }) => {
           const product = row.original;
-          const isActive = !product.deletedAt;
+          const isActive = product.isActive;
           return (
             <div className="flex items-center justify-between gap-4">
               <Switch

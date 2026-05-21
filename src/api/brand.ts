@@ -25,7 +25,7 @@ export type UpdateProductBrandRequestDTO = {
 
 export type ProductBrandFilters = {
   name?: string;
-  active?: string;
+  activeOnly?: string;
   pageIndex?: number;
   pageSize?: number;
 };
@@ -39,8 +39,8 @@ export async function fetchProductBrands(
     params.set("name", filters.name.trim());
   }
 
-  if (filters.active !== undefined) {
-    params.set("active", filters.active);
+  if (filters.activeOnly !== undefined) {
+    params.set("activeOnly", filters.activeOnly);
   }
 
   const pageIndex = filters.pageIndex ?? DEFAULT_PAGE_INDEX;
