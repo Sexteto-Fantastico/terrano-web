@@ -36,7 +36,7 @@ import { ProductFormDialog } from "./-components/product-form-dialog";
 import { Switch } from "@/components/ui/switch";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { DataTableFilterMenu } from "@/components/ui/data-table/data-table-filter-menu";
-import { AddButton } from "@/components/feature/shared/components/add-button";
+import { AddButton } from "@/components/button/add-button";
 
 export const Route = createFileRoute("/_app/product/")({
   component: ProductPage,
