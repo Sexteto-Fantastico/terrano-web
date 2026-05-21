@@ -1,13 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { type ColumnDef } from "@tanstack/react-table";
+import { type PaginatedData } from "@/components/ui/data-table/@types";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
 import { useMemo, useState } from "react";
 
 import {
-  fetchProductBrandById,
   fetchProductBrands,
-  createProductBrand,
-  updateProductBrand,
   deleteProductBrand,
   restoreProductBrand,
   type ProductBrand,
@@ -16,7 +14,6 @@ import {
 
 
 import {
-  keepPreviousData,
   useQuery,
   useMutation,
   useQueryClient,
@@ -33,13 +30,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontalIcon, SquarePenIcon, Trash2Icon } from "lucide-react";
+import { MoreHorizontalIcon, SquarePenIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { createHeaderColumn } from "@/components/ui/data-table/data-table-helpers";
 import { Switch } from "@/components/ui/switch";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { DataTableFilterMenu } from "@/components/ui/data-table/data-table-filter-menu";
-import { AddButton } from "@/components/feature/shared/components/add-button";
+import { AddButton } from "@/components/button/add-button";
 
 export const Route = createFileRoute("/_app/brand/")({
   component: BrandPage,
@@ -55,24 +51,22 @@ export const Route = createFileRoute("/_app/brand/")({
 
 function BrandPage() {
   const { filters, setFilters, resetFilters } = useFilters(Route.id);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const navigate = useNavigate();
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading } = useQuery<PaginatedData<ProductBrand>>({
     queryKey: ["brands", filters],
     queryFn: () => fetchProductBrands(filters),
-    placeholderData: keepPreviousData,
   });
 
   const queryClient = useQueryClient();
-  const [brandToEdit, setBrandToEdit] = useState<ProductBrand | undefined>();
   const [brandToDelete, setBrandToDelete] = useState<number | undefined>();
 
   const deleteMutation = useMutation({
     mutationFn: deleteProductBrand,
     onMutate: async (brandId) => {
-      await queryClient.cancelQueries({ queryKey: ["products"] });
-      const previousData = queryClient.getQueryData(["products", filters]);
-      queryClient.setQueryData(["products", filters], (old: any) => {
+      await queryClient.cancelQueries({ queryKey: ["brands"] });
+      const previousData = queryClient.getQueryData(["brands", filters]);
+      queryClient.setQueryData(["brands", filters], (old: any) => {
         if (!old) return old;
         return {
           ...old,
@@ -121,8 +115,10 @@ function BrandPage() {
   });
 
   function handleEdit(brand: ProductBrand) {
-    setBrandToEdit(brand);
-    setIsDialogOpen(true);
+    navigate({
+      to: "/brand/edit",
+      search: { id: brand.id.toString() },
+    });
   }
 
   function handleDelete(brandId: number) {
@@ -149,7 +145,7 @@ function BrandPage() {
         },
       },
       {
-        id: "activeOnly",
+        id: "active",
         accessorFn: (row) => !row.deletedAt,
         header: createHeaderColumn("Ativo"),
         enableSorting: false,
@@ -189,20 +185,14 @@ function BrandPage() {
                     <SquarePenIcon className="me-2" />
                     Editar
                   </DropdownMenuItem>
-                  <DropdownMenuItem
-                    variant="destructive"
-                    onSelect={() => handleDelete(product.id)}
-                  >
-                    <Trash2Icon className="me-2" />
-                    Excluir
-                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
           );
         },
       },
-    ]
+    ],
+    [restoreMutation, deleteMutation]
   );
 
   const { table, setTableFilters } = useDataTable({
@@ -229,20 +219,11 @@ function BrandPage() {
         }
         actionBar={
           <DataTableToolbar table={table}>
-            <AddButton onClick={() => setIsDialogOpen(true)} />
+            <AddButton onClick={() => navigate({ to: "/brand/edit" })} />
           </DataTableToolbar>
         }
       />
       <DataTablePagination table={table} />
-      <ConfirmDialog
-        open={!!brandToDelete}
-        onOpenChange={(open) => !open && setBrandToDelete(undefined)}
-        title="Excluir marca?"
-        description="Tem certeza que deseja excluir esta marca?"
-        confirmText="Excluir"
-        onConfirm={confirmDelete}
-        isConfirming={deleteMutation.isPending}
-      />
     </DataView>
   );
 }

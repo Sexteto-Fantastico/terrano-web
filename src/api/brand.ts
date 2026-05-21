@@ -35,6 +35,10 @@ export async function fetchProductBrands(
 ): Promise<PaginatedData<ProductBrand>> {
   const params = new URLSearchParams();
 
+  if (filters.name?.trim()) {
+    params.set("name", filters.name.trim());
+  }
+
   if (filters.active !== undefined) {
     params.set("active", filters.active);
   }
