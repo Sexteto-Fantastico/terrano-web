@@ -18,8 +18,8 @@ import {
   createActionColumn,
   createHeaderColumn,
 } from "@/components/ui/data-table/data-table-helpers";
-import { AddButton } from "@/components/feature/shared/components/add-button";
-import { ExportButton } from "@/components/feature/shared/components/export-button";
+import { AddButton } from "@/components/button/add-button";
+import { ExportButton } from "@/components/button/export-button";
 
 export const Route = createFileRoute("/_app/user/")({
   component: UserPage,
@@ -34,7 +34,6 @@ export const Route = createFileRoute("/_app/user/")({
 });
 
 function UserPage() {
-  const navigate = Route.useNavigate();
   const { filters, setFilters, resetFilters } = useFilters(Route.id);
 
   const { data, isLoading } = useQuery({

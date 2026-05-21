@@ -1,7 +1,7 @@
 import { Button, type ButtonProps } from "@/components/ui/button.tsx";
 import { SlidersHorizontal } from "lucide-react";
 import { Badge } from "@/components/ui/badge.tsx";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils.ts";
 
 interface FilterButtonProps extends ButtonProps {
   filters?: string[];
