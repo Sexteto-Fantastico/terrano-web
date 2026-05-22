@@ -3,7 +3,6 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL: env.VITE_API_BASE_URL,
-  withCredentials: true,
 });
 
 let getAuthToken: (() => string | null) | null = null;
@@ -25,11 +24,25 @@ api.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+
+  if (config.params && config.params.pageIndex !== undefined) {
+    config.params.pageIndex += 1;
+  }
+
   return config;
 });
 
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    const totalCount = response.headers["x-total-count"];
+    if (totalCount !== undefined && Array.isArray(response.data)) {
+      response.data = {
+        result: response.data,
+        rowCount: Number(totalCount),
+      };
+    }
+    return response;
+  },
   (error) => {
     if (error.response?.status === 401) {
       onUnauthorized?.();

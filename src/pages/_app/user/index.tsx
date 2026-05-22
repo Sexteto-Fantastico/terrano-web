@@ -3,12 +3,11 @@ import { type ColumnDef } from "@tanstack/react-table";
 import { DataTableFilterMenu } from "@/components/ui/data-table/data-table-filter-menu";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
 import { useMemo } from "react";
-import { fetchUsers, type User } from "@/api/user";
+import { fetchUsers, type User, type UserFilters } from "@/api/user";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { DataView } from "@/components/views/data-view";
 import { useFilters } from "@/hooks/use-filters";
 import { DataTable } from "@/components/ui/data-table/data-table";
-import type { Filters } from "@/components/ui/data-table/@types";
 import { useDataTable } from "@/hooks/use-data-table";
 import { Separator } from "@/components/ui/separator";
 import { DataTableToolbar } from "@/components/ui/data-table/data-table-toolbar";
@@ -23,7 +22,7 @@ import { ExportButton } from "@/components/button/export-button";
 
 export const Route = createFileRoute("/_app/user/")({
   component: UserPage,
-  validateSearch: () => ({}) as Filters<User>,
+  validateSearch: (): UserFilters => ({}),
   head: () => ({
     meta: [
       {
@@ -57,17 +56,6 @@ function UserPage() {
   const columns: ColumnDef<User>[] = useMemo(
     () => [
       {
-        accessorKey: "id",
-        header: createHeaderColumn("id"),
-        meta: {
-          filter: {
-            label: "ID",
-            variant: "number",
-            placeholder: "Filtrar por ID",
-          },
-        },
-      },
-      {
         accessorKey: "name",
         header: createHeaderColumn("nome"),
         meta: {
@@ -90,31 +78,18 @@ function UserPage() {
         },
       },
       {
-        accessorKey: "role",
-        header: createHeaderColumn("função"),
-        meta: {
-          filter: {
-            label: "Função",
-            variant: "select",
-            placeholder: "Selecione uma função",
-            options: [
-              { label: "Admin", value: "Admin" },
-              { label: "User", value: "User" },
-              { label: "Manager", value: "Manager" },
-            ],
-          },
-        },
+        accessorKey: "username",
+        header: createHeaderColumn("usuário"),
       },
       {
-        accessorKey: "age",
-        header: createHeaderColumn("idade"),
-        meta: {
-          filter: {
-            label: "Idade",
-            variant: "number",
-            placeholder: "Filtrar por idade",
-          },
-        },
+        id: "role",
+        accessorFn: (row) => row.role?.name,
+        header: createHeaderColumn("função"),
+      },
+      {
+        id: "department",
+        accessorFn: (row) => row.department?.name,
+        header: createHeaderColumn("departamento"),
       },
       createActionColumn(({ row }) => {
         const user = row.original;
