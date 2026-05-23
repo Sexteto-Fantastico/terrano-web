@@ -17,7 +17,7 @@ import { userFilterConfig } from "./-components/user-filter-config";
 
 export const Route = createFileRoute("/_app/user/")({
   component: UserPage,
-  validateSearch: (): UserFilters => ({}),
+  validateSearch: () => ({}) as UserFilters,
   head: () => ({
     meta: [
       {

@@ -36,7 +36,7 @@ export type UserFilters = Filters<UserQuery>;
 export async function fetchUsers(
   filters: UserFilters
 ): Promise<PaginatedData<User>> {
-  return fetchPaginated<UserQuery>("/users", filters);
+  return fetchPaginated<User>("/users", filters);
 }
 
 export async function getUserById(id: number): Promise<User> {
