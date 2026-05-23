@@ -7,6 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "../dropdown-menu";
 import { DataTableColumnHeader } from "./data-table-column-header";
+import { Switch } from "../switch";
 
 export function createHeaderColumn<TData>(
   title: string
@@ -73,5 +74,30 @@ export function getCommonPinningStyles<TData>({
     flexShrink: isPinned ? 0 : undefined,
     flexGrow: isPinned ? 0 : undefined,
     padding: isPinned ? 4 : undefined,
+  };
+}
+
+export function createBooleanColumn<TData>({
+  accessorKey,
+  title,
+  onToggle,
+}: {
+  accessorKey: keyof TData;
+  title: string;
+  onToggle?: (rowData: TData, value: boolean) => void;
+}): ColumnDef<TData> {
+  return {
+    accessorKey: accessorKey as string,
+    header: createHeaderColumn(title),
+    enableSorting: false,
+    cell: ({ row }) => {
+      const value = row.getValue(accessorKey as string) as boolean;
+      return (
+        <Switch
+          checked={value}
+          onCheckedChange={(checked) => onToggle?.(row.original, checked)}
+        />
+      );
+    },
   };
 }

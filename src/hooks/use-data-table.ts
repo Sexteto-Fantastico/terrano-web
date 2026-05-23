@@ -17,7 +17,7 @@ import {
   DEFAULT_PAGE_SIZE,
 } from "@/components/ui/data-table/data-table-pagination";
 
-type BaseRow = Record<string, any>;
+type BaseRow = Record<string, unknown>;
 
 type UseDataTableOptions<
   TData extends BaseRow,
@@ -102,10 +102,7 @@ export function useDataTable<
     (partialFilters: Partial<TEntityFilters>) => {
       setFilters({
         ...partialFilters,
-        pageIndex:
-          partialFilters.pageIndex === undefined
-            ? DEFAULT_PAGE_INDEX
-            : partialFilters.pageIndex,
+        pageIndex: partialFilters.pageIndex ?? DEFAULT_PAGE_INDEX,
       });
     },
     [setFilters]

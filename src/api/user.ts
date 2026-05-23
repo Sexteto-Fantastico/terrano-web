@@ -1,12 +1,12 @@
 import api from "@/lib/axios";
 import type { Filters, PaginatedData } from "@/components/ui/data-table/@types";
 
-export type UserRole = {
+export type Role = {
   id: number;
   name: string;
 };
 
-export type UserDepartment = {
+export type Department = {
   id: number;
   name: string;
 };
@@ -18,9 +18,9 @@ export type User = {
   cpf?: string;
   email: string;
   username: string;
-  role?: UserRole;
-  department?: UserDepartment;
-  managedDepartments: UserDepartment[];
+  role?: Role;
+  department?: Department;
+  managedDepartments?: Department[];
   isActive: boolean;
   requiresPasswordReset?: boolean;
 };

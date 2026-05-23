@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { type ColumnDef } from "@tanstack/react-table";
+import { DataTableFilterMenu } from "@/components/ui/data-table/data-table-filter-menu";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
 import { useMemo, useState } from "react";
 import {
@@ -23,24 +23,15 @@ import { DataTable } from "@/components/ui/data-table/data-table";
 import { useDataTable } from "@/hooks/use-data-table";
 import { Separator } from "@/components/ui/separator";
 import { DataTableToolbar } from "@/components/ui/data-table/data-table-toolbar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { MoreHorizontalIcon, SquarePenIcon, Trash2Icon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { createHeaderColumn } from "@/components/ui/data-table/data-table-helpers";
-import { ProductFormDialog } from "./-components/product-form-dialog";
-import { Switch } from "@/components/ui/switch";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { DataTableFilterMenu } from "@/components/ui/data-table/data-table-filter-menu";
 import { AddButton } from "@/components/button/add-button";
+import { ProductFormDialog } from "./-components/product-form-dialog";
+import { getProductTableColumns } from "./-components/product-table-columns";
+import { getProductFilterConfig } from "./-components/product-filter-config";
 
 export const Route = createFileRoute("/_app/product/")({
   component: ProductPage,
-  validateSearch: (): ProductFilters => ({}),
+  validateSearch: () => ({}) as ProductFilters,
   head: () => ({
     meta: [
       {
@@ -140,6 +131,14 @@ function ProductPage() {
     }
   }
 
+  function handleToggleActive(product: Product, checked: boolean) {
+    if (checked) {
+      restoreMutation.mutate(product.id);
+    } else {
+      deleteMutation.mutate(product.id);
+    }
+  }
+
   const categoryOptions = useMemo(
     () => categories.map((c) => ({ label: c.name, value: String(c.id) })),
     [categories]
@@ -150,129 +149,22 @@ function ProductPage() {
     [brands]
   );
 
-  const columns: ColumnDef<Product>[] = useMemo(
-    () => [
-      {
-        accessorKey: "name",
-        header: createHeaderColumn("Nome"),
-        meta: {
-          filter: {
-            label: "Nome",
-            variant: "text",
-            placeholder: "Filtrar por nome",
-          },
-        },
-      },
-      {
-        accessorKey: "code",
-        header: createHeaderColumn("Código"),
-        meta: {
-          filter: {
-            label: "Código",
-            variant: "text",
-            placeholder: "Filtrar por código",
-          },
-        },
-      },
-      {
-        id: "categoryId",
-        accessorFn: (row) => row.category.name,
-        header: createHeaderColumn("Categoria"),
-        meta: {
-          filter: {
-            label: "Categoria",
-            variant: "select",
-            placeholder: "Filtrar por categoria",
-            options: categoryOptions,
-          },
-        },
-      },
-      {
-        id: "brandId",
-        accessorFn: (row) => row.brand?.name,
-        header: createHeaderColumn("Marca"),
-        meta: {
-          filter: {
-            label: "Marca",
-            variant: "select",
-            placeholder: "Filtrar por marca",
-            options: brandOptions,
-          },
-        },
-      },
-      {
-        id: "measurementUnit",
-        accessorFn: (row) =>
-          row.measurementUnit?.symbol ?? row.measurementUnit?.name,
-        header: createHeaderColumn("Unid. Medida"),
-      },
-      {
-        accessorKey: "minStock",
-        header: createHeaderColumn("Estoque Mín"),
-      },
-      {
-        accessorKey: "maxStock",
-        header: createHeaderColumn("Estoque Máx"),
-      },
-      {
-        id: "activeOnly",
-        accessorFn: (row) => !row.deletedAt,
-        header: createHeaderColumn("Ativo"),
-        enableSorting: false,
-        enableHiding: false,
-        size: 80,
-        meta: {
-          filter: {
-            label: "Ativo",
-            variant: "checkbox",
-            defaultValue: "true",
-          },
-        },
-        cell: ({ row }) => {
-          const product = row.original;
-          const isActive = !product.deletedAt;
-          return (
-            <div className="flex items-center justify-between gap-4">
-              <Switch
-                checked={isActive}
-                onCheckedChange={(checked) => {
-                  if (checked) {
-                    restoreMutation.mutate(product.id);
-                  } else {
-                    deleteMutation.mutate(product.id);
-                  }
-                }}
-              />
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button size="icon" variant={"ghost"} className="h-8 w-8">
-                    <span className="sr-only">Abrir menu</span>
-                    <MoreHorizontalIcon className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent side="bottom" align="end">
-                  <DropdownMenuItem onSelect={() => handleEdit(product)}>
-                    <SquarePenIcon className="me-2" />
-                    Editar
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    variant="destructive"
-                    onSelect={() => handleDelete(product.id)}
-                  >
-                    <Trash2Icon className="me-2" />
-                    Excluir
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          );
-        },
-      },
-    ],
+  const columns = useMemo(
+    () =>
+      getProductTableColumns({
+        onEdit: handleEdit,
+        onDelete: handleDelete,
+        onToggleActive: handleToggleActive,
+      }),
+    []
+  );
+
+  const filterConfig = useMemo(
+    () => getProductFilterConfig(categoryOptions, brandOptions),
     [categoryOptions, brandOptions]
   );
 
-  const { table, setTableFilters } = useDataTable({
+  const { table } = useDataTable({
     data,
     columns,
     filters: filters as any,
@@ -282,12 +174,15 @@ function ProductPage() {
   return (
     <DataView>
       <DataTableFilterMenu
-        table={table}
-        filters={filters as any}
-        onFilter={setTableFilters}
+        filterConfig={filterConfig}
+        isLoading={isLoading}
+        filters={filters}
+        onFilter={setFilters}
         onClearFilters={resetFilters}
       />
+
       <Separator className="my-4" />
+
       <DataTable
         table={table}
         isLoading={isLoading}
@@ -300,7 +195,9 @@ function ProductPage() {
           </DataTableToolbar>
         }
       />
-      <DataTablePagination table={table} />
+
+      <DataTablePagination table={table} isLoading={isLoading} />
+
       <ProductFormDialog
         open={isDialogOpen}
         onOpenChange={(open) => {
@@ -309,6 +206,7 @@ function ProductPage() {
         }}
         productToEdit={productToEdit}
       />
+
       <ConfirmDialog
         open={!!productToDelete}
         onOpenChange={(open) => !open && setProductToDelete(undefined)}

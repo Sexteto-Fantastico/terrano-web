@@ -1,4 +1,4 @@
-import type { PaginationState, RowData } from "@tanstack/react-table";
+import type { PaginationState } from "@tanstack/react-table";
 
 export type PaginatedData<T> = {
   result: T[];
@@ -54,8 +54,6 @@ export type DataTableFilterConfig = {
   props?: DataTableFilterProps;
 };
 
-declare module "@tanstack/react-table" {
-  interface ColumnMeta<TData extends RowData, TValue> {
-    filter?: DataTableFilterConfig;
-  }
-}
+export type DataTableFilterConfigItem = {
+  id: string;
+} & DataTableFilterConfig;
