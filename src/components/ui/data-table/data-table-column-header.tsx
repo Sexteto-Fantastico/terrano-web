@@ -3,7 +3,6 @@ import {
   ChevronDownIcon,
   ChevronUpIcon,
   ChevronsUpDownIcon,
-  EyeOffIcon,
   XIcon,
 } from "lucide-react";
 
@@ -30,8 +29,8 @@ export function DataTableColumnHeader<TData, TValue>({
   className,
   ...props
 }: DataTableColumnHeaderProps<TData, TValue>) {
-  if (!column.getCanSort() && !column.getCanHide()) {
-    return <div className={cn(className)}>{title}</div>;
+  if (!column.getCanSort()) {
+    return <div className={cn(className, "text-sm uppercase")}>{title}</div>;
   }
 
   return (

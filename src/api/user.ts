@@ -1,12 +1,28 @@
 import api from "@/lib/axios";
 import type { Filters, PaginatedData } from "@/components/ui/data-table/@types";
 
+export type Role = {
+  id: number;
+  name: string;
+};
+
+export type Department = {
+  id: number;
+  name: string;
+};
+
 export type User = {
   id: number;
   name: string;
+  phone?: string;
+  cpf?: string;
   email: string;
-  role: string;
-  age: number;
+  username: string;
+  role?: Role;
+  department?: Department;
+  managedDepartments?: Department[];
+  isActive: boolean;
+  requiresPasswordReset?: boolean;
 };
 
 export async function fetchUsers(
