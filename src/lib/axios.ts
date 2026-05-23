@@ -25,24 +25,11 @@ api.interceptors.request.use((config) => {
     config.headers.Authorization = `Bearer ${token}`;
   }
 
-  if (config.params && config.params.pageIndex !== undefined) {
-    config.params.pageIndex += 1;
-  }
-
   return config;
 });
 
 api.interceptors.response.use(
-  (response) => {
-    const totalCount = response.headers["x-total-count"];
-    if (totalCount !== undefined && Array.isArray(response.data)) {
-      response.data = {
-        result: response.data,
-        rowCount: Number(totalCount),
-      };
-    }
-    return response;
-  },
+  (response) => response,
   (error) => {
     if (error.response?.status === 401) {
       onUnauthorized?.();

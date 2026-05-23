@@ -5,12 +5,12 @@ import { useMemo, useState } from "react";
 import {
   deleteProduct,
   fetchProducts,
-  fetchProductBrands,
-  fetchProductCategories,
   restoreProduct,
   type Product,
   type ProductFilters,
-} from "@/api/product";
+} from "@/api/products";
+import { fetchProductBrands } from "@/api/product-brands";
+import { fetchProductCategories } from "@/api/product-categories";
 import {
   keepPreviousData,
   useQuery,

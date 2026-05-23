@@ -1,4 +1,5 @@
 import api from "@/lib/axios";
+import { fetchPaginated } from "@/lib/pagination";
 import type { Filters, PaginatedData } from "@/components/ui/data-table/@types";
 
 export type Role = {
@@ -25,18 +26,17 @@ export type User = {
   requiresPasswordReset?: boolean;
 };
 
-export type UserFilters = Partial<
-  {
-    name?: string;
-    onlyActive?: string;
-  } & Filters<User>
->;
+type UserQuery = {
+  name: string;
+  onlyActive: string;
+};
+
+export type UserFilters = Filters<UserQuery>;
 
 export async function fetchUsers(
   filters: UserFilters
 ): Promise<PaginatedData<User>> {
-  const { data } = await api.get("/users", { params: filters });
-  return data;
+  return fetchPaginated<UserQuery>("/users", filters);
 }
 
 export async function getUserById(id: number): Promise<User> {

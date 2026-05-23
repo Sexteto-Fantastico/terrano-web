@@ -1,5 +1,5 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import type { Product } from "@/api/product";
+import type { Product } from "@/api/products";
 import {
   createActionColumn,
   createHeaderColumn,
@@ -43,8 +43,8 @@ export function getProductTableColumns({
       header: createHeaderColumn("Unid. Medida"),
       cell: ({ row }) =>
         row.original.measurementUnit?.symbol ??
-          row.original.measurementUnit?.name ??
-          "-",
+        row.original.measurementUnit?.name ??
+        "-",
     },
     {
       accessorKey: "minStock",
