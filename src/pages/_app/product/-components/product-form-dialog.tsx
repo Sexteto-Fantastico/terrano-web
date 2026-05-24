@@ -24,7 +24,7 @@ import {
   type Product,
 } from "@/api/products";
 import { fetchProductCategories } from "@/api/product-categories";
-import { fetchProductBrands } from "@/api/product-brands";
+import { fetchAllProductBrands } from "@/api/product-brands";
 import { fetchMeasurementUnits } from "@/api/measurement-units";
 
 interface ProductFormDialogProps {
@@ -47,7 +47,7 @@ export function ProductFormDialog({
 
   const { data: brands = [] } = useQuery({
     queryKey: ["product-brands"],
-    queryFn: fetchProductBrands,
+    queryFn: fetchAllProductBrands,
   });
 
   const { data: measurementUnits = [] } = useQuery({

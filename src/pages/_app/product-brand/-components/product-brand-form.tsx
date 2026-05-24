@@ -4,16 +4,19 @@ import { useCreateView } from "@/components/views/create-view";
 import { Field, FieldLabel, FieldSet } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 
-type BrandFormValues = {
+type ProductBrandFormValues = {
   name: string;
 };
 
-interface BrandFormProps {
+interface ProductBrandFormProps {
   initialName?: string;
-  onSubmit: (values: BrandFormValues) => Promise<void>;
+  onSubmit: (values: ProductBrandFormValues) => Promise<void>;
 }
 
-export function BrandForm({ initialName = "", onSubmit }: BrandFormProps) {
+export function ProductBrandForm({
+  initialName = "",
+  onSubmit,
+}: ProductBrandFormProps) {
   const { setIsSaving } = useCreateView();
   const [brandName, setBrandName] = useState(initialName);
 
@@ -34,16 +37,20 @@ export function BrandForm({ initialName = "", onSubmit }: BrandFormProps) {
   }
 
   return (
-    <form id="brand-form" className="w-full max-w-lg" onSubmit={handleSubmit}>
+    <form
+      id="product-brand-form"
+      className="w-full max-w-lg"
+      onSubmit={handleSubmit}
+    >
       <FieldSet className="space-y-4">
         <Field>
-          <FieldLabel htmlFor="brand-name">Nome da marca</FieldLabel>
+          <FieldLabel htmlFor="product-brand-name">Nome da marca</FieldLabel>
           <Input
-            id="brand-name"
-            name="brand"
+            id="product-brand-name"
+            name="product-brand"
             type="text"
             placeholder="Nome da marca"
-            autoComplete="brand-name"
+            autoComplete="product-brand-name"
             value={brandName}
             onChange={(event) => setBrandName(event.target.value)}
           />

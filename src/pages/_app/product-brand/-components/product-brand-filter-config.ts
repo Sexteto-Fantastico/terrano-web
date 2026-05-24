@@ -1,6 +1,6 @@
 import type { DataTableFilterConfigItem } from "@/components/ui/data-table/@types";
 
-export function getBrandFilterConfig(): DataTableFilterConfigItem[] {
+export function getProductBrandFilterConfig(): DataTableFilterConfigItem[] {
   return [
     {
       id: "name",

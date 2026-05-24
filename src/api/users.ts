@@ -44,7 +44,40 @@ export async function getUserById(id: number): Promise<User> {
   return data;
 }
 
-export async function createUser(user: Omit<User, "id">): Promise<User> {
+export type CreateUserRequestDTO = {
+  name: string;
+  email: string;
+  username: string;
+  phone?: string;
+  cpf?: string;
+  isActive?: boolean;
+};
+
+export type UpdateUserRequestDTO = {
+  id: number;
+  name?: string;
+  phone?: string;
+  cpf?: string;
+  email?: string;
+  username?: string;
+  isActive?: boolean;
+};
+
+export async function createUser(user: CreateUserRequestDTO): Promise<User> {
   const { data } = await api.post("/users", user);
+  return data;
+}
+
+export async function updateUser(data: UpdateUserRequestDTO): Promise<User> {
+  const { data: response } = await api.put<User>(`/users/${data.id}`, data);
+  return response;
+}
+
+export async function deleteUser(id: number): Promise<void> {
+  await api.delete(`/users/${id}`);
+}
+
+export async function restoreUser(id: number): Promise<User> {
+  const { data } = await api.post<User>(`/users/${id}/restore`);
   return data;
 }
