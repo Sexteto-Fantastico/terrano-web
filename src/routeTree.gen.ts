@@ -21,6 +21,7 @@ import { Route as AppDefinePasswordRouteImport } from './pages/_app/define-passw
 import { Route as AppUserIndexRouteImport } from './pages/_app/user/index'
 import { Route as AppProductIndexRouteImport } from './pages/_app/product/index'
 import { Route as AppUserNewRouteImport } from './pages/_app/user/new'
+import { Route as AppProductNewRouteImport } from './pages/_app/product/new'
 
 const AuthLayoutRoute = AuthLayoutRouteImport.update({
   id: '/_auth',
@@ -80,6 +81,11 @@ const AppUserNewRoute = AppUserNewRouteImport.update({
   path: '/user/new',
   getParentRoute: () => AppLayoutRoute,
 } as any)
+const AppProductNewRoute = AppProductNewRouteImport.update({
+  id: '/product/new',
+  path: '/product/new',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
@@ -89,6 +95,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
   '/unauthorized': typeof AuthUnauthorizedRoute
+  '/product/new': typeof AppProductNewRoute
   '/user/new': typeof AppUserNewRoute
   '/product/': typeof AppProductIndexRoute
   '/user/': typeof AppUserIndexRoute
@@ -101,6 +108,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
   '/unauthorized': typeof AuthUnauthorizedRoute
+  '/product/new': typeof AppProductNewRoute
   '/user/new': typeof AppUserNewRoute
   '/product': typeof AppProductIndexRoute
   '/user': typeof AppUserIndexRoute
@@ -116,6 +124,7 @@ export interface FileRoutesById {
   '/_auth/sign-in': typeof AuthSignInRoute
   '/_auth/unauthorized': typeof AuthUnauthorizedRoute
   '/_app/': typeof AppIndexRoute
+  '/_app/product/new': typeof AppProductNewRoute
   '/_app/user/new': typeof AppUserNewRoute
   '/_app/product/': typeof AppProductIndexRoute
   '/_app/user/': typeof AppUserIndexRoute
@@ -130,6 +139,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sign-in'
     | '/unauthorized'
+    | '/product/new'
     | '/user/new'
     | '/product/'
     | '/user/'
@@ -142,6 +152,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sign-in'
     | '/unauthorized'
+    | '/product/new'
     | '/user/new'
     | '/product'
     | '/user'
@@ -156,6 +167,7 @@ export interface FileRouteTypes {
     | '/_auth/sign-in'
     | '/_auth/unauthorized'
     | '/_app/'
+    | '/_app/product/new'
     | '/_app/user/new'
     | '/_app/product/'
     | '/_app/user/'
@@ -252,12 +264,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppUserNewRouteImport
       parentRoute: typeof AppLayoutRoute
     }
+    '/_app/product/new': {
+      id: '/_app/product/new'
+      path: '/product/new'
+      fullPath: '/product/new'
+      preLoaderRoute: typeof AppProductNewRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
   }
 }
 
 interface AppLayoutRouteChildren {
   AppDefinePasswordRoute: typeof AppDefinePasswordRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppProductNewRoute: typeof AppProductNewRoute
   AppUserNewRoute: typeof AppUserNewRoute
   AppProductIndexRoute: typeof AppProductIndexRoute
   AppUserIndexRoute: typeof AppUserIndexRoute
@@ -266,6 +286,7 @@ interface AppLayoutRouteChildren {
 const AppLayoutRouteChildren: AppLayoutRouteChildren = {
   AppDefinePasswordRoute: AppDefinePasswordRoute,
   AppIndexRoute: AppIndexRoute,
+  AppProductNewRoute: AppProductNewRoute,
   AppUserNewRoute: AppUserNewRoute,
   AppProductIndexRoute: AppProductIndexRoute,
   AppUserIndexRoute: AppUserIndexRoute,

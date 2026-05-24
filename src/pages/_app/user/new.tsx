@@ -1,9 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { CreateView } from "@/components/views/create-view";
+import { UserForm } from "./-components/user-form";
 
 export const Route = createFileRoute("/_app/user/new")({
-  component: RouteComponent,
+  component: UserNewPage,
+  head: () => ({
+    meta: [{ title: "Usuário" }],
+  }),
 });
 
-function RouteComponent() {
-  return <div>Hello "/_app/user/new"!</div>;
+function UserNewPage() {
+  return (
+    <CreateView formId="user-form">
+      <UserForm />
+    </CreateView>
+  );
 }

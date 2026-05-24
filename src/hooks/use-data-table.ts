@@ -109,7 +109,7 @@ export function useDataTable<
   );
 
   const table = useReactTable({
-    data: data.result,
+    data: data.result ?? [],
     columns,
     rowCount: data.rowCount,
     state: { pagination, sorting },
