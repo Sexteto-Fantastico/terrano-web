@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Unauthorized } from "@/components/unauthorized";
 
-export const Route = createFileRoute("/auth/unauthorized")({
+export const Route = createFileRoute("/_auth/unauthorized")({
   component: UnauthorizedPage,
 });
 
