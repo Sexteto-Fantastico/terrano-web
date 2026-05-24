@@ -22,7 +22,7 @@ import { Route as AppUserIndexRouteImport } from './pages/_app/user/index'
 import { Route as AppProductIndexRouteImport } from './pages/_app/product/index'
 import { Route as AppBrandIndexRouteImport } from './pages/_app/brand/index'
 import { Route as AppUserNewRouteImport } from './pages/_app/user/new'
-import { Route as AppBrandEditRouteImport } from './pages/_app/brand/edit'
+import { Route as AppProductNewRouteImport } from './pages/_app/product/new'
 
 const AuthLayoutRoute = AuthLayoutRouteImport.update({
   id: '/_auth',
@@ -87,9 +87,9 @@ const AppUserNewRoute = AppUserNewRouteImport.update({
   path: '/user/new',
   getParentRoute: () => AppLayoutRoute,
 } as any)
-const AppBrandEditRoute = AppBrandEditRouteImport.update({
-  id: '/brand/edit',
-  path: '/brand/edit',
+const AppProductNewRoute = AppProductNewRouteImport.update({
+  id: '/product/new',
+  path: '/product/new',
   getParentRoute: () => AppLayoutRoute,
 } as any)
 
@@ -101,7 +101,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
   '/unauthorized': typeof AuthUnauthorizedRoute
-  '/brand/edit': typeof AppBrandEditRoute
+  '/product/new': typeof AppProductNewRoute
   '/user/new': typeof AppUserNewRoute
   '/brand/': typeof AppBrandIndexRoute
   '/product/': typeof AppProductIndexRoute
@@ -115,7 +115,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
   '/unauthorized': typeof AuthUnauthorizedRoute
-  '/brand/edit': typeof AppBrandEditRoute
+  '/product/new': typeof AppProductNewRoute
   '/user/new': typeof AppUserNewRoute
   '/brand': typeof AppBrandIndexRoute
   '/product': typeof AppProductIndexRoute
@@ -132,7 +132,7 @@ export interface FileRoutesById {
   '/_auth/sign-in': typeof AuthSignInRoute
   '/_auth/unauthorized': typeof AuthUnauthorizedRoute
   '/_app/': typeof AppIndexRoute
-  '/_app/brand/edit': typeof AppBrandEditRoute
+  '/_app/product/new': typeof AppProductNewRoute
   '/_app/user/new': typeof AppUserNewRoute
   '/_app/brand/': typeof AppBrandIndexRoute
   '/_app/product/': typeof AppProductIndexRoute
@@ -148,7 +148,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sign-in'
     | '/unauthorized'
-    | '/brand/edit'
+    | '/product/new'
     | '/user/new'
     | '/brand/'
     | '/product/'
@@ -162,7 +162,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sign-in'
     | '/unauthorized'
-    | '/brand/edit'
+    | '/product/new'
     | '/user/new'
     | '/brand'
     | '/product'
@@ -178,7 +178,7 @@ export interface FileRouteTypes {
     | '/_auth/sign-in'
     | '/_auth/unauthorized'
     | '/_app/'
-    | '/_app/brand/edit'
+    | '/_app/product/new'
     | '/_app/user/new'
     | '/_app/brand/'
     | '/_app/product/'
@@ -283,11 +283,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppUserNewRouteImport
       parentRoute: typeof AppLayoutRoute
     }
-    '/_app/brand/edit': {
-      id: '/_app/brand/edit'
-      path: '/brand/edit'
-      fullPath: '/brand/edit'
-      preLoaderRoute: typeof AppBrandEditRouteImport
+    '/_app/product/new': {
+      id: '/_app/product/new'
+      path: '/product/new'
+      fullPath: '/product/new'
+      preLoaderRoute: typeof AppProductNewRouteImport
       parentRoute: typeof AppLayoutRoute
     }
   }
@@ -296,7 +296,7 @@ declare module '@tanstack/react-router' {
 interface AppLayoutRouteChildren {
   AppDefinePasswordRoute: typeof AppDefinePasswordRoute
   AppIndexRoute: typeof AppIndexRoute
-  AppBrandEditRoute: typeof AppBrandEditRoute
+  AppProductNewRoute: typeof AppProductNewRoute
   AppUserNewRoute: typeof AppUserNewRoute
   AppBrandIndexRoute: typeof AppBrandIndexRoute
   AppProductIndexRoute: typeof AppProductIndexRoute
@@ -306,7 +306,7 @@ interface AppLayoutRouteChildren {
 const AppLayoutRouteChildren: AppLayoutRouteChildren = {
   AppDefinePasswordRoute: AppDefinePasswordRoute,
   AppIndexRoute: AppIndexRoute,
-  AppBrandEditRoute: AppBrandEditRoute,
+  AppProductNewRoute: AppProductNewRoute,
   AppUserNewRoute: AppUserNewRoute,
   AppBrandIndexRoute: AppBrandIndexRoute,
   AppProductIndexRoute: AppProductIndexRoute,

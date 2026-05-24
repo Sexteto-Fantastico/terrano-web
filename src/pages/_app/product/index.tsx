@@ -43,7 +43,8 @@ export const Route = createFileRoute("/_app/product/")({
 
 function ProductPage() {
   const { filters, setFilters, resetFilters } = useFilters(Route.id);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [productToEdit, setProductToEdit] = useState<Product | undefined>();
+  const [productToDelete, setProductToDelete] = useState<number | undefined>();
 
   const { data: categories = [] } = useQuery({
     queryKey: ["product-categories"],
@@ -62,8 +63,6 @@ function ProductPage() {
   });
 
   const queryClient = useQueryClient();
-  const [productToEdit, setProductToEdit] = useState<Product | undefined>();
-  const [productToDelete, setProductToDelete] = useState<number | undefined>();
 
   const deleteMutation = useMutation({
     mutationFn: deleteProduct,
@@ -118,7 +117,6 @@ function ProductPage() {
 
   function handleEdit(product: Product) {
     setProductToEdit(product);
-    setIsDialogOpen(true);
   }
 
   function handleDelete(productId: number) {
@@ -191,7 +189,7 @@ function ProductPage() {
         }
         actionBar={
           <DataTableToolbar table={table}>
-            <AddButton onClick={() => setIsDialogOpen(true)} />
+            <AddButton to="/product/new" />
           </DataTableToolbar>
         }
       />
@@ -199,9 +197,8 @@ function ProductPage() {
       <DataTablePagination table={table} isLoading={isLoading} />
 
       <ProductFormDialog
-        open={isDialogOpen}
+        open={!!productToEdit}
         onOpenChange={(open) => {
-          setIsDialogOpen(open);
           if (!open) setProductToEdit(undefined);
         }}
         productToEdit={productToEdit}
