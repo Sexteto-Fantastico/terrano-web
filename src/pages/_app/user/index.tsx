@@ -87,7 +87,7 @@ function UserPage() {
         actionBar={
           <DataTableToolbar table={table}>
             <ExportButton />
-            <AddButton />
+            <AddButton to="/user/new" />
           </DataTableToolbar>
         }
       />
