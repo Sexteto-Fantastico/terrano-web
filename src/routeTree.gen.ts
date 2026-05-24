@@ -101,6 +101,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
   '/unauthorized': typeof AuthUnauthorizedRoute
+  '/brand/edit': typeof AppBrandEditRoute
   '/user/new': typeof AppUserNewRoute
   '/brand/': typeof AppBrandIndexRoute
   '/product/': typeof AppProductIndexRoute
@@ -114,6 +115,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
   '/unauthorized': typeof AuthUnauthorizedRoute
+  '/brand/edit': typeof AppBrandEditRoute
   '/user/new': typeof AppUserNewRoute
   '/brand': typeof AppBrandIndexRoute
   '/product': typeof AppProductIndexRoute
@@ -146,6 +148,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sign-in'
     | '/unauthorized'
+    | '/brand/edit'
     | '/user/new'
     | '/brand/'
     | '/product/'
@@ -159,6 +162,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sign-in'
     | '/unauthorized'
+    | '/brand/edit'
     | '/user/new'
     | '/brand'
     | '/product'

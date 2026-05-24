@@ -36,6 +36,7 @@ import { createHeaderColumn } from "@/components/ui/data-table/data-table-helper
 import { Switch } from "@/components/ui/switch";
 import { DataTableFilterMenu } from "@/components/ui/data-table/data-table-filter-menu";
 import { AddButton } from "@/components/button/add-button";
+import { getBrandFilterConfig } from "./-components/brand-filter-config";
 
 export const Route = createFileRoute("/_app/brand/")({
   component: BrandPage,
@@ -202,13 +203,17 @@ function BrandPage() {
     setFilters: setFilters as any,
   });
 
+  const filterConfig = useMemo(
+    () =>  getBrandFilterConfig(), []
+  );
+
   return (
     <DataView>
       <DataTableFilterMenu
-        table={table}
         filters={filters as any}
         onFilter={setTableFilters}
         onClearFilters={resetFilters}
+        filterConfig={filterConfig}
       />
       <Separator className="my-4" />
       <DataTable
