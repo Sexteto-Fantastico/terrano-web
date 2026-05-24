@@ -6,5 +6,4 @@ export const Route = createFileRoute("/_app/")({
 });
 
 function RouteComponent() {
-  return <CreateView />;
 }

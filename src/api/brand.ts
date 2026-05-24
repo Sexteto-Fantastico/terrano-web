@@ -21,6 +21,7 @@ export type CreateProductBrandRequestDTO = {
 export type UpdateProductBrandRequestDTO = {
   id: number;
   name?: string;
+  isActive?: boolean;
 };
 
 export type ProductBrandFilters = {

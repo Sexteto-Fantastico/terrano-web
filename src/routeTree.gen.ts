@@ -22,7 +22,8 @@ import { Route as AppUserIndexRouteImport } from './pages/_app/user/index'
 import { Route as AppProductIndexRouteImport } from './pages/_app/product/index'
 import { Route as AppBrandIndexRouteImport } from './pages/_app/brand/index'
 import { Route as AppUserNewRouteImport } from './pages/_app/user/new'
-import { Route as AppProductNewRouteImport } from './pages/_app/product/new'
+import { Route as AppBrandNewRouteImport } from './pages/_app/brand/new'
+import { Route as AppBrandEditRouteImport } from './pages/_app/brand/edit'
 
 const AuthLayoutRoute = AuthLayoutRouteImport.update({
   id: '/_auth',
@@ -87,9 +88,14 @@ const AppUserNewRoute = AppUserNewRouteImport.update({
   path: '/user/new',
   getParentRoute: () => AppLayoutRoute,
 } as any)
-const AppProductNewRoute = AppProductNewRouteImport.update({
-  id: '/product/new',
-  path: '/product/new',
+const AppBrandNewRoute = AppBrandNewRouteImport.update({
+  id: '/brand/new',
+  path: '/brand/new',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
+const AppBrandEditRoute = AppBrandEditRouteImport.update({
+  id: '/brand/edit',
+  path: '/brand/edit',
   getParentRoute: () => AppLayoutRoute,
 } as any)
 
@@ -101,7 +107,8 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
   '/unauthorized': typeof AuthUnauthorizedRoute
-  '/product/new': typeof AppProductNewRoute
+  '/brand/edit': typeof AppBrandEditRoute
+  '/brand/new': typeof AppBrandNewRoute
   '/user/new': typeof AppUserNewRoute
   '/brand/': typeof AppBrandIndexRoute
   '/product/': typeof AppProductIndexRoute
@@ -115,7 +122,8 @@ export interface FileRoutesByTo {
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
   '/unauthorized': typeof AuthUnauthorizedRoute
-  '/product/new': typeof AppProductNewRoute
+  '/brand/edit': typeof AppBrandEditRoute
+  '/brand/new': typeof AppBrandNewRoute
   '/user/new': typeof AppUserNewRoute
   '/brand': typeof AppBrandIndexRoute
   '/product': typeof AppProductIndexRoute
@@ -132,7 +140,8 @@ export interface FileRoutesById {
   '/_auth/sign-in': typeof AuthSignInRoute
   '/_auth/unauthorized': typeof AuthUnauthorizedRoute
   '/_app/': typeof AppIndexRoute
-  '/_app/product/new': typeof AppProductNewRoute
+  '/_app/brand/edit': typeof AppBrandEditRoute
+  '/_app/brand/new': typeof AppBrandNewRoute
   '/_app/user/new': typeof AppUserNewRoute
   '/_app/brand/': typeof AppBrandIndexRoute
   '/_app/product/': typeof AppProductIndexRoute
@@ -148,7 +157,8 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sign-in'
     | '/unauthorized'
-    | '/product/new'
+    | '/brand/edit'
+    | '/brand/new'
     | '/user/new'
     | '/brand/'
     | '/product/'
@@ -162,7 +172,8 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sign-in'
     | '/unauthorized'
-    | '/product/new'
+    | '/brand/edit'
+    | '/brand/new'
     | '/user/new'
     | '/brand'
     | '/product'
@@ -178,7 +189,8 @@ export interface FileRouteTypes {
     | '/_auth/sign-in'
     | '/_auth/unauthorized'
     | '/_app/'
-    | '/_app/product/new'
+    | '/_app/brand/edit'
+    | '/_app/brand/new'
     | '/_app/user/new'
     | '/_app/brand/'
     | '/_app/product/'
@@ -283,11 +295,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppUserNewRouteImport
       parentRoute: typeof AppLayoutRoute
     }
-    '/_app/product/new': {
-      id: '/_app/product/new'
-      path: '/product/new'
-      fullPath: '/product/new'
-      preLoaderRoute: typeof AppProductNewRouteImport
+    '/_app/brand/new': {
+      id: '/_app/brand/new'
+      path: '/brand/new'
+      fullPath: '/brand/new'
+      preLoaderRoute: typeof AppBrandNewRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
+    '/_app/brand/edit': {
+      id: '/_app/brand/edit'
+      path: '/brand/edit'
+      fullPath: '/brand/edit'
+      preLoaderRoute: typeof AppBrandEditRouteImport
       parentRoute: typeof AppLayoutRoute
     }
   }
@@ -296,7 +315,8 @@ declare module '@tanstack/react-router' {
 interface AppLayoutRouteChildren {
   AppDefinePasswordRoute: typeof AppDefinePasswordRoute
   AppIndexRoute: typeof AppIndexRoute
-  AppProductNewRoute: typeof AppProductNewRoute
+  AppBrandEditRoute: typeof AppBrandEditRoute
+  AppBrandNewRoute: typeof AppBrandNewRoute
   AppUserNewRoute: typeof AppUserNewRoute
   AppBrandIndexRoute: typeof AppBrandIndexRoute
   AppProductIndexRoute: typeof AppProductIndexRoute
@@ -306,7 +326,8 @@ interface AppLayoutRouteChildren {
 const AppLayoutRouteChildren: AppLayoutRouteChildren = {
   AppDefinePasswordRoute: AppDefinePasswordRoute,
   AppIndexRoute: AppIndexRoute,
-  AppProductNewRoute: AppProductNewRoute,
+  AppBrandEditRoute: AppBrandEditRoute,
+  AppBrandNewRoute: AppBrandNewRoute,
   AppUserNewRoute: AppUserNewRoute,
   AppBrandIndexRoute: AppBrandIndexRoute,
   AppProductIndexRoute: AppProductIndexRoute,

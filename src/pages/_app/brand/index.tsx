@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { type ColumnDef } from "@tanstack/react-table";
 import { type PaginatedData } from "@/components/ui/data-table/@types";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
 import {
   fetchProductBrands,
@@ -60,10 +60,9 @@ function BrandPage() {
   });
 
   const queryClient = useQueryClient();
-  const [brandToDelete, setBrandToDelete] = useState<number | undefined>();
 
   const deleteMutation = useMutation({
-    mutationFn: deleteProductBrand,
+    mutationFn: (id: number) => deleteProductBrand(id),
     onMutate: async (brandId) => {
       await queryClient.cancelQueries({ queryKey: ["brands"] });
       const previousData = queryClient.getQueryData(["brands", filters]);
@@ -71,9 +70,9 @@ function BrandPage() {
         if (!old) return old;
         return {
           ...old,
-          result: old.result.map((p: ProductBrand) =>
+            result: old.result.map((p: ProductBrand) =>
             p.id === brandId
-              ? { ...p, deletedAt: new Date().toISOString() }
+              ? { ...p, isActive: false }
               : p
           ),
         };
@@ -85,12 +84,11 @@ function BrandPage() {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["brands"] });
-      setBrandToDelete(undefined);
     },
   });
 
   const restoreMutation = useMutation({
-    mutationFn: restoreProductBrand,
+    mutationFn: (id: number) => restoreProductBrand(id),
     onMutate: async (brandId) => {
       await queryClient.cancelQueries({ queryKey: ["brands"] });
       const previousData = queryClient.getQueryData(["brands", filters]);
@@ -100,7 +98,7 @@ function BrandPage() {
           ...old,
           result: old.result.map((p: ProductBrand) =>
             p.id === brandId
-              ? { ...p, deletedAt: null }
+              ? { ...p, isActive: true }
               : p
           ),
         };
@@ -122,16 +120,6 @@ function BrandPage() {
     });
   }
 
-  function handleDelete(brandId: number) {
-    setBrandToDelete(brandId);
-  }
-
-  function confirmDelete() {
-    if (brandToDelete) {
-      deleteMutation.mutate(brandToDelete);
-    }
-  }
-
   const columns: ColumnDef<ProductBrand>[] = useMemo(
     () => [
       {
@@ -146,9 +134,9 @@ function BrandPage() {
         },
       },
       {
-        id: "activeOnly",
-        accessorFn: (row) => !row.deletedAt,
-        header: createHeaderColumn("Ativo"),
+        id: "active",
+        acessorFn: (row: ProductBrand) => row.isActive,
+        hecader: createHeaderColumn("Ativo"),
         enableSorting: false,
         enableHiding: false,
         size: 80,
@@ -220,11 +208,11 @@ function BrandPage() {
         table={table}
         isLoading={isLoading}
         getRowClassName={(row) =>
-          row.original.deletedAt ? "line-through text-muted-foreground" : ""
+          row.original.isActive === false ? "line-through text-muted-foreground" : ""
         }
         actionBar={
           <DataTableToolbar table={table}>
-            <AddButton onClick={() => navigate({ to: "/brand/edit" })} />
+            <AddButton to="/brand/new" />
           </DataTableToolbar>
         }
       />
