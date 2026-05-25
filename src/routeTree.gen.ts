@@ -21,10 +21,13 @@ import { Route as AppDefinePasswordRouteImport } from './pages/_app/define-passw
 import { Route as AppUserIndexRouteImport } from './pages/_app/user/index'
 import { Route as AppProductIndexRouteImport } from './pages/_app/product/index'
 import { Route as AppProductBrandIndexRouteImport } from './pages/_app/product-brand/index'
+import { Route as AppCategoryIndexRouteImport } from './pages/_app/category/index'
 import { Route as AppUserNewRouteImport } from './pages/_app/user/new'
 import { Route as AppUserEditRouteImport } from './pages/_app/user/edit'
 import { Route as AppProductBrandNewRouteImport } from './pages/_app/product-brand/new'
 import { Route as AppProductBrandEditRouteImport } from './pages/_app/product-brand/edit'
+import { Route as AppCategoryNewRouteImport } from './pages/_app/category/new'
+import { Route as AppCategoryEditRouteImport } from './pages/_app/category/edit'
 
 const AuthLayoutRoute = AuthLayoutRouteImport.update({
   id: '/_auth',
@@ -84,6 +87,11 @@ const AppProductBrandIndexRoute = AppProductBrandIndexRouteImport.update({
   path: '/product-brand/',
   getParentRoute: () => AppLayoutRoute,
 } as any)
+const AppCategoryIndexRoute = AppCategoryIndexRouteImport.update({
+  id: '/category/',
+  path: '/category/',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
 const AppUserNewRoute = AppUserNewRouteImport.update({
   id: '/user/new',
   path: '/user/new',
@@ -104,6 +112,16 @@ const AppProductBrandEditRoute = AppProductBrandEditRouteImport.update({
   path: '/product-brand/edit',
   getParentRoute: () => AppLayoutRoute,
 } as any)
+const AppCategoryNewRoute = AppCategoryNewRouteImport.update({
+  id: '/category/new',
+  path: '/category/new',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
+const AppCategoryEditRoute = AppCategoryEditRouteImport.update({
+  id: '/category/edit',
+  path: '/category/edit',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
@@ -113,10 +131,13 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
   '/unauthorized': typeof AuthUnauthorizedRoute
+  '/category/edit': typeof AppCategoryEditRoute
+  '/category/new': typeof AppCategoryNewRoute
   '/product-brand/edit': typeof AppProductBrandEditRoute
   '/product-brand/new': typeof AppProductBrandNewRoute
   '/user/edit': typeof AppUserEditRoute
   '/user/new': typeof AppUserNewRoute
+  '/category/': typeof AppCategoryIndexRoute
   '/product-brand/': typeof AppProductBrandIndexRoute
   '/product/': typeof AppProductIndexRoute
   '/user/': typeof AppUserIndexRoute
@@ -129,10 +150,13 @@ export interface FileRoutesByTo {
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
   '/unauthorized': typeof AuthUnauthorizedRoute
+  '/category/edit': typeof AppCategoryEditRoute
+  '/category/new': typeof AppCategoryNewRoute
   '/product-brand/edit': typeof AppProductBrandEditRoute
   '/product-brand/new': typeof AppProductBrandNewRoute
   '/user/edit': typeof AppUserEditRoute
   '/user/new': typeof AppUserNewRoute
+  '/category': typeof AppCategoryIndexRoute
   '/product-brand': typeof AppProductBrandIndexRoute
   '/product': typeof AppProductIndexRoute
   '/user': typeof AppUserIndexRoute
@@ -148,10 +172,13 @@ export interface FileRoutesById {
   '/_auth/sign-in': typeof AuthSignInRoute
   '/_auth/unauthorized': typeof AuthUnauthorizedRoute
   '/_app/': typeof AppIndexRoute
+  '/_app/category/edit': typeof AppCategoryEditRoute
+  '/_app/category/new': typeof AppCategoryNewRoute
   '/_app/product-brand/edit': typeof AppProductBrandEditRoute
   '/_app/product-brand/new': typeof AppProductBrandNewRoute
   '/_app/user/edit': typeof AppUserEditRoute
   '/_app/user/new': typeof AppUserNewRoute
+  '/_app/category/': typeof AppCategoryIndexRoute
   '/_app/product-brand/': typeof AppProductBrandIndexRoute
   '/_app/product/': typeof AppProductIndexRoute
   '/_app/user/': typeof AppUserIndexRoute
@@ -166,10 +193,13 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sign-in'
     | '/unauthorized'
+    | '/category/edit'
+    | '/category/new'
     | '/product-brand/edit'
     | '/product-brand/new'
     | '/user/edit'
     | '/user/new'
+    | '/category/'
     | '/product-brand/'
     | '/product/'
     | '/user/'
@@ -182,10 +212,13 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sign-in'
     | '/unauthorized'
+    | '/category/edit'
+    | '/category/new'
     | '/product-brand/edit'
     | '/product-brand/new'
     | '/user/edit'
     | '/user/new'
+    | '/category'
     | '/product-brand'
     | '/product'
     | '/user'
@@ -200,10 +233,13 @@ export interface FileRouteTypes {
     | '/_auth/sign-in'
     | '/_auth/unauthorized'
     | '/_app/'
+    | '/_app/category/edit'
+    | '/_app/category/new'
     | '/_app/product-brand/edit'
     | '/_app/product-brand/new'
     | '/_app/user/edit'
     | '/_app/user/new'
+    | '/_app/category/'
     | '/_app/product-brand/'
     | '/_app/product/'
     | '/_app/user/'
@@ -300,6 +336,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProductBrandIndexRouteImport
       parentRoute: typeof AppLayoutRoute
     }
+    '/_app/category/': {
+      id: '/_app/category/'
+      path: '/category'
+      fullPath: '/category/'
+      preLoaderRoute: typeof AppCategoryIndexRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
     '/_app/user/new': {
       id: '/_app/user/new'
       path: '/user/new'
@@ -328,16 +371,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProductBrandEditRouteImport
       parentRoute: typeof AppLayoutRoute
     }
+    '/_app/category/new': {
+      id: '/_app/category/new'
+      path: '/category/new'
+      fullPath: '/category/new'
+      preLoaderRoute: typeof AppCategoryNewRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
+    '/_app/category/edit': {
+      id: '/_app/category/edit'
+      path: '/category/edit'
+      fullPath: '/category/edit'
+      preLoaderRoute: typeof AppCategoryEditRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
   }
 }
 
 interface AppLayoutRouteChildren {
   AppDefinePasswordRoute: typeof AppDefinePasswordRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppCategoryEditRoute: typeof AppCategoryEditRoute
+  AppCategoryNewRoute: typeof AppCategoryNewRoute
   AppProductBrandEditRoute: typeof AppProductBrandEditRoute
   AppProductBrandNewRoute: typeof AppProductBrandNewRoute
   AppUserEditRoute: typeof AppUserEditRoute
   AppUserNewRoute: typeof AppUserNewRoute
+  AppCategoryIndexRoute: typeof AppCategoryIndexRoute
   AppProductBrandIndexRoute: typeof AppProductBrandIndexRoute
   AppProductIndexRoute: typeof AppProductIndexRoute
   AppUserIndexRoute: typeof AppUserIndexRoute
@@ -346,10 +406,13 @@ interface AppLayoutRouteChildren {
 const AppLayoutRouteChildren: AppLayoutRouteChildren = {
   AppDefinePasswordRoute: AppDefinePasswordRoute,
   AppIndexRoute: AppIndexRoute,
+  AppCategoryEditRoute: AppCategoryEditRoute,
+  AppCategoryNewRoute: AppCategoryNewRoute,
   AppProductBrandEditRoute: AppProductBrandEditRoute,
   AppProductBrandNewRoute: AppProductBrandNewRoute,
   AppUserEditRoute: AppUserEditRoute,
   AppUserNewRoute: AppUserNewRoute,
+  AppCategoryIndexRoute: AppCategoryIndexRoute,
   AppProductBrandIndexRoute: AppProductBrandIndexRoute,
   AppProductIndexRoute: AppProductIndexRoute,
   AppUserIndexRoute: AppUserIndexRoute,

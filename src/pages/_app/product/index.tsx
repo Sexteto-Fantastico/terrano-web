@@ -10,7 +10,7 @@ import {
   type ProductFilters,
 } from "@/api/products";
 import { fetchAllProductBrands } from "@/api/product-brands";
-import { fetchProductCategories } from "@/api/product-categories";
+import { fetchAllProductCategories } from "@/api/product-categories";
 import {
   keepPreviousData,
   useQuery,
@@ -48,7 +48,7 @@ function ProductPage() {
 
   const { data: categories = [] } = useQuery({
     queryKey: ["product-categories"],
-    queryFn: fetchProductCategories,
+    queryFn: () => fetchAllProductCategories(),
   });
 
   const { data: brands = [] } = useQuery({
