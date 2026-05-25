@@ -23,7 +23,7 @@ import {
   type CreateProductRequest,
   type Product,
 } from "@/api/products";
-import { fetchProductCategories } from "@/api/product-categories";
+import { fetchAllProductCategories } from "@/api/product-categories";
 import { fetchAllProductBrands } from "@/api/product-brands";
 import { fetchMeasurementUnits } from "@/api/measurement-units";
 
@@ -42,7 +42,7 @@ export function ProductFormDialog({
 
   const { data: categories = [] } = useQuery({
     queryKey: ["product-categories"],
-    queryFn: fetchProductCategories,
+    queryFn: () => fetchAllProductCategories(),
   });
 
   const { data: brands = [] } = useQuery({

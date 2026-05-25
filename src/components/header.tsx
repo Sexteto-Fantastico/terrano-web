@@ -22,15 +22,30 @@ export function Header() {
     currentMatch.pathname.split("/").filter(Boolean).pop() ||
     "Terrano";
 
+  const breadcrumbMatches = matches.filter((match, index, self) => {
+    if (index > 0 && match.pathname === self[index - 1].pathname) {
+      return false;
+    }
+
+    if (match.routeId !== '__root__' && match.routeId.includes('/_')) {
+      const matchRoute = router.routesById[match.routeId];
+      const hasTitle = !!matchRoute?.options.head?.()?.meta?.[0]?.title;
+      if (!hasTitle) return false;
+    }
+
+    return true;
+  });
+
   return (
     <div className="flex flex-col gap-2">
       <h1 className="text-2xl font-bold text-foreground">{pageTitle}</h1>
 
       <Breadcrumb>
         <BreadcrumbList>
-          {matches.map((match, index) => {
-            const isLast = index === matches.length - 1;
+          {breadcrumbMatches.map((match, index) => {
+            const isLast = index === breadcrumbMatches.length - 1;
             const matchRoute = router.routesById[match.routeId];
+            
             const label =
               matchRoute?.options.head?.()?.meta?.[0]?.title ||
               match.pathname.split("/").filter(Boolean).pop() ||
