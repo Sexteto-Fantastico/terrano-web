@@ -54,7 +54,7 @@ const MENU_DATA: MenuGroup[] = [
     icon: CircleFadingPlusIcon,
     items: [
       { title: "Produto", href: "/product" },
-      { title: "Marca", href: "/brand" },
+      { title: "Marca", href: "/product-brand" },
       { title: "Categoria", href: "/category" },
       { title: "Unidade de Medida", href: "/unit" },
       { title: "Estoque", href: "/stock" },

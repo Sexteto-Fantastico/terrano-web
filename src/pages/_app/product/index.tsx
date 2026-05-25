@@ -5,12 +5,12 @@ import { useMemo, useState } from "react";
 import {
   deleteProduct,
   fetchProducts,
-  fetchProductBrands,
-  fetchProductCategories,
   restoreProduct,
   type Product,
   type ProductFilters,
-} from "@/api/product";
+} from "@/api/products";
+import { fetchAllProductBrands } from "@/api/product-brands";
+import { fetchProductCategories } from "@/api/product-categories";
 import {
   keepPreviousData,
   useQuery,
@@ -53,7 +53,7 @@ function ProductPage() {
 
   const { data: brands = [] } = useQuery({
     queryKey: ["product-brands"],
-    queryFn: fetchProductBrands,
+    queryFn: fetchAllProductBrands,
   });
 
   const { data, isLoading } = useQuery({

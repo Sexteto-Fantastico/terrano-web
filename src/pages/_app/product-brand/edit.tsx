@@ -2,10 +2,10 @@ import { useSearch, useNavigate, createFileRoute } from '@tanstack/react-router'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { z } from 'zod'
 import { CreateView } from '@/components/views/create-view'
-import { BrandForm } from './-components/brand-form'
-import { fetchProductBrandById, updateProductBrand } from '@/api/brand'
+import { ProductBrandForm } from './-components/product-brand-form'
+import { fetchProductBrandById, updateProductBrand } from '@/api/product-brands'
 
-export const Route = createFileRoute('/_app/brand/edit')({
+export const Route = createFileRoute('/_app/product-brand/edit')({
   component: BrandComponent,
   validateSearch: z.object({ id: z.string().min(1) }),
   head: () => ({
@@ -18,12 +18,12 @@ export const Route = createFileRoute('/_app/brand/edit')({
 });
 
 function BrandComponent() {
-  const search = useSearch({ from: '/_app/brand/edit' })
+  const search = useSearch({ from: '/_app/product-brand/edit' })
   const navigate = useNavigate()
   const queryClient = useQueryClient()
 
   const brandQuery = useQuery({
-    queryKey: ['brand', search.id],
+    queryKey: ['product-brand', search.id],
     queryFn: () => fetchProductBrandById(Number(search.id)),
     enabled: Boolean(search.id),
   })
@@ -31,8 +31,8 @@ function BrandComponent() {
   const updateMutation = useMutation({
     mutationFn: updateProductBrand,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['brands'] })
-      navigate({ to: '/brand' })
+      queryClient.invalidateQueries({ queryKey: ['product-brands'] })
+      navigate({ to: '/product-brand' })
     },
   })
 
@@ -49,8 +49,8 @@ function BrandComponent() {
   }
 
   return (
-    <CreateView formId="brand-form">
-      <BrandForm
+    <CreateView formId="product-brand-form">
+      <ProductBrandForm
         initialName={brandQuery.data.name}
         onSubmit={async (values) => {
           await updateMutation.mutateAsync({ id: brandQuery.data.id, name: values.name })

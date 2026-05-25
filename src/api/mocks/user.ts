@@ -1,4 +1,4 @@
-import type { User } from "../user";
+import type { User } from "../users";
 
 export const MOCK_USERS: User[] = [
   {
@@ -58,7 +58,10 @@ export const MOCK_USERS: User[] = [
     phone: "(11) 95555-5555",
     role: { id: 1, name: "Admin" },
     department: { id: 3, name: "Financeiro" },
-    managedDepartments: [{ id: 1, name: "TI" }, { id: 2, name: "RH" }],
+    managedDepartments: [
+      { id: 1, name: "TI" },
+      { id: 2, name: "RH" },
+    ],
     isActive: true,
   },
 ];

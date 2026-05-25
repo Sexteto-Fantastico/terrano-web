@@ -20,12 +20,12 @@ import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import {
   createProduct,
   updateProduct,
-  fetchProductCategories,
-  fetchProductBrands,
-  fetchMeasurementUnits,
-  type CreateProductRequestDTO,
+  type CreateProductRequest,
   type Product,
-} from "@/api/product";
+} from "@/api/products";
+import { fetchProductCategories } from "@/api/product-categories";
+import { fetchAllProductBrands } from "@/api/product-brands";
+import { fetchMeasurementUnits } from "@/api/measurement-units";
 
 interface ProductFormDialogProps {
   open: boolean;
@@ -33,7 +33,11 @@ interface ProductFormDialogProps {
   productToEdit?: Product;
 }
 
-export function ProductFormDialog({ open, onOpenChange, productToEdit }: ProductFormDialogProps) {
+export function ProductFormDialog({
+  open,
+  onOpenChange,
+  productToEdit,
+}: ProductFormDialogProps) {
   const queryClient = useQueryClient();
 
   const { data: categories = [] } = useQuery({
@@ -43,7 +47,7 @@ export function ProductFormDialog({ open, onOpenChange, productToEdit }: Product
 
   const { data: brands = [] } = useQuery({
     queryKey: ["product-brands"],
-    queryFn: fetchProductBrands,
+    queryFn: fetchAllProductBrands,
   });
 
   const { data: measurementUnits = [] } = useQuery({
@@ -74,10 +78,10 @@ export function ProductFormDialog({ open, onOpenChange, productToEdit }: Product
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
 
-    const payload: CreateProductRequestDTO = {
+    const payload: CreateProductRequest = {
       name: formData.get("name") as string,
       code: formData.get("code") as string,
-      description: formData.get("description") as string || undefined,
+      description: (formData.get("description") as string) || undefined,
       categoryId: Number(formData.get("categoryId")),
       measurementUnitId: Number(formData.get("measurementUnitId")),
       brandId: Number(formData.get("brandId")),
@@ -94,29 +98,49 @@ export function ProductFormDialog({ open, onOpenChange, productToEdit }: Product
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[700px] gap-6">
+      <DialogContent className="gap-6 sm:max-w-[700px]">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">
             {isEditing ? "Editar Produto" : "Cadastro de Produtos"}
           </DialogTitle>
         </DialogHeader>
-        <form id="product-form" key={productToEdit?.id || "new"} onSubmit={handleSubmit}>
+        <form
+          id="product-form"
+          key={productToEdit?.id || "new"}
+          onSubmit={handleSubmit}
+        >
           <div className="grid gap-6 py-2">
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-2">
                 <Label htmlFor="nome">Nome do Produto</Label>
-                <Input id="nome" name="name" defaultValue={productToEdit?.name} placeholder="Digite o nome do produto" required />
+                <Input
+                  id="nome"
+                  name="name"
+                  defaultValue={productToEdit?.name}
+                  placeholder="Digite o nome do produto"
+                  required
+                />
               </div>
               <div className="flex flex-col gap-2">
                 <Label htmlFor="codigo">Código Interno do Produto</Label>
-                <Input id="codigo" name="code" defaultValue={productToEdit?.code} placeholder="Digite o código interno do produto" required />
+                <Input
+                  id="codigo"
+                  name="code"
+                  defaultValue={productToEdit?.code}
+                  placeholder="Digite o código interno do produto"
+                  required
+                />
               </div>
             </div>
 
-            <div className="grid grid-cols-[1fr_1fr_auto] gap-4 items-end">
+            <div className="grid grid-cols-[1fr_1fr_auto] items-end gap-4">
               <div className="flex flex-col gap-2">
                 <Label>Categoria</Label>
-                <Select name="categoryId" defaultValue={productToEdit?.category?.id?.toString()} required>
+                <Select
+                  name="categoryId"
+                  defaultValue={productToEdit?.category?.id?.toString()}
+                  required
+                >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Selecione" />
                   </SelectTrigger>
@@ -131,7 +155,11 @@ export function ProductFormDialog({ open, onOpenChange, productToEdit }: Product
               </div>
               <div className="flex flex-col gap-2">
                 <Label>Marca</Label>
-                <Select name="brandId" defaultValue={productToEdit?.brand?.id?.toString()} required>
+                <Select
+                  name="brandId"
+                  defaultValue={productToEdit?.brand?.id?.toString()}
+                  required
+                >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Selecione" />
                   </SelectTrigger>
@@ -146,10 +174,14 @@ export function ProductFormDialog({ open, onOpenChange, productToEdit }: Product
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
               <div className="flex flex-col gap-2">
                 <Label>Unidade de Medida</Label>
-                <Select name="measurementUnitId" defaultValue={productToEdit?.measurementUnit?.id?.toString()} required>
+                <Select
+                  name="measurementUnitId"
+                  defaultValue={productToEdit?.measurementUnit?.id?.toString()}
+                  required
+                >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Selecione" />
                   </SelectTrigger>
@@ -164,11 +196,23 @@ export function ProductFormDialog({ open, onOpenChange, productToEdit }: Product
               </div>
               <div className="flex flex-col gap-2">
                 <Label htmlFor="estoqueMin">Estoque Mínimo</Label>
-                <Input id="estoqueMin" name="minStock" defaultValue={productToEdit?.minStock} type="number" placeholder="Mínimo" />
+                <Input
+                  id="estoqueMin"
+                  name="minStock"
+                  defaultValue={productToEdit?.minStock}
+                  type="number"
+                  placeholder="Mínimo"
+                />
               </div>
               <div className="flex flex-col gap-2">
                 <Label htmlFor="estoqueMax">Estoque Máximo</Label>
-                <Input id="estoqueMax" name="maxStock" defaultValue={productToEdit?.maxStock} type="number" placeholder="Máximo" />
+                <Input
+                  id="estoqueMax"
+                  name="maxStock"
+                  defaultValue={productToEdit?.maxStock}
+                  type="number"
+                  placeholder="Máximo"
+                />
               </div>
             </div>
 
@@ -185,9 +229,19 @@ export function ProductFormDialog({ open, onOpenChange, productToEdit }: Product
           </div>
         </form>
         <DialogFooter>
-          <Button variant="outline" type="button" onClick={() => onOpenChange(false)}>Cancelar</Button>
+          <Button
+            variant="outline"
+            type="button"
+            onClick={() => onOpenChange(false)}
+          >
+            Cancelar
+          </Button>
           <Button type="submit" form="product-form" disabled={isPending}>
-            {isPending ? "Salvando..." : (isEditing ? "Salvar alterações" : "Adicionar produto")}
+            {isPending
+              ? "Salvando..."
+              : isEditing
+                ? "Salvar alterações"
+                : "Adicionar produto"}
           </Button>
         </DialogFooter>
       </DialogContent>

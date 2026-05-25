@@ -3,7 +3,6 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL: env.VITE_API_BASE_URL,
-  withCredentials: true,
 });
 
 let getAuthToken: (() => string | null) | null = null;
@@ -25,6 +24,7 @@ api.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+
   return config;
 });
 

@@ -1,10 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreateView } from "@/components/views/create-view";
-import { BrandForm } from "./-components/brand-form";
-import { createProductBrand } from "@/api/brand";
+import { ProductBrandForm } from "./-components/product-brand-form";
+import { createProductBrand } from "@/api/product-brands";
 
-export const Route = createFileRoute("/_app/brand/new")({
+export const Route = createFileRoute("/_app/product-brand/new")({
   component: BrandNewPage,
   head: () => ({
     meta: [
@@ -22,8 +22,8 @@ function BrandNewPage() {
   const createMutation = useMutation({
     mutationFn: createProductBrand,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["brands"] });
-      navigate({ to: "/brand" });
+      queryClient.invalidateQueries({ queryKey: ["product-brands"] });
+      navigate({ to: "/product-brand" });
     },
   });
 
@@ -32,8 +32,8 @@ function BrandNewPage() {
   }
 
   return (
-    <CreateView formId="brand-form">
-      <BrandForm onSubmit={handleSubmit} />
+    <CreateView formId="product-brand-form">
+      <ProductBrandForm onSubmit={handleSubmit} />
     </CreateView>
   );
 }

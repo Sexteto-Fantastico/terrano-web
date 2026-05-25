@@ -1,13 +1,24 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { DataTableFilterMenu } from "@/components/ui/data-table/data-table-filter-menu";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
 import { useMemo } from "react";
-import { fetchUsers, type User } from "@/api/user";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import {
+  fetchUsers,
+  deleteUser,
+  restoreUser,
+  type User,
+  type UserFilters,
+} from "@/api/users";
+import {
+  keepPreviousData,
+  useQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { type PaginatedData } from "@/components/ui/data-table/@types";
 import { DataView } from "@/components/views/data-view";
 import { useFilters } from "@/hooks/use-filters";
 import { DataTable } from "@/components/ui/data-table/data-table";
-import type { Filters } from "@/components/ui/data-table/@types";
 import { useDataTable } from "@/hooks/use-data-table";
 import { Separator } from "@/components/ui/separator";
 import { DataTableToolbar } from "@/components/ui/data-table/data-table-toolbar";
@@ -18,7 +29,7 @@ import { userFilterConfig } from "./-components/user-filter-config";
 
 export const Route = createFileRoute("/_app/user/")({
   component: UserPage,
-  validateSearch: () => ({}) as Filters<User>,
+  validateSearch: () => ({}) as UserFilters,
   head: () => ({
     meta: [
       {
@@ -30,38 +41,90 @@ export const Route = createFileRoute("/_app/user/")({
 
 function UserPage() {
   const { filters, setFilters, resetFilters } = useFilters(Route.id);
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading } = useQuery<PaginatedData<User>>({
     queryKey: ["users", filters],
     queryFn: () => fetchUsers(filters),
     placeholderData: keepPreviousData,
   });
 
-  function handleView(userId: number) {
-    console.log("Visualizar usuário", userId);
-  }
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) => deleteUser(id),
+    onMutate: async (userId) => {
+      await queryClient.cancelQueries({ queryKey: ["users", filters] });
+      const previousData = queryClient.getQueryData(["users", filters]);
+      queryClient.setQueryData(["users", filters], (old: any) => {
+        if (!old) return old;
+        return {
+          ...old,
+          result: old.result.map((u: User) =>
+            u.id === userId ? { ...u, isActive: false } : u
+          ),
+        };
+      });
+      return { previousData };
+    },
+    onError: (_err, _userId, context) => {
+      queryClient.setQueryData(["users", filters], context?.previousData);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
+  });
+
+  const restoreMutation = useMutation({
+    mutationFn: (id: number) => restoreUser(id),
+    onMutate: async (userId) => {
+      await queryClient.cancelQueries({ queryKey: ["users", filters] });
+      const previousData = queryClient.getQueryData(["users", filters]);
+      queryClient.setQueryData(["users", filters], (old: any) => {
+        if (!old) return old;
+        return {
+          ...old,
+          result: old.result.map((u: User) =>
+            u.id === userId ? { ...u, isActive: true } : u
+          ),
+        };
+      });
+      return { previousData };
+    },
+    onError: (_err, _userId, context) => {
+      queryClient.setQueryData(["users", filters], context?.previousData);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
+  });
 
   function handleEdit(userId: number) {
-    console.log("Editar usuário", userId);
+    navigate({
+      to: "/user/edit",
+      search: { id: userId.toString() },
+    });
   }
 
   function handleDelete(userId: number) {
-    console.log("Excluir usuário", userId);
+    deleteMutation.mutate(userId);
   }
 
   function handleToggleActive(userId: number, value: boolean) {
-    console.log("Toggle active usuário", userId, value);
+    if (value) {
+      restoreMutation.mutate(userId);
+    } else {
+      deleteMutation.mutate(userId);
+    }
   }
 
   const columns = useMemo(
     () =>
       getUserTableColumns({
-        onView: handleView,
         onEdit: handleEdit,
         onDelete: handleDelete,
         onToggleActive: handleToggleActive,
       }),
-    []
+    [deleteMutation, restoreMutation]
   );
 
   const { table } = useDataTable({

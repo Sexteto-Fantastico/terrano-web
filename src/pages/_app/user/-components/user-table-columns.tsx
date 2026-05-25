@@ -1,22 +1,20 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import type { User } from "@/api/user";
+import type { User } from "@/api/users";
 import {
   createActionColumn,
   createHeaderColumn,
   createBooleanColumn,
 } from "@/components/ui/data-table/data-table-helpers";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { EyeIcon, SquarePenIcon, Trash2Icon } from "lucide-react";
+import { SquarePenIcon, Trash2Icon } from "lucide-react";
 
 export type UserTableActionHandlers = {
-  onView: (userId: number) => void;
   onEdit: (userId: number) => void;
   onDelete: (userId: number) => void;
   onToggleActive: (userId: number, value: boolean) => void;
 };
 
 export function getUserTableColumns({
-  onView,
   onEdit,
   onDelete,
   onToggleActive,
@@ -54,10 +52,6 @@ export function getUserTableColumns({
 
       return (
         <>
-          <DropdownMenuItem onSelect={() => onView(user.id)}>
-            <EyeIcon className="me-2" />
-            Visualizar
-          </DropdownMenuItem>
           <DropdownMenuItem onSelect={() => onEdit(user.id)}>
             <SquarePenIcon className="me-2" />
             Editar

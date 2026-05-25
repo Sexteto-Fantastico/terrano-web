@@ -41,7 +41,7 @@ function SignInPage() {
     onSubmit: async ({ value }) => {
       try {
         const response = await login(value);
-        setToken(response.token);
+        setToken(response.token, response.expiresAt);
         setMustResetPassword(response.mustResetPassword ?? false);
         if (response.mustResetPassword) {
           navigate({ to: "/define-password" });
