@@ -1,4 +1,5 @@
 import api from "@/lib/axios";
+import type { User } from "./users";
 
 export type LoginRequestDto = {
   email: string;
@@ -41,6 +42,11 @@ export async function resetPassword(
 ): Promise<{ message: string }> {
   const { data: response } = await api.post("/auth/reset-password", data);
   return response;
+}
+
+export async function fetchCurrentUser(): Promise<User> {
+  const { data } = await api.get("/auth/me");
+  return data;
 }
 
 export async function definePassword(
