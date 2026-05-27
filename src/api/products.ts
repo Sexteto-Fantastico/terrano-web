@@ -61,6 +61,11 @@ export async function fetchProducts(
   return fetchPaginated<Product, ProductQuery>("/products", filters);
 }
 
+export async function fetchProductById(id: number): Promise<Product> {
+  const { data } = await api.get<Product>(`/products/${id}`);
+  return data;
+}
+
 export async function createProduct(
   data: CreateProductRequest
 ): Promise<Product> {

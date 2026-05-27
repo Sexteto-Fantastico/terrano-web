@@ -2,6 +2,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import type { Product } from "@/api/products";
 import {
   createActionColumn,
+  createBooleanColumn,
   createHeaderColumn,
 } from "@/components/ui/data-table/data-table-helpers";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
@@ -9,7 +10,7 @@ import { SquarePenIcon, Trash2Icon } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 
 export type ProductTableActionHandlers = {
-  onEdit: (product: Product) => void;
+  onEdit: (productId: number) => void;
   onDelete: (productId: number) => void;
   onToggleActive: (product: Product, checked: boolean) => void;
 };
@@ -31,12 +32,10 @@ export function getProductTableColumns({
     {
       id: "categoryId",
       header: createHeaderColumn("Categoria"),
-      cell: ({ row }) => row.original.category?.name ?? "-",
     },
     {
       id: "brandId",
       header: createHeaderColumn("Marca"),
-      cell: ({ row }) => row.original.brand?.name ?? "-",
     },
     {
       id: "measurementUnit",
@@ -49,7 +48,6 @@ export function getProductTableColumns({
     {
       accessorKey: "minStock",
       header: createHeaderColumn("Estoque Mín"),
-      cell: ({ row }) => row.original.minStock ?? "-",
     },
     {
       accessorKey: "maxStock",
@@ -78,7 +76,7 @@ export function getProductTableColumns({
       const product = row.original;
       return (
         <>
-          <DropdownMenuItem onSelect={() => onEdit(product)}>
+          <DropdownMenuItem onSelect={() => onEdit(product.id)}>
             <SquarePenIcon className="me-2" />
             Editar
           </DropdownMenuItem>

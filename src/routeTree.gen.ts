@@ -24,6 +24,8 @@ import { Route as AppProductBrandIndexRouteImport } from './pages/_app/product-b
 import { Route as AppCategoryIndexRouteImport } from './pages/_app/category/index'
 import { Route as AppUserNewRouteImport } from './pages/_app/user/new'
 import { Route as AppUserEditRouteImport } from './pages/_app/user/edit'
+import { Route as AppProductNewRouteImport } from './pages/_app/product/new'
+import { Route as AppProductEditRouteImport } from './pages/_app/product/edit'
 import { Route as AppProductBrandNewRouteImport } from './pages/_app/product-brand/new'
 import { Route as AppProductBrandEditRouteImport } from './pages/_app/product-brand/edit'
 import { Route as AppCategoryNewRouteImport } from './pages/_app/category/new'
@@ -102,6 +104,16 @@ const AppUserEditRoute = AppUserEditRouteImport.update({
   path: '/user/edit',
   getParentRoute: () => AppLayoutRoute,
 } as any)
+const AppProductNewRoute = AppProductNewRouteImport.update({
+  id: '/product/new',
+  path: '/product/new',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
+const AppProductEditRoute = AppProductEditRouteImport.update({
+  id: '/product/edit',
+  path: '/product/edit',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
 const AppProductBrandNewRoute = AppProductBrandNewRouteImport.update({
   id: '/product-brand/new',
   path: '/product-brand/new',
@@ -135,6 +147,8 @@ export interface FileRoutesByFullPath {
   '/category/new': typeof AppCategoryNewRoute
   '/product-brand/edit': typeof AppProductBrandEditRoute
   '/product-brand/new': typeof AppProductBrandNewRoute
+  '/product/edit': typeof AppProductEditRoute
+  '/product/new': typeof AppProductNewRoute
   '/user/edit': typeof AppUserEditRoute
   '/user/new': typeof AppUserNewRoute
   '/category/': typeof AppCategoryIndexRoute
@@ -154,6 +168,8 @@ export interface FileRoutesByTo {
   '/category/new': typeof AppCategoryNewRoute
   '/product-brand/edit': typeof AppProductBrandEditRoute
   '/product-brand/new': typeof AppProductBrandNewRoute
+  '/product/edit': typeof AppProductEditRoute
+  '/product/new': typeof AppProductNewRoute
   '/user/edit': typeof AppUserEditRoute
   '/user/new': typeof AppUserNewRoute
   '/category': typeof AppCategoryIndexRoute
@@ -176,6 +192,8 @@ export interface FileRoutesById {
   '/_app/category/new': typeof AppCategoryNewRoute
   '/_app/product-brand/edit': typeof AppProductBrandEditRoute
   '/_app/product-brand/new': typeof AppProductBrandNewRoute
+  '/_app/product/edit': typeof AppProductEditRoute
+  '/_app/product/new': typeof AppProductNewRoute
   '/_app/user/edit': typeof AppUserEditRoute
   '/_app/user/new': typeof AppUserNewRoute
   '/_app/category/': typeof AppCategoryIndexRoute
@@ -197,6 +215,8 @@ export interface FileRouteTypes {
     | '/category/new'
     | '/product-brand/edit'
     | '/product-brand/new'
+    | '/product/edit'
+    | '/product/new'
     | '/user/edit'
     | '/user/new'
     | '/category/'
@@ -216,6 +236,8 @@ export interface FileRouteTypes {
     | '/category/new'
     | '/product-brand/edit'
     | '/product-brand/new'
+    | '/product/edit'
+    | '/product/new'
     | '/user/edit'
     | '/user/new'
     | '/category'
@@ -237,6 +259,8 @@ export interface FileRouteTypes {
     | '/_app/category/new'
     | '/_app/product-brand/edit'
     | '/_app/product-brand/new'
+    | '/_app/product/edit'
+    | '/_app/product/new'
     | '/_app/user/edit'
     | '/_app/user/new'
     | '/_app/category/'
@@ -357,6 +381,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppUserEditRouteImport
       parentRoute: typeof AppLayoutRoute
     }
+    '/_app/product/new': {
+      id: '/_app/product/new'
+      path: '/product/new'
+      fullPath: '/product/new'
+      preLoaderRoute: typeof AppProductNewRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
+    '/_app/product/edit': {
+      id: '/_app/product/edit'
+      path: '/product/edit'
+      fullPath: '/product/edit'
+      preLoaderRoute: typeof AppProductEditRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
     '/_app/product-brand/new': {
       id: '/_app/product-brand/new'
       path: '/product-brand/new'
@@ -395,6 +433,8 @@ interface AppLayoutRouteChildren {
   AppCategoryNewRoute: typeof AppCategoryNewRoute
   AppProductBrandEditRoute: typeof AppProductBrandEditRoute
   AppProductBrandNewRoute: typeof AppProductBrandNewRoute
+  AppProductEditRoute: typeof AppProductEditRoute
+  AppProductNewRoute: typeof AppProductNewRoute
   AppUserEditRoute: typeof AppUserEditRoute
   AppUserNewRoute: typeof AppUserNewRoute
   AppCategoryIndexRoute: typeof AppCategoryIndexRoute
@@ -410,6 +450,8 @@ const AppLayoutRouteChildren: AppLayoutRouteChildren = {
   AppCategoryNewRoute: AppCategoryNewRoute,
   AppProductBrandEditRoute: AppProductBrandEditRoute,
   AppProductBrandNewRoute: AppProductBrandNewRoute,
+  AppProductEditRoute: AppProductEditRoute,
+  AppProductNewRoute: AppProductNewRoute,
   AppUserEditRoute: AppUserEditRoute,
   AppUserNewRoute: AppUserNewRoute,
   AppCategoryIndexRoute: AppCategoryIndexRoute,
