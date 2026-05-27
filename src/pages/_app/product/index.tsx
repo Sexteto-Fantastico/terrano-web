@@ -9,7 +9,8 @@ import {
   type Product,
   type ProductFilters,
 } from "@/api/products";
-
+import { fetchAllProductBrands } from "@/api/product-brands";
+import { fetchAllProductCategories } from "@/api/product-categories";
 import {
   keepPreviousData,
   useQuery,

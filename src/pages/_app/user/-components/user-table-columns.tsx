@@ -27,20 +27,14 @@ export function getUserTableColumns({
     {
       accessorKey: "cpf",
       header: createHeaderColumn("CPF"),
-      enableSorting: false,
-      cell: ({ row }) => row.original.cpf ?? "-",
     },
     {
       id: "department",
       header: createHeaderColumn("departamento"),
-      enableSorting: false,
-      cell: ({ row }) => row.original.department?.name ?? "-",
     },
     {
       id: "role",
       header: createHeaderColumn("perfil de usuario"),
-      enableSorting: false,
-      cell: ({ row }) => row.original.role?.name ?? "-",
     },
     createBooleanColumn<User>({
       accessorKey: "isActive",

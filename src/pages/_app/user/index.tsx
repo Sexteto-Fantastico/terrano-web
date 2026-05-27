@@ -70,7 +70,7 @@ function UserPage() {
       queryClient.setQueryData(["users", filters], context?.previousData);
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: ["users", filters] });
     },
   });
 
@@ -94,7 +94,7 @@ function UserPage() {
       queryClient.setQueryData(["users", filters], context?.previousData);
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: ["users", filters] });
     },
   });
 

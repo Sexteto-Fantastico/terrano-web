@@ -72,7 +72,7 @@ function BrandPage() {
       );
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["product-brands"] });
+      queryClient.invalidateQueries({ queryKey: ["product-brands", filters] });
     },
   });
 
@@ -102,7 +102,7 @@ function BrandPage() {
       );
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["product-brands"] });
+      queryClient.invalidateQueries({ queryKey: ["product-brands", filters] });
     },
   });
 

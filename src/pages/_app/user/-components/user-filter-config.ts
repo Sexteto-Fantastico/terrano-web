@@ -47,6 +47,12 @@ export function useUserFilterConfig(): DataTableFilterConfigItem[] {
           { label: "Manager", value: "Manager" },
         ],
       },
+      {
+        id: "activeOnly",
+        label: "Ativo",
+        variant: "checkbox",
+        defaultValue: "true",
+      },
     ],
     [departmentOptions]
   );

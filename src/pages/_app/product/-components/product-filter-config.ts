@@ -1,13 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchAllProductBrands } from "@/api/product-brands";
-import { fetchProductCategories } from "@/api/product-categories";
+import { fetchAllProductCategories } from "@/api/product-categories";
 import { useMemo } from "react";
 import type { DataTableFilterConfigItem } from "@/components/ui/data-table/@types";
 
 export function useProductFilterConfig(): DataTableFilterConfigItem[] {
   const { data: categories = [] } = useQuery({
     queryKey: ["product-categories"],
-    queryFn: fetchProductCategories,
+    queryFn: fetchAllProductCategories,
   });
 
   const { data: brands = [] } = useQuery({
