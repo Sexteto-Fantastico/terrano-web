@@ -34,7 +34,7 @@ export async function fetchAllProductBrands(): Promise<ProductBrand[]> {
 export async function fetchProductBrands(
   filters: ProductBrandFilters
 ): Promise<PaginatedData<ProductBrand>> {
-  return fetchPaginated<ProductBrand>("/product-brands", filters);
+  return fetchPaginated<ProductBrand, ProductBrandQuery>("/product-brands", filters);
 }
 
 export async function fetchProductBrandById(id: number): Promise<ProductBrand> {

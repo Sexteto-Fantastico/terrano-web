@@ -25,7 +25,7 @@ import { DataTableToolbar } from "@/components/ui/data-table/data-table-toolbar"
 import { AddButton } from "@/components/button/add-button";
 import { ExportButton } from "@/components/button/export-button";
 import { getUserTableColumns } from "./-components/user-table-columns";
-import { userFilterConfig } from "./-components/user-filter-config";
+import { useUserFilterConfig } from "./-components/user-filter-config";
 
 export const Route = createFileRoute("/_app/user/")({
   component: UserPage,
@@ -127,6 +127,8 @@ function UserPage() {
     [deleteMutation, restoreMutation]
   );
 
+  const filterConfig = useUserFilterConfig();
+
   const { table } = useDataTable({
     data,
     columns,
@@ -137,7 +139,7 @@ function UserPage() {
   return (
     <DataView>
       <DataTableFilterMenu
-        filterConfig={userFilterConfig}
+        filterConfig={filterConfig}
         isLoading={isLoading}
         filters={filters}
         onFilter={setFilters}

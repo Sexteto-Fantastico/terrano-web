@@ -45,18 +45,20 @@ export type ProductUpdateRequest = {
   deletedAt?: string | null;
 };
 
-export type ProductFilters = {
+type ProductQuery = {
   name?: string;
   code?: string;
   brandId?: string;
   categoryId?: string;
   activeOnly?: string;
-} & Filters<Product>;
+};
+
+export type ProductFilters = Filters<ProductQuery>;
 
 export async function fetchProducts(
   filters: ProductFilters
 ): Promise<PaginatedData<Product>> {
-  return fetchPaginated<Product>("/products", filters);
+  return fetchPaginated<Product, ProductQuery>("/products", filters);
 }
 
 export async function createProduct(

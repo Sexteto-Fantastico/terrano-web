@@ -9,8 +9,7 @@ import {
   type Product,
   type ProductFilters,
 } from "@/api/products";
-import { fetchAllProductBrands } from "@/api/product-brands";
-import { fetchProductCategories } from "@/api/product-categories";
+
 import {
   keepPreviousData,
   useQuery,
@@ -27,7 +26,7 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { AddButton } from "@/components/button/add-button";
 import { ProductFormDialog } from "./-components/product-form-dialog";
 import { getProductTableColumns } from "./-components/product-table-columns";
-import { getProductFilterConfig } from "./-components/product-filter-config";
+import { useProductFilterConfig } from "./-components/product-filter-config";
 
 export const Route = createFileRoute("/_app/product/")({
   component: ProductPage,
@@ -45,16 +44,6 @@ function ProductPage() {
   const { filters, setFilters, resetFilters } = useFilters(Route.id);
   const [productToEdit, setProductToEdit] = useState<Product | undefined>();
   const [productToDelete, setProductToDelete] = useState<number | undefined>();
-
-  const { data: categories = [] } = useQuery({
-    queryKey: ["product-categories"],
-    queryFn: fetchProductCategories,
-  });
-
-  const { data: brands = [] } = useQuery({
-    queryKey: ["product-brands"],
-    queryFn: fetchAllProductBrands,
-  });
 
   const { data, isLoading } = useQuery({
     queryKey: ["products", filters],
@@ -137,15 +126,7 @@ function ProductPage() {
     }
   }
 
-  const categoryOptions = useMemo(
-    () => categories.map((c) => ({ label: c.name, value: String(c.id) })),
-    [categories]
-  );
-
-  const brandOptions = useMemo(
-    () => brands.map((b) => ({ label: b.name, value: String(b.id) })),
-    [brands]
-  );
+  const filterConfig = useProductFilterConfig();
 
   const columns = useMemo(
     () =>
@@ -157,16 +138,11 @@ function ProductPage() {
     []
   );
 
-  const filterConfig = useMemo(
-    () => getProductFilterConfig(categoryOptions, brandOptions),
-    [categoryOptions, brandOptions]
-  );
-
   const { table } = useDataTable({
     data,
     columns,
-    filters: filters as any,
-    setFilters: setFilters as any,
+    filters,
+    setFilters,
   });
 
   return (

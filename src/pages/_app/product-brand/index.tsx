@@ -11,12 +11,7 @@ import {
   type ProductBrandFilters,
 } from "@/api/product-brands";
 
-
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { DataView } from "@/components/views/data-view";
 import { useFilters } from "@/hooks/use-filters";
 import { DataTable } from "@/components/ui/data-table/data-table";
@@ -25,7 +20,7 @@ import { Separator } from "@/components/ui/separator";
 import { DataTableToolbar } from "@/components/ui/data-table/data-table-toolbar";
 import { DataTableFilterMenu } from "@/components/ui/data-table/data-table-filter-menu";
 import { AddButton } from "@/components/button/add-button";
-import { getProductBrandFilterConfig } from "./-components/product-brand-filter-config";
+import { useProductBrandFilterConfig } from "./-components/product-brand-filter-config";
 import { getProductBrandTableColumns } from "./-components/product-brand-table-columns";
 
 export const Route = createFileRoute("/_app/product-brand/")({
@@ -55,22 +50,26 @@ function BrandPage() {
     mutationFn: (id: number) => deleteProductBrand(id),
     onMutate: async (brandId) => {
       await queryClient.cancelQueries({ queryKey: ["product-brands"] });
-      const previousData = queryClient.getQueryData(["product-brands", filters]);
+      const previousData = queryClient.getQueryData([
+        "product-brands",
+        filters,
+      ]);
       queryClient.setQueryData(["product-brands", filters], (old: any) => {
         if (!old) return old;
         return {
           ...old,
-            result: old.result.map((p: ProductBrand) =>
-            p.id === brandId
-              ? { ...p, isActive: false }
-              : p
+          result: old.result.map((p: ProductBrand) =>
+            p.id === brandId ? { ...p, isActive: false } : p
           ),
         };
       });
       return { previousData };
     },
     onError: (_err, _productId, context) => {
-      queryClient.setQueryData(["product-brands", filters], context?.previousData);
+      queryClient.setQueryData(
+        ["product-brands", filters],
+        context?.previousData
+      );
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["product-brands"] });
@@ -81,22 +80,26 @@ function BrandPage() {
     mutationFn: (id: number) => restoreProductBrand(id),
     onMutate: async (brandId) => {
       await queryClient.cancelQueries({ queryKey: ["product-brands"] });
-      const previousData = queryClient.getQueryData(["product-brands", filters]);
+      const previousData = queryClient.getQueryData([
+        "product-brands",
+        filters,
+      ]);
       queryClient.setQueryData(["product-brands", filters], (old: any) => {
         if (!old) return old;
         return {
           ...old,
           result: old.result.map((p: ProductBrand) =>
-            p.id === brandId
-              ? { ...p, isActive: true }
-              : p
+            p.id === brandId ? { ...p, isActive: true } : p
           ),
         };
       });
       return { previousData };
     },
     onError: (_err, _productId, context) => {
-      queryClient.setQueryData(["product-brands", filters], context?.previousData);
+      queryClient.setQueryData(
+        ["product-brands", filters],
+        context?.previousData
+      );
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["product-brands"] });
@@ -119,25 +122,27 @@ function BrandPage() {
   }
 
   const columns = useMemo(
-    () => getProductBrandTableColumns({ onEdit: handleEdit, onToggleActive: handleToggleActive }),
+    () =>
+      getProductBrandTableColumns({
+        onEdit: handleEdit,
+        onToggleActive: handleToggleActive,
+      }),
     [deleteMutation, restoreMutation]
   );
 
   const { table, setTableFilters } = useDataTable({
     data,
     columns,
-    filters: filters as any,
-    setFilters: setFilters as any,
+    filters,
+    setFilters,
   });
 
-  const filterConfig = useMemo(
-    () =>  getProductBrandFilterConfig(), []
-  );
+  const filterConfig = useProductBrandFilterConfig();
 
   return (
     <DataView>
       <DataTableFilterMenu
-        filters={filters as any}
+        filters={filters}
         onFilter={setTableFilters}
         onClearFilters={resetFilters}
         filterConfig={filterConfig}
@@ -147,7 +152,9 @@ function BrandPage() {
         table={table}
         isLoading={isLoading}
         getRowClassName={(row) =>
-          row.original.isActive === false ? "line-through text-muted-foreground" : ""
+          row.original.isActive === false
+            ? "line-through text-muted-foreground"
+            : ""
         }
         actionBar={
           <DataTableToolbar table={table}>

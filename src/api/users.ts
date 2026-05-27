@@ -1,13 +1,9 @@
 import api from "@/lib/axios";
 import { fetchPaginated } from "@/lib/pagination";
-import type { Filters, PaginatedData } from "@/components/ui/data-table/@types";
+import type { Filters } from "@/components/ui/data-table/@types";
+import type { Department } from "./departments";
 
 export type Role = {
-  id: number;
-  name: string;
-};
-
-export type Department = {
   id: number;
   name: string;
 };
@@ -28,15 +24,16 @@ export type User = {
 
 type UserQuery = {
   name: string;
+  cpf?: string;
+  departmentId?: string;
+  role?: string;
   onlyActive: string;
 };
 
 export type UserFilters = Filters<UserQuery>;
 
-export async function fetchUsers(
-  filters: UserFilters
-): Promise<PaginatedData<User>> {
-  return fetchPaginated<User>("/users", filters);
+export async function fetchUsers(filters: UserFilters) {
+  return fetchPaginated<User, UserQuery>("/users", filters);
 }
 
 export async function getUserById(id: number): Promise<User> {

@@ -18,7 +18,7 @@ export const Route = createFileRoute("/_app/user/edit")({
 });
 
 function UserEditPage() {
-  const search = useSearch({ from: "/_app/user/edit" });
+  const search = Route.useSearch();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
