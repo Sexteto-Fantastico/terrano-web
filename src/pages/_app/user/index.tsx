@@ -29,7 +29,7 @@ import { useUserFilterConfig } from "./-components/user-filter-config";
 
 export const Route = createFileRoute("/_app/user/")({
   component: UserPage,
-  validateSearch: () => ({}) as UserFilters,
+  validateSearch: (): UserFilters => ({}),
   head: () => ({
     meta: [
       {

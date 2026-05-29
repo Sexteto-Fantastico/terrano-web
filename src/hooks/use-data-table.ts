@@ -1,6 +1,7 @@
-import {
-  type PaginatedData,
-  type Filters,
+import { type PaginatedData } from "@/components/ui/data-table/@types";
+import type {
+  PaginationParams,
+  SortParams,
 } from "@/components/ui/data-table/@types";
 import { sortByToState, stateToSortBy } from "@/lib/filters";
 import {
@@ -21,7 +22,7 @@ type BaseRow = Record<string, unknown>;
 
 type UseDataTableOptions<
   TData extends BaseRow,
-  TEntityFilters extends Filters<TData>,
+  TEntityFilters extends Partial<PaginationParams & SortParams>,
 > = {
   data?: PaginatedData<TData>;
   columns: ColumnDef<TData>[];
@@ -43,7 +44,7 @@ type UseDataTableOptions<
 
 export function useDataTable<
   TData extends BaseRow,
-  TEntityFilters extends Filters<TData>,
+  TEntityFilters extends Partial<PaginationParams & SortParams>,
 >({
   data = { result: [], rowCount: 0 },
   columns,

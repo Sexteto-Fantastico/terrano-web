@@ -51,21 +51,7 @@ export async function definePassword(
   return response;
 }
 
-export async function resetPassword(
-  data: ResetPasswordRequestDto
-): Promise<{ message: string }> {
-  const { data: response } = await api.post("/auth/reset-password", data);
-  return response;
-}
-
 export async function fetchCurrentUser(): Promise<User> {
   const { data } = await api.get("/auth/me");
   return data;
-}
-
-export async function definePassword(
-  data: DefinePasswordRequestDto
-): Promise<{ message: string }> {
-  const { data: response } = await api.patch("/auth/password", data);
-  return response;
 }

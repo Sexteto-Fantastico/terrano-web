@@ -28,7 +28,7 @@ import { useProductFilterConfig } from "./-components/product-filter-config";
 
 export const Route = createFileRoute("/_app/product/")({
   component: ProductPage,
-  validateSearch: () => ({}) as ProductFilters,
+  validateSearch: (): ProductFilters => ({}),
   head: () => ({
     meta: [
       {
