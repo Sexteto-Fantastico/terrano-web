@@ -1,37 +1,51 @@
 import api from "@/lib/axios";
 import type { User } from "./users";
 
-export type LoginRequestDto = {
+export type LoginRequest = {
   email: string;
   password: string;
 };
 
-export type LoginResponseDto = {
+export type LoginResponse = {
   token: string;
   expiresAt: string;
   mustResetPassword?: boolean;
 };
 
-export type ForgotPasswordRequestDto = {
+export type ForgotPasswordRequest = {
   email: string;
 };
 
-export type ResetPasswordRequestDto = {
+export type ResetPasswordRequest = {
   token: string;
   password: string;
 };
 
-export type DefinePasswordRequestDto = {
+export type DefinePasswordRequest = {
   password: string;
 };
 
-export async function login(data: LoginRequestDto): Promise<LoginResponseDto> {
+export async function login(data: LoginRequest): Promise<LoginResponse> {
   const { data: response } = await api.post("/auth/login", data);
   return response;
 }
 
 export async function forgotPassword(
-  data: ForgotPasswordRequestDto
+  data: ForgotPasswordRequest
+): Promise<{ message: string }> {
+  const { data: response } = await api.post("/auth/forgot-password", data);
+  return response;
+}
+
+export async function resetPassword(
+  data: ResetPasswordRequest
+): Promise<{ message: string }> {
+  const { data: response } = await api.post("/auth/reset-password", data);
+  return response;
+}
+
+export async function definePassword(
+  data: DefinePasswordRequest
 ): Promise<{ message: string }> {
   const { data: response } = await api.post("/auth/forgot-password", data);
   return response;

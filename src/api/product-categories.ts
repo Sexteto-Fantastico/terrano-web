@@ -18,13 +18,13 @@ export type ProductCategory = {
   parent?: ProductCategoryParent | null;
 };
 
-export type CreateProductCategoryRequestDTO = {
+export type CreateProductCategoryRequest = {
   name: string;
   description?: string;
   parentId?: number;
 };
 
-export type UpdateProductCategoryRequestDTO = {
+export type UpdateProductCategoryRequest = {
   id: number;
   name?: string;
   description?: string;
@@ -77,7 +77,7 @@ export async function fetchProductCategoryById(
 }
 
 export async function createProductCategory(
-  data: CreateProductCategoryRequestDTO
+  data: CreateProductCategoryRequest
 ): Promise<ProductCategory> {
   const { data: response } = await api.post<ProductCategory>(
     "/product-categories",
@@ -87,7 +87,7 @@ export async function createProductCategory(
 }
 
 export async function updateProductCategory(
-  data: UpdateProductCategoryRequestDTO
+  data: UpdateProductCategoryRequest
 ): Promise<ProductCategory> {
   const { data: response } = await api.put<ProductCategory>(
     `/product-categories/${data.id}`,

@@ -41,7 +41,7 @@ export async function getUserById(id: number): Promise<User> {
   return data;
 }
 
-export type CreateUserRequestDTO = {
+export type CreateUserRequest = {
   name: string;
   email: string;
   username: string;
@@ -50,7 +50,7 @@ export type CreateUserRequestDTO = {
   isActive?: boolean;
 };
 
-export type UpdateUserRequestDTO = {
+export type UpdateUserRequest = {
   id: number;
   name?: string;
   phone?: string;
@@ -60,12 +60,12 @@ export type UpdateUserRequestDTO = {
   isActive?: boolean;
 };
 
-export async function createUser(user: CreateUserRequestDTO): Promise<User> {
+export async function createUser(user: CreateUserRequest): Promise<User> {
   const { data } = await api.post("/users", user);
   return data;
 }
 
-export async function updateUser(data: UpdateUserRequestDTO): Promise<User> {
+export async function updateUser(data: UpdateUserRequest): Promise<User> {
   const { data: response } = await api.put<User>(`/users/${data.id}`, data);
   return response;
 }

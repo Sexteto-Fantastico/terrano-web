@@ -9,11 +9,11 @@ export type ProductBrand = {
   deletedAt?: string | null;
 };
 
-export type CreateProductBrandRequestDTO = {
+export type CreateProductBrandRequest = {
   name: string;
 };
 
-export type UpdateProductBrandRequestDTO = {
+export type UpdateProductBrandRequest = {
   id: number;
   name?: string;
   isActive?: boolean;
@@ -43,7 +43,7 @@ export async function fetchProductBrandById(id: number): Promise<ProductBrand> {
 }
 
 export async function createProductBrand(
-  data: CreateProductBrandRequestDTO
+  data: CreateProductBrandRequest
 ): Promise<ProductBrand> {
   const { data: response } = await api.post<ProductBrand>(
     "/product-brands",
@@ -53,7 +53,7 @@ export async function createProductBrand(
 }
 
 export async function updateProductBrand(
-  data: UpdateProductBrandRequestDTO
+  data: UpdateProductBrandRequest
 ): Promise<ProductBrand> {
   const { data: response } = await api.put<ProductBrand>(
     `/product-brands/${data.id}`,

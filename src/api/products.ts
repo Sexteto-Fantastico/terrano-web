@@ -32,7 +32,7 @@ export type CreateProductRequest = {
   maxStock?: number;
 };
 
-export type ProductUpdateRequest = {
+export type UpdateProductRequest = {
   id: number;
   name?: string;
   code?: string;
@@ -74,7 +74,7 @@ export async function createProduct(
 }
 
 export async function updateProduct(
-  data: ProductUpdateRequest
+  data: UpdateProductRequest
 ): Promise<Product> {
   const { data: response } = await api.put<Product>(
     `/products/${data.id}`,
