@@ -1,5 +1,6 @@
 import { useSearch, useNavigate, createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { z } from "zod";
 import { CreateView } from "@/components/views/create-view";
 import { UserForm } from "./-components/user-form";
@@ -32,6 +33,7 @@ function UserEditPage() {
     mutationFn: updateUser,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
+      toast.success("Usuário atualizado com sucesso");
       navigate({ to: "/user" });
     },
   });

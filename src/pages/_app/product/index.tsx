@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { DataTableFilterMenu } from "@/components/ui/data-table/data-table-filter-menu";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 import {
   deleteProduct,
   fetchProducts,
@@ -53,24 +54,8 @@ function ProductPage() {
 
   const deleteMutation = useMutation({
     mutationFn: deleteProduct,
-    onMutate: async (productId) => {
-      await queryClient.cancelQueries({ queryKey: ["products"] });
-      const previousData = queryClient.getQueryData(["products", filters]);
-      queryClient.setQueryData(["products", filters], (old: any) => {
-        if (!old) return old;
-        return {
-          ...old,
-          result: old.result.map((p: Product) =>
-            p.id === productId
-              ? { ...p, deletedAt: new Date().toISOString() }
-              : p
-          ),
-        };
-      });
-      return { previousData };
-    },
-    onError: (_err, _productId, context) => {
-      queryClient.setQueryData(["products", filters], context?.previousData);
+    onSuccess: () => {
+      toast.success("Produto excluído com sucesso");
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
@@ -80,22 +65,8 @@ function ProductPage() {
 
   const restoreMutation = useMutation({
     mutationFn: restoreProduct,
-    onMutate: async (productId) => {
-      await queryClient.cancelQueries({ queryKey: ["products"] });
-      const previousData = queryClient.getQueryData(["products", filters]);
-      queryClient.setQueryData(["products", filters], (old: any) => {
-        if (!old) return old;
-        return {
-          ...old,
-          result: old.result.map((p: Product) =>
-            p.id === productId ? { ...p, deletedAt: null } : p
-          ),
-        };
-      });
-      return { previousData };
-    },
-    onError: (_err, _productId, context) => {
-      queryClient.setQueryData(["products", filters], context?.previousData);
+    onSuccess: () => {
+      toast.success("Produto restaurado com sucesso");
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
@@ -105,7 +76,7 @@ function ProductPage() {
   function handleEdit(productId: number) {
     navigate({
       to: "/product/edit",
-      search: { id: productId.toString() },
+      search: { id: productId },
     });
   }
 

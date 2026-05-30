@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { CreateView } from "@/components/views/create-view";
 import { UserForm } from "./-components/user-form";
 import { createUser } from "@/api/users";
@@ -19,6 +20,7 @@ function UserNewPage() {
     mutationFn: createUser,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
+      toast.success("Usuário criado com sucesso");
       navigate({ to: "/user" });
     },
   });

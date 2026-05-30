@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { DataTableFilterMenu } from "@/components/ui/data-table/data-table-filter-menu";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
 import { useMemo } from "react";
+import { toast } from "sonner";
 import {
   fetchUsers,
   deleteUser,
@@ -52,22 +53,8 @@ function UserPage() {
 
   const deleteMutation = useMutation({
     mutationFn: (id: number) => deleteUser(id),
-    onMutate: async (userId) => {
-      await queryClient.cancelQueries({ queryKey: ["users", filters] });
-      const previousData = queryClient.getQueryData(["users", filters]);
-      queryClient.setQueryData(["users", filters], (old: any) => {
-        if (!old) return old;
-        return {
-          ...old,
-          result: old.result.map((u: User) =>
-            u.id === userId ? { ...u, isActive: false } : u
-          ),
-        };
-      });
-      return { previousData };
-    },
-    onError: (_err, _userId, context) => {
-      queryClient.setQueryData(["users", filters], context?.previousData);
+    onSuccess: () => {
+      toast.success("Usuário excluído com sucesso");
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["users", filters] });
@@ -76,22 +63,8 @@ function UserPage() {
 
   const restoreMutation = useMutation({
     mutationFn: (id: number) => restoreUser(id),
-    onMutate: async (userId) => {
-      await queryClient.cancelQueries({ queryKey: ["users", filters] });
-      const previousData = queryClient.getQueryData(["users", filters]);
-      queryClient.setQueryData(["users", filters], (old: any) => {
-        if (!old) return old;
-        return {
-          ...old,
-          result: old.result.map((u: User) =>
-            u.id === userId ? { ...u, isActive: true } : u
-          ),
-        };
-      });
-      return { previousData };
-    },
-    onError: (_err, _userId, context) => {
-      queryClient.setQueryData(["users", filters], context?.previousData);
+    onSuccess: () => {
+      toast.success("Usuário restaurado com sucesso");
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["users", filters] });

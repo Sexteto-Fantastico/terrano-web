@@ -20,6 +20,7 @@ import { Separator } from "@/components/ui/separator";
 import { DataTableToolbar } from "@/components/ui/data-table/data-table-toolbar";
 import { DataTableFilterMenu } from "@/components/ui/data-table/data-table-filter-menu";
 import { AddButton } from "@/components/button/add-button";
+import { toast } from "sonner";
 import { useProductBrandFilterConfig } from "./-components/product-brand-filter-config";
 import { getProductBrandTableColumns } from "./-components/product-brand-table-columns";
 
@@ -48,28 +49,8 @@ function BrandPage() {
 
   const deleteMutation = useMutation({
     mutationFn: (id: number) => deleteProductBrand(id),
-    onMutate: async (brandId) => {
-      await queryClient.cancelQueries({ queryKey: ["product-brands"] });
-      const previousData = queryClient.getQueryData([
-        "product-brands",
-        filters,
-      ]);
-      queryClient.setQueryData(["product-brands", filters], (old: any) => {
-        if (!old) return old;
-        return {
-          ...old,
-          result: old.result.map((p: ProductBrand) =>
-            p.id === brandId ? { ...p, isActive: false } : p
-          ),
-        };
-      });
-      return { previousData };
-    },
-    onError: (_err, _productId, context) => {
-      queryClient.setQueryData(
-        ["product-brands", filters],
-        context?.previousData
-      );
+    onSuccess: () => {
+      toast.success("Marca excluída com sucesso");
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["product-brands", filters] });
@@ -78,28 +59,8 @@ function BrandPage() {
 
   const restoreMutation = useMutation({
     mutationFn: (id: number) => restoreProductBrand(id),
-    onMutate: async (brandId) => {
-      await queryClient.cancelQueries({ queryKey: ["product-brands"] });
-      const previousData = queryClient.getQueryData([
-        "product-brands",
-        filters,
-      ]);
-      queryClient.setQueryData(["product-brands", filters], (old: any) => {
-        if (!old) return old;
-        return {
-          ...old,
-          result: old.result.map((p: ProductBrand) =>
-            p.id === brandId ? { ...p, isActive: true } : p
-          ),
-        };
-      });
-      return { previousData };
-    },
-    onError: (_err, _productId, context) => {
-      queryClient.setQueryData(
-        ["product-brands", filters],
-        context?.previousData
-      );
+    onSuccess: () => {
+      toast.success("Marca restaurada com sucesso");
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["product-brands", filters] });
@@ -109,7 +70,7 @@ function BrandPage() {
   function handleEdit(brandId: number) {
     navigate({
       to: "/product-brand/edit",
-      search: { id: brandId.toString() },
+      search: { id: brandId },
     });
   }
 

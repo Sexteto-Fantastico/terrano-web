@@ -40,10 +40,7 @@ export function getProductTableColumns({
     {
       id: "measurementUnit",
       header: createHeaderColumn("Unid. Medida"),
-      cell: ({ row }) =>
-        row.original.measurementUnit?.symbol ??
-        row.original.measurementUnit?.name ??
-        "-",
+      cell: ({ row }) => row.original.measurementUnit?.name,
     },
     {
       accessorKey: "minStock",
@@ -52,26 +49,12 @@ export function getProductTableColumns({
     {
       accessorKey: "maxStock",
       header: createHeaderColumn("Estoque Máx"),
-      cell: ({ row }) => row.original.maxStock ?? "-",
     },
-    {
-      id: "activeOnly",
-      accessorFn: (row: Product) => !row.deletedAt,
-      header: createHeaderColumn("Ativo"),
-      enableSorting: false,
-      enableHiding: false,
-      size: 80,
-      cell: ({ row }) => {
-        const product = row.original;
-        const isActive = !product.deletedAt;
-        return (
-          <Switch
-            checked={isActive}
-            onCheckedChange={(checked) => onToggleActive(product, checked)}
-          />
-        );
-      },
-    },
+    createBooleanColumn<Product>({
+      accessorKey: "deletedAt",
+      title: "ativo",
+      onToggle: (product, value) => onToggleActive(product, value),
+    }),
     createActionColumn(({ row }) => {
       const product = row.original;
       return (

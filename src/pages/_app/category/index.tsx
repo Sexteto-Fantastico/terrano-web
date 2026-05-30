@@ -18,6 +18,7 @@ import { DataTable } from "@/components/ui/data-table/data-table";
 import { useDataTable } from "@/hooks/use-data-table";
 import { Separator } from "@/components/ui/separator";
 import { DataTableToolbar } from "@/components/ui/data-table/data-table-toolbar";
+import { toast } from "sonner";
 import { DataTableFilterMenu } from "@/components/ui/data-table/data-table-filter-menu";
 import { AddButton } from "@/components/button/add-button";
 import { getCategoryFilterConfig } from "./-components/category-filter-config";
@@ -48,24 +49,8 @@ function CategoryPage() {
 
   const deleteMutation = useMutation({
     mutationFn: (id: number) => deleteProductCategory(id),
-    onMutate: async (categoryId) => {
-      await queryClient.cancelQueries({ queryKey: ["categories"] });
-      const previousData = queryClient.getQueryData(["categories", filters]);
-      queryClient.setQueryData(["categories", filters], (old: any) => {
-        if (!old) return old;
-        return {
-          ...old,
-          result: old.result.map((c: ProductCategory) =>
-            c.id === categoryId
-              ? { ...c, isActive: false, deletedAt: new Date().toISOString() }
-              : c
-          ),
-        };
-      });
-      return { previousData };
-    },
-    onError: (_err, _categoryId, context) => {
-      queryClient.setQueryData(["categories", filters], context?.previousData);
+    onSuccess: () => {
+      toast.success("Categoria excluída com sucesso");
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });
@@ -74,22 +59,8 @@ function CategoryPage() {
 
   const restoreMutation = useMutation({
     mutationFn: (id: number) => restoreProductCategory(id),
-    onMutate: async (categoryId) => {
-      await queryClient.cancelQueries({ queryKey: ["categories"] });
-      const previousData = queryClient.getQueryData(["categories", filters]);
-      queryClient.setQueryData(["categories", filters], (old: any) => {
-        if (!old) return old;
-        return {
-          ...old,
-          result: old.result.map((c: ProductCategory) =>
-            c.id === categoryId ? { ...c, isActive: true, deletedAt: null } : c
-          ),
-        };
-      });
-      return { previousData };
-    },
-    onError: (_err, _categoryId, context) => {
-      queryClient.setQueryData(["categories", filters], context?.previousData);
+    onSuccess: () => {
+      toast.success("Categoria restaurada com sucesso");
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });
@@ -99,7 +70,7 @@ function CategoryPage() {
   function handleEdit(categoryId: number) {
     navigate({
       to: "/category/edit",
-      search: { id: categoryId.toString() },
+      search: { id: categoryId },
     });
   }
 

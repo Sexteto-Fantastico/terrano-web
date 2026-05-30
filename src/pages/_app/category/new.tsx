@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { CreateView } from "@/components/views/create-view";
 import { CategoryForm, type CategoryFormValues } from "./-components/category-form";
 import { createProductCategory } from "@/api/product-categories";
@@ -23,6 +24,7 @@ function CategoryNewPage() {
     mutationFn: createProductCategory,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });
+      toast.success("Categoria criada com sucesso");
       navigate({ to: "/category" });
     },
   });

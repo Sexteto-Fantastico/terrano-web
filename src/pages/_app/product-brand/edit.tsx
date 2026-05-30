@@ -4,6 +4,7 @@ import {
   createFileRoute,
 } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { z } from "zod";
 import { CreateView } from "@/components/views/create-view";
 import { ProductBrandForm } from "./-components/product-brand-form";
@@ -41,6 +42,7 @@ function BrandComponent() {
       queryClient.invalidateQueries({
         queryKey: ["product-brands", search.id],
       });
+      toast.success("Marca atualizada com sucesso");
       navigate({ to: "/product-brand" });
     },
   });

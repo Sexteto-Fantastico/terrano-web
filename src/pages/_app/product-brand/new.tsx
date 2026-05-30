@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { CreateView } from "@/components/views/create-view";
 import { ProductBrandForm } from "./-components/product-brand-form";
 import { createProductBrand } from "@/api/product-brands";
@@ -23,6 +24,7 @@ function BrandNewPage() {
     mutationFn: createProductBrand,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["product-brands"] });
+      toast.success("Marca criada com sucesso");
       navigate({ to: "/product-brand" });
     },
   });

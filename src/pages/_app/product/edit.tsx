@@ -1,13 +1,18 @@
-import { useSearch, useNavigate, createFileRoute } from '@tanstack/react-router'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { z } from 'zod'
-import { CreateView } from '@/components/views/create-view'
-import { ProductForm } from './-components/product-form'
-import { fetchProductById, updateProduct } from '@/api/products'
+import {
+  useSearch,
+  useNavigate,
+  createFileRoute,
+} from "@tanstack/react-router";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { z } from "zod";
+import { CreateView } from "@/components/views/create-view";
+import { ProductForm } from "./-components/product-form";
+import { fetchProductById, updateProduct } from "@/api/products";
 
-export const Route = createFileRoute('/_app/product/edit')({
+export const Route = createFileRoute("/_app/product/edit")({
   component: ProductEditComponent,
-  validateSearch: z.object({ id: z.string().min(1) }),
+  validateSearch: z.object({ id: z.number() }),
   head: () => ({
     meta: [
       {
@@ -18,37 +23,38 @@ export const Route = createFileRoute('/_app/product/edit')({
 });
 
 function ProductEditComponent() {
-  const search = useSearch({ from: '/_app/product/edit' })
-  const navigate = useNavigate()
-  const queryClient = useQueryClient()
+  const search = useSearch({ from: "/_app/product/edit" });
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const productQuery = useQuery({
-    queryKey: ['product', search.id],
+    queryKey: ["product", search.id],
     queryFn: () => fetchProductById(Number(search.id)),
     enabled: Boolean(search.id),
-  })
+  });
 
   const updateMutation = useMutation({
     mutationFn: updateProduct,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products'] })
-      navigate({ to: '/product' })
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      toast.success("Produto atualizado com sucesso");
+      navigate({ to: "/product" });
     },
-  })
+  });
 
   if (!search.id) {
-    return <div>Produto inválido</div>
+    return <div>Produto inválido</div>;
   }
 
   if (productQuery.isLoading) {
-    return <div>Carregando...</div>
+    return <div>Carregando...</div>;
   }
 
   if (!productQuery.data) {
-    return <div>Produto não encontrado</div>
+    return <div>Produto não encontrado</div>;
   }
 
-  const product = productQuery.data
+  const product = productQuery.data;
 
   return (
     <CreateView formId="product-form">
@@ -62,9 +68,9 @@ function ProductEditComponent() {
         initialMinStock={product.minStock}
         initialMaxStock={product.maxStock}
         onSubmit={async (values) => {
-          await updateMutation.mutateAsync({ id: product.id, ...values })
+          await updateMutation.mutateAsync({ id: product.id, ...values });
         }}
       />
     </CreateView>
-  )
+  );
 }
