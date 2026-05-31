@@ -10,7 +10,7 @@ import {
   type ProductBrand,
   type ProductBrandFilters,
 } from "@/api/product-brands";
-
+import { toast } from "sonner";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { DataView } from "@/components/views/data-view";
 import { useFilters } from "@/hooks/use-filters";
@@ -20,7 +20,6 @@ import { Separator } from "@/components/ui/separator";
 import { DataTableToolbar } from "@/components/ui/data-table/data-table-toolbar";
 import { DataTableFilterMenu } from "@/components/ui/data-table/data-table-filter-menu";
 import { AddButton } from "@/components/button/add-button";
-import { toast } from "sonner";
 import { useProductBrandFilterConfig } from "./-components/product-brand-filter-config";
 import { getProductBrandTableColumns } from "./-components/product-brand-table-columns";
 
@@ -48,9 +47,12 @@ function BrandPage() {
   const queryClient = useQueryClient();
 
   const deleteMutation = useMutation({
-    mutationFn: (id: number) => deleteProductBrand(id),
-    onSuccess: () => {
+    mutationFn: async (id: number) => {
+      await deleteProductBrand(id);
       toast.success("Marca excluída com sucesso");
+    },
+    onError: () => {
+      toast.error("Erro ao processar operação!");
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["product-brands"] });
@@ -58,9 +60,12 @@ function BrandPage() {
   });
 
   const restoreMutation = useMutation({
-    mutationFn: (id: number) => restoreProductBrand(id),
-    onSuccess: () => {
+    mutationFn: async (id: number) => {
+      await restoreProductBrand(id);
       toast.success("Marca restaurada com sucesso");
+    },
+    onError: () => {
+      toast.error("Erro ao processar operação!");
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["product-brands"] });

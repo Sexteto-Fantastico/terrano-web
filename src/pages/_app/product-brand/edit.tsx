@@ -11,6 +11,7 @@ import { ProductBrandForm } from "./-components/product-brand-form";
 import {
   fetchProductBrandById,
   updateProductBrand,
+  type UpdateProductBrandRequest,
 } from "@/api/product-brands";
 
 export const Route = createFileRoute("/_app/product-brand/edit")({
@@ -37,11 +38,17 @@ function BrandComponent() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: updateProductBrand,
+    mutationFn: async (data: UpdateProductBrandRequest) => {
+      const response = await updateProductBrand(data);
+      toast.success("Marca atualizada com sucesso");
+      return response;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["product-brands"] });
-      toast.success("Marca atualizada com sucesso");
       navigate({ to: "/product-brand" });
+    },
+    onError: () => {
+      toast.error("Erro ao processar operação!");
     },
   });
 

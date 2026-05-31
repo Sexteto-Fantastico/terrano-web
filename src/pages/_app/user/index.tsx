@@ -2,7 +2,6 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { DataTableFilterMenu } from "@/components/ui/data-table/data-table-filter-menu";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
 import { useMemo } from "react";
-import { toast } from "sonner";
 import {
   fetchUsers,
   deleteUser,
@@ -10,6 +9,7 @@ import {
   type User,
   type UserFilters,
 } from "@/api/users";
+import { toast } from "sonner";
 import {
   keepPreviousData,
   useQuery,
@@ -52,9 +52,12 @@ function UserPage() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: number) => deleteUser(id),
-    onSuccess: () => {
+    mutationFn: async (id: number) => {
+      await deleteUser(id);
       toast.success("Usuário excluído com sucesso");
+    },
+    onError: () => {
+      toast.error("Erro ao processar operação!");
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
@@ -62,9 +65,12 @@ function UserPage() {
   });
 
   const restoreMutation = useMutation({
-    mutationFn: (id: number) => restoreUser(id),
-    onSuccess: () => {
+    mutationFn: async (id: number) => {
+      await restoreUser(id);
       toast.success("Usuário restaurado com sucesso");
+    },
+    onError: () => {
+      toast.error("Erro ao processar operação!");
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });

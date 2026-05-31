@@ -10,7 +10,7 @@ import {
   type Department,
   type DepartmentFilters,
 } from "@/api/departments";
-
+import { toast } from "sonner";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { DataView } from "@/components/views/data-view";
 import { useFilters } from "@/hooks/use-filters";
@@ -47,7 +47,10 @@ function DepartmentPage() {
   const queryClient = useQueryClient();
 
   const deleteMutation = useMutation({
-    mutationFn: (id: number) => deleteDepartment(id),
+    mutationFn: async (id: number) => {
+      await deleteDepartment(id);
+      toast.success("Departamento excluído com sucesso");
+    },
     onMutate: async (departmentId) => {
       await queryClient.cancelQueries({ queryKey: ["departments"] });
       const previousData = queryClient.getQueryData(["departments", filters]);
@@ -64,6 +67,7 @@ function DepartmentPage() {
     },
     onError: (_err, _departmentId, context) => {
       queryClient.setQueryData(["departments", filters], context?.previousData);
+      toast.error("Erro ao processar operação!");
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["departments"] });
@@ -71,7 +75,10 @@ function DepartmentPage() {
   });
 
   const restoreMutation = useMutation({
-    mutationFn: (id: number) => restoreDepartment(id),
+    mutationFn: async (id: number) => {
+      await restoreDepartment(id);
+      toast.success("Departamento restaurado com sucesso");
+    },
     onMutate: async (departmentId) => {
       await queryClient.cancelQueries({ queryKey: ["departments"] });
       const previousData = queryClient.getQueryData(["departments", filters]);
@@ -88,6 +95,7 @@ function DepartmentPage() {
     },
     onError: (_err, _departmentId, context) => {
       queryClient.setQueryData(["departments", filters], context?.previousData);
+      toast.error("Erro ao processar operação!");
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["departments"] });
@@ -121,8 +129,8 @@ function DepartmentPage() {
   const { table, setTableFilters } = useDataTable({
     data,
     columns,
-    filters: filters as any,
-    setFilters: setFilters as any,
+    filters,
+    setFilters,
   });
 
   const filterConfig = useMemo(() => getDepartmentFilterConfig(), []);
@@ -130,7 +138,7 @@ function DepartmentPage() {
   return (
     <DataView>
       <DataTableFilterMenu
-        filters={filters as any}
+        filters={filters}
         onFilter={setTableFilters}
         onClearFilters={resetFilters}
         filterConfig={filterConfig}

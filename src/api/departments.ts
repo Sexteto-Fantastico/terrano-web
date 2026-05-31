@@ -17,12 +17,12 @@ export type Department = {
   deletedAt?: string | null;
 };
 
-export type CreateDepartmentRequestDTO = {
+export type CreateDepartmentRequest = {
   name: string;
   managerId?: number | null;
 };
 
-export type UpdateDepartmentRequestDTO = {
+export type UpdateDepartmentRequest = {
   id: number;
   name?: string;
   manager?: DepartmentManager | null;
@@ -51,7 +51,10 @@ export async function fetchAllDepartments(): Promise<Department[]> {
 export async function fetchDepartments(
   filters: DepartmentFilters
 ): Promise<PaginatedData<Department>> {
-  const response = await fetchPaginated<Department>("/departments", filters);
+  const response = await fetchPaginated<Department, DepartmentQuery>(
+    "/departments",
+    filters
+  );
 
   return {
     ...response,
@@ -65,14 +68,14 @@ export async function fetchDepartmentById(id: number): Promise<Department> {
 }
 
 export async function createDepartment(
-  data: CreateDepartmentRequestDTO
+  data: CreateDepartmentRequest
 ): Promise<Department> {
   const { data: response } = await api.post<Department>("/departments", data);
   return response;
 }
 
 export async function updateDepartment(
-  data: UpdateDepartmentRequestDTO
+  data: UpdateDepartmentRequest
 ): Promise<Department> {
   const { data: response } = await api.put<Department>(
     `/departments/${data.id}`,
@@ -86,6 +89,6 @@ export async function deleteDepartment(id: number): Promise<void> {
 }
 
 export async function restoreDepartment(id: number): Promise<Department> {
-  const { data } = await api.post<Department>(`/departments/${id}/restore`);
+  const { data } = await api.patch<Department>(`/departments/${id}/restore`);
   return data;
 }

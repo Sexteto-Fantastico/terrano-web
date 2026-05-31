@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { CreateView } from "@/components/views/create-view";
 import { UserForm } from "./-components/user-form";
-import { createUser } from "@/api/users";
+import { createUser, type CreateUserRequest } from "@/api/users";
 
 export const Route = createFileRoute("/_app/user/new")({
   component: UserNewPage,
@@ -17,11 +17,17 @@ function UserNewPage() {
   const queryClient = useQueryClient();
 
   const createMutation = useMutation({
-    mutationFn: createUser,
+    mutationFn: async (user: CreateUserRequest) => {
+      const data = await createUser(user);
+      toast.success("Usuário criado com sucesso");
+      return data;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
-      toast.success("Usuário criado com sucesso");
       navigate({ to: "/user" });
+    },
+    onError: () => {
+      toast.error("Erro ao processar operação!");
     },
   });
 

@@ -67,7 +67,7 @@ export async function deleteProductBrand(id: number): Promise<void> {
 }
 
 export async function restoreProductBrand(id: number): Promise<ProductBrand> {
-  const { data } = await api.post<ProductBrand>(
+  const { data } = await api.patch<ProductBrand>(
     `/product-brands/${id}/restore`
   );
   return data;

@@ -1,13 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { getAllDepartments } from "@/api/departments";
+import { fetchAllDepartments } from "@/api/departments";
 import { useMemo } from "react";
 import type { DataTableFilterConfigItem } from "@/components/ui/data-table/@types";
 
 export function useUserFilterConfig(): DataTableFilterConfigItem[] {
   const { data: departments = [] } = useQuery({
     queryKey: ["departments"],
-    queryFn: getAllDepartments,
-    staleTime: 1000 * 60 * 5,
+    queryFn: fetchAllDepartments,
   });
 
   const departmentOptions = useMemo(

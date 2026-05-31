@@ -2,7 +2,6 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { DataTableFilterMenu } from "@/components/ui/data-table/data-table-filter-menu";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
 import { useMemo, useState } from "react";
-import { toast } from "sonner";
 import {
   deleteProduct,
   fetchProducts,
@@ -10,6 +9,7 @@ import {
   type Product,
   type ProductFilters,
 } from "@/api/products";
+import { toast } from "sonner";
 import {
   keepPreviousData,
   useQuery,
@@ -53,9 +53,12 @@ function ProductPage() {
   const queryClient = useQueryClient();
 
   const deleteMutation = useMutation({
-    mutationFn: deleteProduct,
-    onSuccess: () => {
+    mutationFn: async (id: number) => {
+      await deleteProduct(id);
       toast.success("Produto excluído com sucesso");
+    },
+    onError: () => {
+      toast.error("Erro ao processar operação!");
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
@@ -64,9 +67,12 @@ function ProductPage() {
   });
 
   const restoreMutation = useMutation({
-    mutationFn: restoreProduct,
-    onSuccess: () => {
+    mutationFn: async (id: number) => {
+      await restoreProduct(id);
       toast.success("Produto restaurado com sucesso");
+    },
+    onError: () => {
+      toast.error("Erro ao processar operação!");
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });

@@ -11,6 +11,7 @@ import { CategoryForm } from "./-components/category-form";
 import {
   fetchProductCategoryById,
   updateProductCategory,
+  type UpdateProductCategoryRequest,
 } from "@/api/product-categories";
 
 export const Route = createFileRoute("/_app/category/edit")({
@@ -37,11 +38,17 @@ function CategoryEditComponent() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: updateProductCategory,
+    mutationFn: async (data: UpdateProductCategoryRequest) => {
+      const response = await updateProductCategory(data);
+      toast.success("Categoria atualizada com sucesso");
+      return response;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });
-      toast.success("Categoria atualizada com sucesso");
       navigate({ to: "/category" });
+    },
+    onError: () => {
+      toast.error("Erro ao processar operação!");
     },
   });
 

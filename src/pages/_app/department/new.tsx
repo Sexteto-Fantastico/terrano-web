@@ -1,11 +1,12 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { CreateView } from "@/components/views/create-view";
 import {
   DepartmentForm,
   type DepartmentFormValues,
 } from "./-components/department-form";
-import { createDepartment } from "@/api/departments";
+import { createDepartment, type CreateDepartmentRequest } from "@/api/departments";
 
 export const Route = createFileRoute("/_app/department/new")({
   component: DepartmentNewPage,
@@ -23,10 +24,17 @@ function DepartmentNewPage() {
   const queryClient = useQueryClient();
 
   const createMutation = useMutation({
-    mutationFn: createDepartment,
+    mutationFn: async (data: CreateDepartmentRequest) => {
+      const response = await createDepartment(data);
+      toast.success("Departamento criado com sucesso");
+      return response;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["departments"] });
       navigate({ to: "/department" });
+    },
+    onError: () => {
+      toast.error("Erro ao processar operação!");
     },
   });
 

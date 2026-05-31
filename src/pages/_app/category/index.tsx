@@ -10,7 +10,7 @@ import {
   type ProductCategory,
   type ProductCategoryFilters,
 } from "@/api/product-categories";
-
+import { toast } from "sonner";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { DataView } from "@/components/views/data-view";
 import { useFilters } from "@/hooks/use-filters";
@@ -18,7 +18,6 @@ import { DataTable } from "@/components/ui/data-table/data-table";
 import { useDataTable } from "@/hooks/use-data-table";
 import { Separator } from "@/components/ui/separator";
 import { DataTableToolbar } from "@/components/ui/data-table/data-table-toolbar";
-import { toast } from "sonner";
 import { DataTableFilterMenu } from "@/components/ui/data-table/data-table-filter-menu";
 import { AddButton } from "@/components/button/add-button";
 import { getCategoryFilterConfig } from "./-components/category-filter-config";
@@ -48,9 +47,12 @@ function CategoryPage() {
   const queryClient = useQueryClient();
 
   const deleteMutation = useMutation({
-    mutationFn: (id: number) => deleteProductCategory(id),
-    onSuccess: () => {
+    mutationFn: async (id: number) => {
+      await deleteProductCategory(id);
       toast.success("Categoria excluída com sucesso");
+    },
+    onError: () => {
+      toast.error("Erro ao processar operação!");
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });
@@ -58,9 +60,12 @@ function CategoryPage() {
   });
 
   const restoreMutation = useMutation({
-    mutationFn: (id: number) => restoreProductCategory(id),
-    onSuccess: () => {
+    mutationFn: async (id: number) => {
+      await restoreProductCategory(id);
       toast.success("Categoria restaurada com sucesso");
+    },
+    onError: () => {
+      toast.error("Erro ao processar operação!");
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });

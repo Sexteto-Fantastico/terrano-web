@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { CreateView } from "@/components/views/create-view";
 import { ProductForm } from "./-components/product-form";
-import { fetchProductById, updateProduct } from "@/api/products";
+import { fetchProductById, updateProduct, type UpdateProductRequest } from "@/api/products";
 
 export const Route = createFileRoute("/_app/product/edit")({
   component: ProductEditComponent,
@@ -34,11 +34,17 @@ function ProductEditComponent() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: updateProduct,
+    mutationFn: async (data: UpdateProductRequest) => {
+      const response = await updateProduct(data);
+      toast.success("Produto atualizado com sucesso");
+      return response;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
-      toast.success("Produto atualizado com sucesso");
       navigate({ to: "/product" });
+    },
+    onError: () => {
+      toast.error("Erro ao processar operação!");
     },
   });
 

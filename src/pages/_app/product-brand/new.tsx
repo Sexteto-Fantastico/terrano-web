@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { CreateView } from "@/components/views/create-view";
 import { ProductBrandForm } from "./-components/product-brand-form";
-import { createProductBrand } from "@/api/product-brands";
+import { createProductBrand, type CreateProductBrandRequest } from "@/api/product-brands";
 
 export const Route = createFileRoute("/_app/product-brand/new")({
   component: BrandNewPage,
@@ -21,11 +21,17 @@ function BrandNewPage() {
   const queryClient = useQueryClient();
 
   const createMutation = useMutation({
-    mutationFn: createProductBrand,
+    mutationFn: async (data: CreateProductBrandRequest) => {
+      const response = await createProductBrand(data);
+      toast.success("Marca criada com sucesso");
+      return response;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["product-brands"] });
-      toast.success("Marca criada com sucesso");
       navigate({ to: "/product-brand" });
+    },
+    onError: () => {
+      toast.error("Erro ao processar operação!");
     },
   });
 

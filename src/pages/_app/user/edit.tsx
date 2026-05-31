@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { CreateView } from "@/components/views/create-view";
 import { UserForm } from "./-components/user-form";
-import { getUserById, updateUser } from "@/api/users";
+import { getUserById, updateUser, type UpdateUserRequest } from "@/api/users";
 
 export const Route = createFileRoute("/_app/user/edit")({
   component: UserEditPage,
@@ -30,11 +30,17 @@ function UserEditPage() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: updateUser,
+    mutationFn: async (data: UpdateUserRequest) => {
+      const response = await updateUser(data);
+      toast.success("Usuário atualizado com sucesso");
+      return response;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
-      toast.success("Usuário atualizado com sucesso");
       navigate({ to: "/user" });
+    },
+    onError: () => {
+      toast.error("Erro ao processar operação!");
     },
   });
 

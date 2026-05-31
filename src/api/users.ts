@@ -32,6 +32,11 @@ type UserQuery = {
 
 export type UserFilters = Filters<UserQuery>;
 
+export async function fetchAllUsers() {
+  const { data } = await api.get<User[]>("/users");
+  return data;
+}
+
 export async function fetchUsers(filters: UserFilters) {
   return fetchPaginated<User, UserQuery>("/users", filters);
 }
@@ -75,6 +80,6 @@ export async function deleteUser(id: number): Promise<void> {
 }
 
 export async function restoreUser(id: number): Promise<User> {
-  const { data } = await api.post<User>(`/users/${id}/restore`);
+  const { data } = await api.patch<User>(`/users/${id}/restore`);
   return data;
 }
