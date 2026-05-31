@@ -12,12 +12,19 @@ export async function fetchPaginated<T, Q>(
   const {
     pageIndex = DEFAULT_PAGE_INDEX,
     pageSize = DEFAULT_PAGE_SIZE,
-    ...rest
+    sortBy: combinedSortBy,
+    ...otherParams
   } = params ?? {};
 
   const response = await api.get<T[]>(url, {
     params: {
-      ...rest,
+      ...otherParams,
+      ...(combinedSortBy
+        ? {
+            sortBy: combinedSortBy.split(".")[0],
+            sortOrder: combinedSortBy.split(".")[1] ?? "asc",
+          }
+        : {}),
       pageIndex: pageIndex + 1,
       pageSize,
     },

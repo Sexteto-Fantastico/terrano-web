@@ -24,31 +24,38 @@ export function getProductTableColumns({
     {
       accessorKey: "name",
       header: createHeaderColumn("Nome"),
+      enableSorting: true,
     },
     {
       accessorKey: "code",
       header: createHeaderColumn("Código"),
+      enableSorting: true,
     },
     {
       id: "categoryId",
       header: createHeaderColumn("Categoria"),
+      enableSorting: true,
     },
     {
       id: "brandId",
       header: createHeaderColumn("Marca"),
+      enableSorting: true,
     },
     {
       id: "measurementUnit",
+      enableSorting: true,
       header: createHeaderColumn("Unid. Medida"),
       cell: ({ row }) => row.original.measurementUnit?.name,
     },
     {
       accessorKey: "minStock",
       header: createHeaderColumn("Estoque Mín"),
+      enableSorting: true,
     },
     {
       accessorKey: "maxStock",
       header: createHeaderColumn("Estoque Máx"),
+      enableSorting: true,
     },
     createBooleanColumn<Product>({
       accessorKey: "deletedAt",

@@ -21,9 +21,11 @@ export function getDepartmentTableColumns({
     {
       accessorKey: "name",
       header: createHeaderColumn("Nome"),
+      enableSorting: true,
     },
     {
       id: "manager",
+      enableSorting: true,
       accessorFn: (row) => row.manager?.name || "-",
       header: createHeaderColumn("Responsável"),
     },

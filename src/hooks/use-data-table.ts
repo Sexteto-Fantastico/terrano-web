@@ -3,7 +3,7 @@ import type {
   PaginationParams,
   SortParams,
 } from "@/components/ui/data-table/@types";
-import { sortByToState, stateToSortBy } from "@/lib/filters";
+import { sortByToState, stateToSortBy } from "@/utils/filters";
 import {
   getCoreRowModel,
   useReactTable,
@@ -120,6 +120,9 @@ export function useDataTable<
     manualSorting: true,
     manualPagination: true,
     getCoreRowModel: getCoreRowModel(),
+    defaultColumn: {
+      enableSorting: false,
+    },
     ...tableOptions,
   });
 

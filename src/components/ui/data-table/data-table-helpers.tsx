@@ -89,7 +89,6 @@ export function createBooleanColumn<TData>({
   return {
     accessorKey: accessorKey as string,
     header: createHeaderColumn(title),
-    enableSorting: false,
     cell: ({ row }) => {
       const value = row.getValue(accessorKey as string) as boolean;
       return (

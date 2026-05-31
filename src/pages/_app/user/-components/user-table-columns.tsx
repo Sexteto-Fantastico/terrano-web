@@ -23,6 +23,7 @@ export function getUserTableColumns({
     {
       accessorKey: "name",
       header: createHeaderColumn("nome"),
+      enableSorting: true,
     },
     {
       accessorKey: "cpf",
@@ -34,7 +35,8 @@ export function getUserTableColumns({
     },
     {
       id: "role",
-      header: createHeaderColumn("perfil de usuario"),
+      header: createHeaderColumn("perfil de usuário"),
+      enableSorting: true,
     },
     createBooleanColumn<User>({
       accessorKey: "isActive",

@@ -1,5 +1,5 @@
 import api from "@/lib/axios";
-import { fetchPaginated } from "@/lib/pagination";
+import { fetchPaginated } from "@/utils/pagination";
 import {
   type Filters,
   type PaginatedData,
