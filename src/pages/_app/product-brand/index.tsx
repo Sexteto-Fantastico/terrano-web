@@ -53,7 +53,7 @@ function BrandPage() {
       toast.success("Marca excluída com sucesso");
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["product-brands", filters] });
+      queryClient.invalidateQueries({ queryKey: ["product-brands"] });
     },
   });
 
@@ -63,7 +63,7 @@ function BrandPage() {
       toast.success("Marca restaurada com sucesso");
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["product-brands", filters] });
+      queryClient.invalidateQueries({ queryKey: ["product-brands"] });
     },
   });
 

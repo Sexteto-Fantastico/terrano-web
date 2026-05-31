@@ -39,9 +39,7 @@ function BrandComponent() {
   const updateMutation = useMutation({
     mutationFn: updateProductBrand,
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["product-brands", search.id],
-      });
+      queryClient.invalidateQueries({ queryKey: ["product-brands"] });
       toast.success("Marca atualizada com sucesso");
       navigate({ to: "/product-brand" });
     },

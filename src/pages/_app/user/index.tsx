@@ -57,7 +57,7 @@ function UserPage() {
       toast.success("Usuário excluído com sucesso");
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["users", filters] });
+      queryClient.invalidateQueries({ queryKey: ["users"] });
     },
   });
 
@@ -67,7 +67,7 @@ function UserPage() {
       toast.success("Usuário restaurado com sucesso");
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["users", filters] });
+      queryClient.invalidateQueries({ queryKey: ["users"] });
     },
   });
 
