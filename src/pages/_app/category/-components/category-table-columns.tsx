@@ -30,7 +30,6 @@ export function getCategoryTableColumns({
     },
     {
       id: "parent",
-      enableSorting: true,
       accessorFn: (row) => row.parent?.name || "-",
       header: createHeaderColumn("Categoria Pai"),
     },

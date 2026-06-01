@@ -35,6 +35,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
           toast: "cn-toast",
         },
       }}
+      position="top-right"
       {...props}
     />
   );
