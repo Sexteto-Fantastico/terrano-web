@@ -51,22 +51,7 @@ function DepartmentPage() {
       await deleteDepartment(id);
       toast.success("Departamento excluído com sucesso");
     },
-    onMutate: async (departmentId) => {
-      await queryClient.cancelQueries({ queryKey: ["departments"] });
-      const previousData = queryClient.getQueryData(["departments", filters]);
-      queryClient.setQueryData(["departments", filters], (old: any) => {
-        if (!old) return old;
-        return {
-          ...old,
-          result: old.result.map((d: Department) =>
-            d.id === departmentId ? { ...d, isActive: false } : d
-          ),
-        };
-      });
-      return { previousData };
-    },
-    onError: (_err, _departmentId, context) => {
-      queryClient.setQueryData(["departments", filters], context?.previousData);
+    onError: () => {
       toast.error("Erro ao processar operação!");
     },
     onSettled: () => {
@@ -79,22 +64,7 @@ function DepartmentPage() {
       await restoreDepartment(id);
       toast.success("Departamento restaurado com sucesso");
     },
-    onMutate: async (departmentId) => {
-      await queryClient.cancelQueries({ queryKey: ["departments"] });
-      const previousData = queryClient.getQueryData(["departments", filters]);
-      queryClient.setQueryData(["departments", filters], (old: any) => {
-        if (!old) return old;
-        return {
-          ...old,
-          result: old.result.map((d: Department) =>
-            d.id === departmentId ? { ...d, isActive: true } : d
-          ),
-        };
-      });
-      return { previousData };
-    },
-    onError: (_err, _departmentId, context) => {
-      queryClient.setQueryData(["departments", filters], context?.previousData);
+    onError: () => {
       toast.error("Erro ao processar operação!");
     },
     onSettled: () => {
