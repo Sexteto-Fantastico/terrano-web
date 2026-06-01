@@ -23,24 +23,20 @@ export function getUserTableColumns({
     {
       accessorKey: "name",
       header: createHeaderColumn("nome"),
+      enableSorting: true,
     },
     {
       accessorKey: "cpf",
       header: createHeaderColumn("CPF"),
-      enableSorting: false,
-      cell: ({ row }) => row.original.cpf ?? "-",
     },
     {
       id: "department",
       header: createHeaderColumn("departamento"),
-      enableSorting: false,
-      cell: ({ row }) => row.original.department?.name ?? "-",
     },
     {
       id: "role",
-      header: createHeaderColumn("perfil de usuario"),
-      enableSorting: false,
-      cell: ({ row }) => row.original.role?.name ?? "-",
+      header: createHeaderColumn("perfil de usuário"),
+      enableSorting: true,
     },
     createBooleanColumn<User>({
       accessorKey: "isActive",

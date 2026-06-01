@@ -1,4 +1,8 @@
-import { flexRender, type Table as TanstackTable } from "@tanstack/react-table";
+import {
+  flexRender,
+  type Row,
+  type Table as TanstackTable,
+} from "@tanstack/react-table";
 import type * as React from "react";
 
 import {
@@ -16,7 +20,7 @@ interface DataTableProps<TData> extends React.ComponentProps<"div"> {
   table: TanstackTable<TData>;
   isLoading?: boolean;
   actionBar?: React.ReactNode;
-  getRowClassName?: (row: import("@tanstack/react-table").Row<TData>) => string;
+  getRowClassName?: (row: Row<TData>) => string;
 }
 
 export function DataTable<TData>({
@@ -26,7 +30,7 @@ export function DataTable<TData>({
   getRowClassName,
   className,
   ...props
-}: DataTableProps<TData>) {
+}: Readonly<DataTableProps<TData>>) {
   return (
     <div
       className={cn("flex w-full flex-col gap-4 overflow-auto", className)}

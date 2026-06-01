@@ -21,10 +21,12 @@ export function getCategoryTableColumns({
     {
       accessorKey: "name",
       header: createHeaderColumn("Nome"),
+      enableSorting: true,
     },
     {
       accessorKey: "description",
       header: createHeaderColumn("Descrição"),
+      enableSorting: true,
     },
     {
       id: "parent",

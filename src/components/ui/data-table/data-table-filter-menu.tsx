@@ -44,7 +44,7 @@ export function DataTableFilterMenu<TFilters extends Record<string, unknown>>({
             placeholder: config.placeholder,
             variant,
             options,
-            defaultValue: (config as any).defaultValue,
+            defaultValue: config.defaultValue,
             className: config.props?.className,
           };
         }),

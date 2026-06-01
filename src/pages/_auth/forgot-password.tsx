@@ -37,6 +37,7 @@ function ForgotPasswordPage() {
     onSubmit: async ({ value }) => {
       try {
         await forgotPassword(value);
+        toast.success("Link de redefinição enviado");
         navigate({ to: "/check-email" });
       } catch (error: unknown) {
         const message =

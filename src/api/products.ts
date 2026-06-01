@@ -1,5 +1,5 @@
 import api from "@/lib/axios";
-import { fetchPaginated } from "@/lib/pagination";
+import { fetchPaginated } from "@/utils/pagination";
 import {
   type Filters,
   type PaginatedData,
@@ -32,7 +32,7 @@ export type CreateProductRequest = {
   maxStock?: number;
 };
 
-export type ProductUpdateRequest = {
+export type UpdateProductRequest = {
   id: number;
   name?: string;
   code?: string;
@@ -45,18 +45,25 @@ export type ProductUpdateRequest = {
   deletedAt?: string | null;
 };
 
-export type ProductFilters = {
+type ProductQuery = {
   name?: string;
   code?: string;
   brandId?: string;
   categoryId?: string;
   activeOnly?: string;
-} & Filters<Product>;
+};
+
+export type ProductFilters = Filters<ProductQuery>;
 
 export async function fetchProducts(
   filters: ProductFilters
 ): Promise<PaginatedData<Product>> {
-  return fetchPaginated<Product>("/products", filters);
+  return fetchPaginated<Product, ProductQuery>("/products", filters);
+}
+
+export async function fetchProductById(id: number): Promise<Product> {
+  const { data } = await api.get<Product>(`/products/${id}`);
+  return data;
 }
 
 export async function createProduct(
@@ -67,7 +74,7 @@ export async function createProduct(
 }
 
 export async function updateProduct(
-  data: ProductUpdateRequest
+  data: UpdateProductRequest
 ): Promise<Product> {
   const { data: response } = await api.put<Product>(
     `/products/${data.id}`,
@@ -81,6 +88,6 @@ export async function deleteProduct(id: number): Promise<void> {
 }
 
 export async function restoreProduct(id: number): Promise<Product> {
-  const { data: response } = await api.post<Product>(`/products/${id}/restore`);
+  const { data: response } = await api.patch<Product>(`/products/${id}/restore`);
   return response;
 }

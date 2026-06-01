@@ -10,12 +10,8 @@ import {
   type ProductCategory,
   type ProductCategoryFilters,
 } from "@/api/product-categories";
-
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { toast } from "sonner";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { DataView } from "@/components/views/data-view";
 import { useFilters } from "@/hooks/use-filters";
 import { DataTable } from "@/components/ui/data-table/data-table";
@@ -51,25 +47,12 @@ function CategoryPage() {
   const queryClient = useQueryClient();
 
   const deleteMutation = useMutation({
-    mutationFn: (id: number) => deleteProductCategory(id),
-    onMutate: async (categoryId) => {
-      await queryClient.cancelQueries({ queryKey: ["categories"] });
-      const previousData = queryClient.getQueryData(["categories", filters]);
-      queryClient.setQueryData(["categories", filters], (old: any) => {
-        if (!old) return old;
-        return {
-          ...old,
-            result: old.result.map((c: ProductCategory) =>
-            c.id === categoryId
-              ? { ...c, isActive: false, deletedAt: new Date().toISOString() }
-              : c
-          ),
-        };
-      });
-      return { previousData };
+    mutationFn: async (id: number) => {
+      await deleteProductCategory(id);
+      toast.success("Categoria excluída com sucesso");
     },
-    onError: (_err, _categoryId, context) => {
-      queryClient.setQueryData(["categories", filters], context?.previousData);
+    onError: () => {
+      toast.error("Erro ao processar operação!");
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });
@@ -77,25 +60,12 @@ function CategoryPage() {
   });
 
   const restoreMutation = useMutation({
-    mutationFn: (id: number) => restoreProductCategory(id),
-    onMutate: async (categoryId) => {
-      await queryClient.cancelQueries({ queryKey: ["categories"] });
-      const previousData = queryClient.getQueryData(["categories", filters]);
-      queryClient.setQueryData(["categories", filters], (old: any) => {
-        if (!old) return old;
-        return {
-          ...old,
-          result: old.result.map((c: ProductCategory) =>
-            c.id === categoryId
-              ? { ...c, isActive: true, deletedAt: null }
-              : c
-          ),
-        };
-      });
-      return { previousData };
+    mutationFn: async (id: number) => {
+      await restoreProductCategory(id);
+      toast.success("Categoria restaurada com sucesso");
     },
-    onError: (_err, _categoryId, context) => {
-      queryClient.setQueryData(["categories", filters], context?.previousData);
+    onError: () => {
+      toast.error("Erro ao processar operação!");
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });
@@ -105,7 +75,7 @@ function CategoryPage() {
   function handleEdit(categoryId: number) {
     navigate({
       to: "/category/edit",
-      search: { id: categoryId.toString() },
+      search: { id: categoryId },
     });
   }
 
@@ -118,25 +88,27 @@ function CategoryPage() {
   }
 
   const columns = useMemo(
-    () => getCategoryTableColumns({ onEdit: handleEdit, onToggleActive: handleToggleActive }),
+    () =>
+      getCategoryTableColumns({
+        onEdit: handleEdit,
+        onToggleActive: handleToggleActive,
+      }),
     [deleteMutation, restoreMutation]
   );
 
   const { table, setTableFilters } = useDataTable({
     data,
     columns,
-    filters: filters as any,
-    setFilters: setFilters as any,
+    filters: filters,
+    setFilters: setFilters,
   });
 
-  const filterConfig = useMemo(
-    () => getCategoryFilterConfig(), []
-  );
+  const filterConfig = useMemo(() => getCategoryFilterConfig(), []);
 
   return (
     <DataView>
       <DataTableFilterMenu
-        filters={filters as any}
+        filters={filters}
         onFilter={setTableFilters}
         onClearFilters={resetFilters}
         filterConfig={filterConfig}
@@ -146,7 +118,9 @@ function CategoryPage() {
         table={table}
         isLoading={isLoading}
         getRowClassName={(row) =>
-          (row.original.isActive === false || row.original.deletedAt) ? "line-through text-muted-foreground" : ""
+          row.original.isActive === false || row.original.deletedAt
+            ? "line-through text-muted-foreground"
+            : ""
         }
         actionBar={
           <DataTableToolbar table={table}>

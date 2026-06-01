@@ -4,7 +4,7 @@ import {
   type RouteIds,
   useNavigate,
 } from "@tanstack/react-router";
-import { cleanEmptyParams } from "@/lib/filters";
+import { cleanEmptyParams } from "@/utils/filters";
 
 export function useFilters<T extends RouteIds<RegisteredRouter["routeTree"]>>(
   routeId: T

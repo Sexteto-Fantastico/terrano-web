@@ -1,12 +1,16 @@
-import { createContext, useState, useCallback } from "react";
+import { createContext, useState, useCallback, useEffect } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import { setAuthDependencies } from "../lib/axios";
+import type { User } from "../api/users";
+import { fetchCurrentUser } from "../api/auth";
 
 const STORAGE_KEY = "terrano_auth_token";
 const EXPIRES_AT_KEY = "terrano_auth_expires_at";
 
 interface AuthContextValue {
   token: string | null;
+  user: User | null;
+  isLoadingUser: boolean;
   mustResetPassword: boolean;
   setToken: (token: string | null, expiresAt?: string) => void;
   setMustResetPassword: Dispatch<SetStateAction<boolean>>;
@@ -15,6 +19,8 @@ interface AuthContextValue {
 
 export const AuthContext = createContext<AuthContextValue>({
   token: null,
+  user: null,
+  isLoadingUser: false,
   mustResetPassword: false,
   setToken: () => {},
   setMustResetPassword: () => {},
@@ -23,7 +29,7 @@ export const AuthContext = createContext<AuthContextValue>({
 
 export type AuthState = Pick<
   AuthContextValue,
-  "token" | "mustResetPassword" | "logout"
+  "token" | "mustResetPassword" | "logout" | "user" | "isLoadingUser"
 >;
 
 export function AuthProvider({
@@ -43,6 +49,36 @@ export function AuthProvider({
     return null;
   });
   const [mustResetPassword, setMustResetPassword] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoadingUser, setIsLoadingUser] = useState(false);
+
+  useEffect(() => {
+    if (!tokenState) {
+      setUser(null);
+      setIsLoadingUser(false);
+      return;
+    }
+
+    let cancelled = false;
+    setIsLoadingUser(true);
+    fetchCurrentUser()
+      .then((userData) => {
+        if (!cancelled) {
+          setUser(userData);
+          setIsLoadingUser(false);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setUser(null);
+          setIsLoadingUser(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [tokenState]);
 
   const setToken = useCallback(
     (newToken: string | null, expiresAt?: string) => {
@@ -64,6 +100,7 @@ export function AuthProvider({
   const logout = useCallback(() => {
     setToken(null);
     setMustResetPassword(false);
+    setUser(null);
   }, [setToken]);
 
   setAuthDependencies({
@@ -75,6 +112,8 @@ export function AuthProvider({
     <AuthContext.Provider
       value={{
         token: tokenState,
+        user,
+        isLoadingUser,
         mustResetPassword,
         setToken,
         setMustResetPassword,

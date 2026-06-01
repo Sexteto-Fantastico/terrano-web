@@ -1,9 +1,10 @@
 import { useSearch, useNavigate, createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { z } from "zod";
 import { CreateView } from "@/components/views/create-view";
 import { DepartmentForm } from "./-components/department-form";
-import { fetchDepartmentById, updateDepartment } from "@/api/departments";
+import { fetchDepartmentById, updateDepartment, type UpdateDepartmentRequest } from "@/api/departments";
 
 export const Route = createFileRoute("/_app/department/edit")({
   component: DepartmentEditPage,
@@ -29,10 +30,17 @@ function DepartmentEditPage() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: updateDepartment,
+    mutationFn: async (data: UpdateDepartmentRequest) => {
+      const response = await updateDepartment(data);
+      toast.success("Departamento atualizado com sucesso");
+      return response;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["departments"] });
       navigate({ to: "/department" });
+    },
+    onError: () => {
+      toast.error("Erro ao processar operação!");
     },
   });
 

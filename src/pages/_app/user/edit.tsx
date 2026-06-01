@@ -1,9 +1,10 @@
 import { useSearch, useNavigate, createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { z } from "zod";
 import { CreateView } from "@/components/views/create-view";
 import { UserForm } from "./-components/user-form";
-import { getUserById, updateUser } from "@/api/users";
+import { getUserById, updateUser, type UpdateUserRequest } from "@/api/users";
 
 export const Route = createFileRoute("/_app/user/edit")({
   component: UserEditPage,
@@ -18,7 +19,7 @@ export const Route = createFileRoute("/_app/user/edit")({
 });
 
 function UserEditPage() {
-  const search = useSearch({ from: "/_app/user/edit" });
+  const search = Route.useSearch();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -29,10 +30,17 @@ function UserEditPage() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: updateUser,
+    mutationFn: async (data: UpdateUserRequest) => {
+      const response = await updateUser(data);
+      toast.success("Usuário atualizado com sucesso");
+      return response;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
       navigate({ to: "/user" });
+    },
+    onError: () => {
+      toast.error("Erro ao processar operação!");
     },
   });
 

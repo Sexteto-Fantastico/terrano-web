@@ -2,6 +2,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import type { Product } from "@/api/products";
 import {
   createActionColumn,
+  createBooleanColumn,
   createHeaderColumn,
 } from "@/components/ui/data-table/data-table-helpers";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
@@ -9,7 +10,7 @@ import { SquarePenIcon, Trash2Icon } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 
 export type ProductTableActionHandlers = {
-  onEdit: (product: Product) => void;
+  onEdit: (productId: number) => void;
   onDelete: (productId: number) => void;
   onToggleActive: (product: Product, checked: boolean) => void;
 };
@@ -23,62 +24,49 @@ export function getProductTableColumns({
     {
       accessorKey: "name",
       header: createHeaderColumn("Nome"),
+      enableSorting: true,
     },
     {
       accessorKey: "code",
       header: createHeaderColumn("Código"),
+      enableSorting: true,
     },
     {
       id: "categoryId",
       header: createHeaderColumn("Categoria"),
-      cell: ({ row }) => row.original.category?.name ?? "-",
+      enableSorting: true,
     },
     {
       id: "brandId",
       header: createHeaderColumn("Marca"),
-      cell: ({ row }) => row.original.brand?.name ?? "-",
+      enableSorting: true,
     },
     {
       id: "measurementUnit",
+      enableSorting: true,
       header: createHeaderColumn("Unid. Medida"),
-      cell: ({ row }) =>
-        row.original.measurementUnit?.symbol ??
-        row.original.measurementUnit?.name ??
-        "-",
+      cell: ({ row }) => row.original.measurementUnit?.name,
     },
     {
       accessorKey: "minStock",
       header: createHeaderColumn("Estoque Mín"),
-      cell: ({ row }) => row.original.minStock ?? "-",
+      enableSorting: true,
     },
     {
       accessorKey: "maxStock",
       header: createHeaderColumn("Estoque Máx"),
-      cell: ({ row }) => row.original.maxStock ?? "-",
+      enableSorting: true,
     },
-    {
-      id: "activeOnly",
-      accessorFn: (row: Product) => !row.deletedAt,
-      header: createHeaderColumn("Ativo"),
-      enableSorting: false,
-      enableHiding: false,
-      size: 80,
-      cell: ({ row }) => {
-        const product = row.original;
-        const isActive = !product.deletedAt;
-        return (
-          <Switch
-            checked={isActive}
-            onCheckedChange={(checked) => onToggleActive(product, checked)}
-          />
-        );
-      },
-    },
+    createBooleanColumn<Product>({
+      accessorKey: "deletedAt",
+      title: "ativo",
+      onToggle: (product, value) => onToggleActive(product, value),
+    }),
     createActionColumn(({ row }) => {
       const product = row.original;
       return (
         <>
-          <DropdownMenuItem onSelect={() => onEdit(product)}>
+          <DropdownMenuItem onSelect={() => onEdit(product.id)}>
             <SquarePenIcon className="me-2" />
             Editar
           </DropdownMenuItem>

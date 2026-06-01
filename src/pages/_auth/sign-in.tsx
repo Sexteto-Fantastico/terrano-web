@@ -43,6 +43,7 @@ function SignInPage() {
         const response = await login(value);
         setToken(response.token, response.expiresAt);
         setMustResetPassword(response.mustResetPassword ?? false);
+        toast.success("Login realizado com sucesso");
         if (response.mustResetPassword) {
           navigate({ to: "/define-password" });
         } else {

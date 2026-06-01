@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { DataTableFilterMenu } from "@/components/ui/data-table/data-table-filter-menu";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
 import { useMemo, useState } from "react";
@@ -9,8 +9,7 @@ import {
   type Product,
   type ProductFilters,
 } from "@/api/products";
-import { fetchAllProductBrands } from "@/api/product-brands";
-import { fetchAllProductCategories } from "@/api/product-categories";
+import { toast } from "sonner";
 import {
   keepPreviousData,
   useQuery,
@@ -25,13 +24,12 @@ import { Separator } from "@/components/ui/separator";
 import { DataTableToolbar } from "@/components/ui/data-table/data-table-toolbar";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { AddButton } from "@/components/button/add-button";
-import { ProductFormDialog } from "./-components/product-form-dialog";
 import { getProductTableColumns } from "./-components/product-table-columns";
-import { getProductFilterConfig } from "./-components/product-filter-config";
+import { useProductFilterConfig } from "./-components/product-filter-config";
 
 export const Route = createFileRoute("/_app/product/")({
   component: ProductPage,
-  validateSearch: () => ({}) as ProductFilters,
+  validateSearch: (): ProductFilters => ({}),
   head: () => ({
     meta: [
       {
@@ -43,18 +41,8 @@ export const Route = createFileRoute("/_app/product/")({
 
 function ProductPage() {
   const { filters, setFilters, resetFilters } = useFilters(Route.id);
-  const [productToEdit, setProductToEdit] = useState<Product | undefined>();
+  const navigate = useNavigate();
   const [productToDelete, setProductToDelete] = useState<number | undefined>();
-
-  const { data: categories = [] } = useQuery({
-    queryKey: ["product-categories"],
-    queryFn: () => fetchAllProductCategories(),
-  });
-
-  const { data: brands = [] } = useQuery({
-    queryKey: ["product-brands"],
-    queryFn: fetchAllProductBrands,
-  });
 
   const { data, isLoading } = useQuery({
     queryKey: ["products", filters],
@@ -65,25 +53,12 @@ function ProductPage() {
   const queryClient = useQueryClient();
 
   const deleteMutation = useMutation({
-    mutationFn: deleteProduct,
-    onMutate: async (productId) => {
-      await queryClient.cancelQueries({ queryKey: ["products"] });
-      const previousData = queryClient.getQueryData(["products", filters]);
-      queryClient.setQueryData(["products", filters], (old: any) => {
-        if (!old) return old;
-        return {
-          ...old,
-          result: old.result.map((p: Product) =>
-            p.id === productId
-              ? { ...p, deletedAt: new Date().toISOString() }
-              : p
-          ),
-        };
-      });
-      return { previousData };
+    mutationFn: async (id: number) => {
+      await deleteProduct(id);
+      toast.success("Produto excluído com sucesso");
     },
-    onError: (_err, _productId, context) => {
-      queryClient.setQueryData(["products", filters], context?.previousData);
+    onError: () => {
+      toast.error("Erro ao processar operação!");
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
@@ -92,31 +67,23 @@ function ProductPage() {
   });
 
   const restoreMutation = useMutation({
-    mutationFn: restoreProduct,
-    onMutate: async (productId) => {
-      await queryClient.cancelQueries({ queryKey: ["products"] });
-      const previousData = queryClient.getQueryData(["products", filters]);
-      queryClient.setQueryData(["products", filters], (old: any) => {
-        if (!old) return old;
-        return {
-          ...old,
-          result: old.result.map((p: Product) =>
-            p.id === productId ? { ...p, deletedAt: null } : p
-          ),
-        };
-      });
-      return { previousData };
+    mutationFn: async (id: number) => {
+      await restoreProduct(id);
+      toast.success("Produto restaurado com sucesso");
     },
-    onError: (_err, _productId, context) => {
-      queryClient.setQueryData(["products", filters], context?.previousData);
+    onError: () => {
+      toast.error("Erro ao processar operação!");
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
     },
   });
 
-  function handleEdit(product: Product) {
-    setProductToEdit(product);
+  function handleEdit(productId: number) {
+    navigate({
+      to: "/product/edit",
+      search: { id: productId },
+    });
   }
 
   function handleDelete(productId: number) {
@@ -137,15 +104,7 @@ function ProductPage() {
     }
   }
 
-  const categoryOptions = useMemo(
-    () => categories.map((c) => ({ label: c.name, value: String(c.id) })),
-    [categories]
-  );
-
-  const brandOptions = useMemo(
-    () => brands.map((b) => ({ label: b.name, value: String(b.id) })),
-    [brands]
-  );
+  const filterConfig = useProductFilterConfig();
 
   const columns = useMemo(
     () =>
@@ -157,16 +116,11 @@ function ProductPage() {
     []
   );
 
-  const filterConfig = useMemo(
-    () => getProductFilterConfig(categoryOptions, brandOptions),
-    [categoryOptions, brandOptions]
-  );
-
   const { table } = useDataTable({
     data,
     columns,
-    filters: filters as any,
-    setFilters: setFilters as any,
+    filters,
+    setFilters,
   });
 
   return (
@@ -195,14 +149,6 @@ function ProductPage() {
       />
 
       <DataTablePagination table={table} isLoading={isLoading} />
-
-      <ProductFormDialog
-        open={!!productToEdit}
-        onOpenChange={(open) => {
-          if (!open) setProductToEdit(undefined);
-        }}
-        productToEdit={productToEdit}
-      />
 
       <ConfirmDialog
         open={!!productToDelete}

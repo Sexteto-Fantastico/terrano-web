@@ -1,5 +1,5 @@
 import api from "@/lib/axios";
-import { fetchPaginated } from "@/lib/pagination";
+import { fetchPaginated } from "@/utils/pagination";
 import type { Filters, PaginatedData } from "@/components/ui/data-table/@types";
 
 export type ProductBrand = {
@@ -9,11 +9,11 @@ export type ProductBrand = {
   deletedAt?: string | null;
 };
 
-export type CreateProductBrandRequestDTO = {
+export type CreateProductBrandRequest = {
   name: string;
 };
 
-export type UpdateProductBrandRequestDTO = {
+export type UpdateProductBrandRequest = {
   id: number;
   name?: string;
   isActive?: boolean;
@@ -34,7 +34,7 @@ export async function fetchAllProductBrands(): Promise<ProductBrand[]> {
 export async function fetchProductBrands(
   filters: ProductBrandFilters
 ): Promise<PaginatedData<ProductBrand>> {
-  return fetchPaginated<ProductBrand>("/product-brands", filters);
+  return fetchPaginated<ProductBrand, ProductBrandQuery>("/product-brands", filters);
 }
 
 export async function fetchProductBrandById(id: number): Promise<ProductBrand> {
@@ -43,7 +43,7 @@ export async function fetchProductBrandById(id: number): Promise<ProductBrand> {
 }
 
 export async function createProductBrand(
-  data: CreateProductBrandRequestDTO
+  data: CreateProductBrandRequest
 ): Promise<ProductBrand> {
   const { data: response } = await api.post<ProductBrand>(
     "/product-brands",
@@ -53,7 +53,7 @@ export async function createProductBrand(
 }
 
 export async function updateProductBrand(
-  data: UpdateProductBrandRequestDTO
+  data: UpdateProductBrandRequest
 ): Promise<ProductBrand> {
   const { data: response } = await api.put<ProductBrand>(
     `/product-brands/${data.id}`,
@@ -67,7 +67,7 @@ export async function deleteProductBrand(id: number): Promise<void> {
 }
 
 export async function restoreProductBrand(id: number): Promise<ProductBrand> {
-  const { data } = await api.post<ProductBrand>(
+  const { data } = await api.patch<ProductBrand>(
     `/product-brands/${id}/restore`
   );
   return data;

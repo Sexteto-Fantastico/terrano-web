@@ -21,6 +21,7 @@ export function getProductBrandTableColumns({
     {
       accessorKey: "name",
       header: createHeaderColumn("Nome"),
+      enableSorting: true,
     },
     createBooleanColumn<ProductBrand>({
       accessorKey: "isActive",

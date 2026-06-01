@@ -1,13 +1,9 @@
 import api from "@/lib/axios";
-import { fetchPaginated } from "@/lib/pagination";
-import type { Filters, PaginatedData } from "@/components/ui/data-table/@types";
+import { fetchPaginated } from "@/utils/pagination";
+import type { Filters } from "@/components/ui/data-table/@types";
+import type { Department } from "./departments";
 
 export type Role = {
-  id: number;
-  name: string;
-};
-
-export type Department = {
   id: number;
   name: string;
 };
@@ -28,15 +24,21 @@ export type User = {
 
 type UserQuery = {
   name: string;
+  cpf?: string;
+  departmentId?: string;
+  role?: string;
   onlyActive: string;
 };
 
 export type UserFilters = Filters<UserQuery>;
 
-export async function fetchUsers(
-  filters: UserFilters
-): Promise<PaginatedData<User>> {
-  return fetchPaginated<User>("/users", filters);
+export async function fetchAllUsers() {
+  const { data } = await api.get<User[]>("/users");
+  return data;
+}
+
+export async function fetchUsers(filters: UserFilters) {
+  return fetchPaginated<User, UserQuery>("/users", filters);
 }
 
 export async function getUserById(id: number): Promise<User> {
@@ -44,7 +46,7 @@ export async function getUserById(id: number): Promise<User> {
   return data;
 }
 
-export type CreateUserRequestDTO = {
+export type CreateUserRequest = {
   name: string;
   email: string;
   username: string;
@@ -53,7 +55,7 @@ export type CreateUserRequestDTO = {
   isActive?: boolean;
 };
 
-export type UpdateUserRequestDTO = {
+export type UpdateUserRequest = {
   id: number;
   name?: string;
   phone?: string;
@@ -63,12 +65,12 @@ export type UpdateUserRequestDTO = {
   isActive?: boolean;
 };
 
-export async function createUser(user: CreateUserRequestDTO): Promise<User> {
+export async function createUser(user: CreateUserRequest): Promise<User> {
   const { data } = await api.post("/users", user);
   return data;
 }
 
-export async function updateUser(data: UpdateUserRequestDTO): Promise<User> {
+export async function updateUser(data: UpdateUserRequest): Promise<User> {
   const { data: response } = await api.put<User>(`/users/${data.id}`, data);
   return response;
 }
@@ -78,6 +80,6 @@ export async function deleteUser(id: number): Promise<void> {
 }
 
 export async function restoreUser(id: number): Promise<User> {
-  const { data } = await api.post<User>(`/users/${id}/restore`);
+  const { data } = await api.patch<User>(`/users/${id}/restore`);
   return data;
 }

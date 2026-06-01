@@ -9,6 +9,7 @@ import {
   type User,
   type UserFilters,
 } from "@/api/users";
+import { toast } from "sonner";
 import {
   keepPreviousData,
   useQuery,
@@ -25,11 +26,11 @@ import { DataTableToolbar } from "@/components/ui/data-table/data-table-toolbar"
 import { AddButton } from "@/components/button/add-button";
 import { ExportButton } from "@/components/button/export-button";
 import { getUserTableColumns } from "./-components/user-table-columns";
-import { userFilterConfig } from "./-components/user-filter-config";
+import { useUserFilterConfig } from "./-components/user-filter-config";
 
 export const Route = createFileRoute("/_app/user/")({
   component: UserPage,
-  validateSearch: () => ({}) as UserFilters,
+  validateSearch: (): UserFilters => ({}),
   head: () => ({
     meta: [
       {
@@ -51,23 +52,12 @@ function UserPage() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: number) => deleteUser(id),
-    onMutate: async (userId) => {
-      await queryClient.cancelQueries({ queryKey: ["users", filters] });
-      const previousData = queryClient.getQueryData(["users", filters]);
-      queryClient.setQueryData(["users", filters], (old: any) => {
-        if (!old) return old;
-        return {
-          ...old,
-          result: old.result.map((u: User) =>
-            u.id === userId ? { ...u, isActive: false } : u
-          ),
-        };
-      });
-      return { previousData };
+    mutationFn: async (id: number) => {
+      await deleteUser(id);
+      toast.success("Usuário excluído com sucesso");
     },
-    onError: (_err, _userId, context) => {
-      queryClient.setQueryData(["users", filters], context?.previousData);
+    onError: () => {
+      toast.error("Erro ao processar operação!");
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
@@ -75,23 +65,12 @@ function UserPage() {
   });
 
   const restoreMutation = useMutation({
-    mutationFn: (id: number) => restoreUser(id),
-    onMutate: async (userId) => {
-      await queryClient.cancelQueries({ queryKey: ["users", filters] });
-      const previousData = queryClient.getQueryData(["users", filters]);
-      queryClient.setQueryData(["users", filters], (old: any) => {
-        if (!old) return old;
-        return {
-          ...old,
-          result: old.result.map((u: User) =>
-            u.id === userId ? { ...u, isActive: true } : u
-          ),
-        };
-      });
-      return { previousData };
+    mutationFn: async (id: number) => {
+      await restoreUser(id);
+      toast.success("Usuário restaurado com sucesso");
     },
-    onError: (_err, _userId, context) => {
-      queryClient.setQueryData(["users", filters], context?.previousData);
+    onError: () => {
+      toast.error("Erro ao processar operação!");
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
@@ -127,6 +106,8 @@ function UserPage() {
     [deleteMutation, restoreMutation]
   );
 
+  const filterConfig = useUserFilterConfig();
+
   const { table } = useDataTable({
     data,
     columns,
@@ -137,7 +118,7 @@ function UserPage() {
   return (
     <DataView>
       <DataTableFilterMenu
-        filterConfig={userFilterConfig}
+        filterConfig={filterConfig}
         isLoading={isLoading}
         filters={filters}
         onFilter={setFilters}

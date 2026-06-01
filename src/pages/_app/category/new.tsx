@@ -1,8 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { CreateView } from "@/components/views/create-view";
 import { CategoryForm, type CategoryFormValues } from "./-components/category-form";
-import { createProductCategory } from "@/api/product-categories";
+import { createProductCategory, type CreateProductCategoryRequest } from "@/api/product-categories";
 
 export const Route = createFileRoute("/_app/category/new")({
   component: CategoryNewPage,
@@ -20,10 +21,17 @@ function CategoryNewPage() {
   const queryClient = useQueryClient();
 
   const createMutation = useMutation({
-    mutationFn: createProductCategory,
+    mutationFn: async (data: CreateProductCategoryRequest) => {
+      const response = await createProductCategory(data);
+      toast.success("Categoria criada com sucesso");
+      return response;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });
       navigate({ to: "/category" });
+    },
+    onError: () => {
+      toast.error("Erro ao processar operação!");
     },
   });
 

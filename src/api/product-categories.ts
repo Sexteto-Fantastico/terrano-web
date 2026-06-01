@@ -1,5 +1,5 @@
 import api from "@/lib/axios";
-import { fetchPaginated } from "@/lib/pagination";
+import { fetchPaginated } from "@/utils/pagination";
 import type { Filters, PaginatedData } from "@/components/ui/data-table/@types";
 
 export type ProductCategoryParent = {
@@ -18,13 +18,13 @@ export type ProductCategory = {
   parent?: ProductCategoryParent | null;
 };
 
-export type CreateProductCategoryRequestDTO = {
+export type CreateProductCategoryRequest = {
   name: string;
   description?: string;
   parentId?: number;
 };
 
-export type UpdateProductCategoryRequestDTO = {
+export type UpdateProductCategoryRequest = {
   id: number;
   name?: string;
   description?: string;
@@ -41,7 +41,7 @@ export type ProductCategoryFilters = Filters<ProductCategoryQuery>;
 
 export async function fetchAllProductCategories(): Promise<ProductCategory[]> {
   const { data } = await api.get<ProductCategory[]>("/product-categories");
-  
+
   return data.map((category) => ({
     ...category,
     isActive: !category.deletedAt,
@@ -51,8 +51,11 @@ export async function fetchAllProductCategories(): Promise<ProductCategory[]> {
 export async function fetchProductCategories(
   filters: ProductCategoryFilters
 ): Promise<PaginatedData<ProductCategory>> {
-  const response = await fetchPaginated<ProductCategory>("/product-categories", filters);
-  
+  const response = await fetchPaginated<ProductCategory, ProductCategoryQuery>(
+    "/product-categories",
+    filters
+  );
+
   return {
     ...response,
     result: response.result.map((category) => ({
@@ -62,9 +65,11 @@ export async function fetchProductCategories(
   };
 }
 
-export async function fetchProductCategoryById(id: number): Promise<ProductCategory> {
+export async function fetchProductCategoryById(
+  id: number
+): Promise<ProductCategory> {
   const { data } = await api.get<ProductCategory>(`/product-categories/${id}`);
-  
+
   return {
     ...data,
     isActive: !data.deletedAt,
@@ -72,7 +77,7 @@ export async function fetchProductCategoryById(id: number): Promise<ProductCateg
 }
 
 export async function createProductCategory(
-  data: CreateProductCategoryRequestDTO
+  data: CreateProductCategoryRequest
 ): Promise<ProductCategory> {
   const { data: response } = await api.post<ProductCategory>(
     "/product-categories",
@@ -82,7 +87,7 @@ export async function createProductCategory(
 }
 
 export async function updateProductCategory(
-  data: UpdateProductCategoryRequestDTO
+  data: UpdateProductCategoryRequest
 ): Promise<ProductCategory> {
   const { data: response } = await api.put<ProductCategory>(
     `/product-categories/${data.id}`,
@@ -95,7 +100,9 @@ export async function deleteProductCategory(id: number): Promise<void> {
   await api.delete(`/product-categories/${id}`);
 }
 
-export async function restoreProductCategory(id: number): Promise<ProductCategory> {
+export async function restoreProductCategory(
+  id: number
+): Promise<ProductCategory> {
   const { data } = await api.patch<ProductCategory>(
     `/product-categories/${id}/restore`
   );
