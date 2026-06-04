@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import type { DataTableFilterConfigItem } from "@/components/ui/data-table/@types";
 import { useForm } from "@tanstack/react-form";
 import { useEffect, useMemo } from "react";
-import { Search, SearchIcon, XIcon } from "lucide-react";
+import { SearchIcon, XIcon } from "lucide-react";
 
 type DataTableFilterMenuProps<TFilters extends Record<string, unknown>> = {
   filterConfig: DataTableFilterConfigItem[];
