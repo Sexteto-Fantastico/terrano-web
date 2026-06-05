@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { DataView } from "@/components/views/data-view";
 import { useFilters } from "@/hooks/use-filters";
@@ -34,6 +34,8 @@ import {
   AlertTriangle,
   Boxes,
   PackageX,
+  PackageOpen,
+  SearchX,
 } from "lucide-react";
 import { toast } from "sonner";
 import { keepPreviousData } from "@tanstack/react-query";
@@ -129,6 +131,45 @@ function StockPositioningPage() {
     filters: filters as any,
     setFilters: setFilters as any,
   });
+
+  const renderEmptyState = () => {
+    if (isLoading) return null;
+
+    if (filters.search) {
+      return (
+        <div className="flex flex-col items-center justify-center py-16">
+          <div className="flex h-32 w-32 items-center justify-center rounded-full bg-muted/50 mb-6 relative">
+            <SearchX className="h-16 w-16 text-muted-foreground" />
+          </div>
+          <h3 className="text-xl font-bold text-foreground mb-2">Nenhum produto encontrado</h3>
+          <p className="text-sm text-muted-foreground max-w-md mx-auto mb-6 whitespace-normal">
+            Não encontramos nenhum resultado para a sua busca. Tente verificar a ortografia ou usar o código do produto.
+          </p>
+          <Button variant="outline" onClick={handleClearFilters} className="p-6 gap-2 border-border shadow-sm">
+            <Eraser className="h-4 w-4" />
+            Limpar busca
+          </Button>
+        </div>
+      );
+    }
+
+    return (
+      <div className="flex flex-col items-center justify-center py-16">
+        <div className="flex h-32 w-32 items-center justify-center rounded-full bg-muted/50 mb-6 relative">
+          <PackageOpen className="h-16 w-16 text-muted-foreground" strokeWidth={1.5} />
+        </div>
+        <h3 className="text-xl font-bold text-foreground mb-2">Este almoxarifado está vazio</h3>
+        <p className="text-sm text-muted-foreground max-w-lg mx-auto mb-6 whitespace-normal">
+          Ainda não há produtos alocados para cá. Faça uma entrada de estoque ou cadastre novos itens para começar.
+        </p>
+        <Button asChild className="p-6 bg-[#009262] hover:bg-[#009262]/90 text-white shadow-sm">
+          <Link to={"/stock-in" as any}>
+            Realizar entrada de estoque
+          </Link>
+        </Button>
+      </div>
+    );
+  };
 
   return (
     <DataView
@@ -247,6 +288,7 @@ function StockPositioningPage() {
         table={table}
         isLoading={isLoading}
         actionBar={<DataTableToolbar table={table} />}
+        emptyState={renderEmptyState()}
       />
 
       <div className="mt-4">
