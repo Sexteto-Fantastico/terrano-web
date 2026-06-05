@@ -19,6 +19,8 @@ import { Route as AuthForgotPasswordRouteImport } from './pages/_auth/forgot-pas
 import { Route as AuthCheckEmailRouteImport } from './pages/_auth/check-email'
 import { Route as AppDefinePasswordRouteImport } from './pages/_app/define-password'
 import { Route as AppUserIndexRouteImport } from './pages/_app/user/index'
+import { Route as AppUnitIndexRouteImport } from './pages/_app/unit/index'
+import { Route as AppStockPositioningIndexRouteImport } from './pages/_app/stock-positioning/index'
 import { Route as AppPurchaseIndexRouteImport } from './pages/_app/purchase/index'
 import { Route as AppProductIndexRouteImport } from './pages/_app/product/index'
 import { Route as AppProductBrandIndexRouteImport } from './pages/_app/product-brand/index'
@@ -26,6 +28,8 @@ import { Route as AppDepartmentIndexRouteImport } from './pages/_app/department/
 import { Route as AppCategoryIndexRouteImport } from './pages/_app/category/index'
 import { Route as AppUserNewRouteImport } from './pages/_app/user/new'
 import { Route as AppUserEditRouteImport } from './pages/_app/user/edit'
+import { Route as AppUnitNewRouteImport } from './pages/_app/unit/new'
+import { Route as AppUnitEditRouteImport } from './pages/_app/unit/edit'
 import { Route as AppPurchaseNewRouteImport } from './pages/_app/purchase/new'
 import { Route as AppPurchaseEditRouteImport } from './pages/_app/purchase/edit'
 import { Route as AppProductBrandNewRouteImport } from './pages/_app/product-brand/new'
@@ -83,6 +87,17 @@ const AppUserIndexRoute = AppUserIndexRouteImport.update({
   path: '/user/',
   getParentRoute: () => AppLayoutRoute,
 } as any)
+const AppUnitIndexRoute = AppUnitIndexRouteImport.update({
+  id: '/unit/',
+  path: '/unit/',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
+const AppStockPositioningIndexRoute =
+  AppStockPositioningIndexRouteImport.update({
+    id: '/stock-positioning/',
+    path: '/stock-positioning/',
+    getParentRoute: () => AppLayoutRoute,
+  } as any)
 const AppPurchaseIndexRoute = AppPurchaseIndexRouteImport.update({
   id: '/purchase/',
   path: '/purchase/',
@@ -116,6 +131,16 @@ const AppUserNewRoute = AppUserNewRouteImport.update({
 const AppUserEditRoute = AppUserEditRouteImport.update({
   id: '/user/edit',
   path: '/user/edit',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
+const AppUnitNewRoute = AppUnitNewRouteImport.update({
+  id: '/unit/new',
+  path: '/unit/new',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
+const AppUnitEditRoute = AppUnitEditRouteImport.update({
+  id: '/unit/edit',
+  path: '/unit/edit',
   getParentRoute: () => AppLayoutRoute,
 } as any)
 const AppPurchaseNewRoute = AppPurchaseNewRouteImport.update({
@@ -175,6 +200,8 @@ export interface FileRoutesByFullPath {
   '/product-brand/new': typeof AppProductBrandNewRoute
   '/purchase/edit': typeof AppPurchaseEditRoute
   '/purchase/new': typeof AppPurchaseNewRoute
+  '/unit/edit': typeof AppUnitEditRoute
+  '/unit/new': typeof AppUnitNewRoute
   '/user/edit': typeof AppUserEditRoute
   '/user/new': typeof AppUserNewRoute
   '/category/': typeof AppCategoryIndexRoute
@@ -182,6 +209,8 @@ export interface FileRoutesByFullPath {
   '/product-brand/': typeof AppProductBrandIndexRoute
   '/product/': typeof AppProductIndexRoute
   '/purchase/': typeof AppPurchaseIndexRoute
+  '/stock-positioning/': typeof AppStockPositioningIndexRoute
+  '/unit/': typeof AppUnitIndexRoute
   '/user/': typeof AppUserIndexRoute
 }
 export interface FileRoutesByTo {
@@ -200,6 +229,8 @@ export interface FileRoutesByTo {
   '/product-brand/new': typeof AppProductBrandNewRoute
   '/purchase/edit': typeof AppPurchaseEditRoute
   '/purchase/new': typeof AppPurchaseNewRoute
+  '/unit/edit': typeof AppUnitEditRoute
+  '/unit/new': typeof AppUnitNewRoute
   '/user/edit': typeof AppUserEditRoute
   '/user/new': typeof AppUserNewRoute
   '/category': typeof AppCategoryIndexRoute
@@ -207,6 +238,8 @@ export interface FileRoutesByTo {
   '/product-brand': typeof AppProductBrandIndexRoute
   '/product': typeof AppProductIndexRoute
   '/purchase': typeof AppPurchaseIndexRoute
+  '/stock-positioning': typeof AppStockPositioningIndexRoute
+  '/unit': typeof AppUnitIndexRoute
   '/user': typeof AppUserIndexRoute
 }
 export interface FileRoutesById {
@@ -228,6 +261,8 @@ export interface FileRoutesById {
   '/_app/product-brand/new': typeof AppProductBrandNewRoute
   '/_app/purchase/edit': typeof AppPurchaseEditRoute
   '/_app/purchase/new': typeof AppPurchaseNewRoute
+  '/_app/unit/edit': typeof AppUnitEditRoute
+  '/_app/unit/new': typeof AppUnitNewRoute
   '/_app/user/edit': typeof AppUserEditRoute
   '/_app/user/new': typeof AppUserNewRoute
   '/_app/category/': typeof AppCategoryIndexRoute
@@ -235,6 +270,8 @@ export interface FileRoutesById {
   '/_app/product-brand/': typeof AppProductBrandIndexRoute
   '/_app/product/': typeof AppProductIndexRoute
   '/_app/purchase/': typeof AppPurchaseIndexRoute
+  '/_app/stock-positioning/': typeof AppStockPositioningIndexRoute
+  '/_app/unit/': typeof AppUnitIndexRoute
   '/_app/user/': typeof AppUserIndexRoute
 }
 export interface FileRouteTypes {
@@ -255,6 +292,8 @@ export interface FileRouteTypes {
     | '/product-brand/new'
     | '/purchase/edit'
     | '/purchase/new'
+    | '/unit/edit'
+    | '/unit/new'
     | '/user/edit'
     | '/user/new'
     | '/category/'
@@ -262,6 +301,8 @@ export interface FileRouteTypes {
     | '/product-brand/'
     | '/product/'
     | '/purchase/'
+    | '/stock-positioning/'
+    | '/unit/'
     | '/user/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -280,6 +321,8 @@ export interface FileRouteTypes {
     | '/product-brand/new'
     | '/purchase/edit'
     | '/purchase/new'
+    | '/unit/edit'
+    | '/unit/new'
     | '/user/edit'
     | '/user/new'
     | '/category'
@@ -287,6 +330,8 @@ export interface FileRouteTypes {
     | '/product-brand'
     | '/product'
     | '/purchase'
+    | '/stock-positioning'
+    | '/unit'
     | '/user'
   id:
     | '__root__'
@@ -307,6 +352,8 @@ export interface FileRouteTypes {
     | '/_app/product-brand/new'
     | '/_app/purchase/edit'
     | '/_app/purchase/new'
+    | '/_app/unit/edit'
+    | '/_app/unit/new'
     | '/_app/user/edit'
     | '/_app/user/new'
     | '/_app/category/'
@@ -314,6 +361,8 @@ export interface FileRouteTypes {
     | '/_app/product-brand/'
     | '/_app/product/'
     | '/_app/purchase/'
+    | '/_app/stock-positioning/'
+    | '/_app/unit/'
     | '/_app/user/'
   fileRoutesById: FileRoutesById
 }
@@ -394,6 +443,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppUserIndexRouteImport
       parentRoute: typeof AppLayoutRoute
     }
+    '/_app/unit/': {
+      id: '/_app/unit/'
+      path: '/unit'
+      fullPath: '/unit/'
+      preLoaderRoute: typeof AppUnitIndexRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
+    '/_app/stock-positioning/': {
+      id: '/_app/stock-positioning/'
+      path: '/stock-positioning'
+      fullPath: '/stock-positioning/'
+      preLoaderRoute: typeof AppStockPositioningIndexRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
     '/_app/purchase/': {
       id: '/_app/purchase/'
       path: '/purchase'
@@ -441,6 +504,20 @@ declare module '@tanstack/react-router' {
       path: '/user/edit'
       fullPath: '/user/edit'
       preLoaderRoute: typeof AppUserEditRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
+    '/_app/unit/new': {
+      id: '/_app/unit/new'
+      path: '/unit/new'
+      fullPath: '/unit/new'
+      preLoaderRoute: typeof AppUnitNewRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
+    '/_app/unit/edit': {
+      id: '/_app/unit/edit'
+      path: '/unit/edit'
+      fullPath: '/unit/edit'
+      preLoaderRoute: typeof AppUnitEditRouteImport
       parentRoute: typeof AppLayoutRoute
     }
     '/_app/purchase/new': {
@@ -513,6 +590,8 @@ interface AppLayoutRouteChildren {
   AppProductBrandNewRoute: typeof AppProductBrandNewRoute
   AppPurchaseEditRoute: typeof AppPurchaseEditRoute
   AppPurchaseNewRoute: typeof AppPurchaseNewRoute
+  AppUnitEditRoute: typeof AppUnitEditRoute
+  AppUnitNewRoute: typeof AppUnitNewRoute
   AppUserEditRoute: typeof AppUserEditRoute
   AppUserNewRoute: typeof AppUserNewRoute
   AppCategoryIndexRoute: typeof AppCategoryIndexRoute
@@ -520,6 +599,8 @@ interface AppLayoutRouteChildren {
   AppProductBrandIndexRoute: typeof AppProductBrandIndexRoute
   AppProductIndexRoute: typeof AppProductIndexRoute
   AppPurchaseIndexRoute: typeof AppPurchaseIndexRoute
+  AppStockPositioningIndexRoute: typeof AppStockPositioningIndexRoute
+  AppUnitIndexRoute: typeof AppUnitIndexRoute
   AppUserIndexRoute: typeof AppUserIndexRoute
 }
 
@@ -534,6 +615,8 @@ const AppLayoutRouteChildren: AppLayoutRouteChildren = {
   AppProductBrandNewRoute: AppProductBrandNewRoute,
   AppPurchaseEditRoute: AppPurchaseEditRoute,
   AppPurchaseNewRoute: AppPurchaseNewRoute,
+  AppUnitEditRoute: AppUnitEditRoute,
+  AppUnitNewRoute: AppUnitNewRoute,
   AppUserEditRoute: AppUserEditRoute,
   AppUserNewRoute: AppUserNewRoute,
   AppCategoryIndexRoute: AppCategoryIndexRoute,
@@ -541,6 +624,8 @@ const AppLayoutRouteChildren: AppLayoutRouteChildren = {
   AppProductBrandIndexRoute: AppProductBrandIndexRoute,
   AppProductIndexRoute: AppProductIndexRoute,
   AppPurchaseIndexRoute: AppPurchaseIndexRoute,
+  AppStockPositioningIndexRoute: AppStockPositioningIndexRoute,
+  AppUnitIndexRoute: AppUnitIndexRoute,
   AppUserIndexRoute: AppUserIndexRoute,
 }
 
