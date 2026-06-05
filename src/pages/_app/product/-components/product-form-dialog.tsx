@@ -25,7 +25,7 @@ import {
 } from "@/api/products";
 import { fetchAllProductCategories } from "@/api/product-categories";
 import { fetchAllProductBrands } from "@/api/product-brands";
-import { fetchMeasurementUnits } from "@/api/measurement-units";
+import { fetchAllMeasurementUnits } from "@/api/measurement-units";
 
 interface ProductFormDialogProps {
   open: boolean;
@@ -52,7 +52,7 @@ export function ProductFormDialog({
 
   const { data: measurementUnits = [] } = useQuery({
     queryKey: ["measurement-units"],
-    queryFn: fetchMeasurementUnits,
+    queryFn: fetchAllMeasurementUnits,
   });
 
   const createMutation = useMutation({
