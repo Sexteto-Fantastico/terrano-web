@@ -86,6 +86,7 @@ function DepartmentEditPage() {
           await updateMutation.mutateAsync({
             id: departmentQuery.data.id,
             name: values.name,
+            managerId: values.managerId,
             manager: { id: values.managerId, name: values.managerName},
           });
         }}
