@@ -63,6 +63,11 @@ export type UpdateUserRequestDTO = {
   isActive?: boolean;
 };
 
+export async function fetchAllUsers(): Promise<User[]> {
+  const { data } = await api.get<User[]>("/users");
+  return data;
+}
+
 export async function createUser(user: CreateUserRequestDTO): Promise<User> {
   const { data } = await api.post("/users", user);
   return data;
