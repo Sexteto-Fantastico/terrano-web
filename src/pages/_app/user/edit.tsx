@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { CreateView } from "@/components/views/create-view";
 import { UserForm } from "./-components/user-form";
-import { getUserById, updateUser } from "@/api/users";
+import { getUserById, updateUser, deleteUser, restoreUser } from "@/api/users";
 
 export const Route = createFileRoute("/_app/user/edit")({
   component: UserEditPage,
@@ -36,6 +36,20 @@ function UserEditPage() {
     },
   });
 
+  const toggleActiveMutation = useMutation({
+    mutationFn: async ({ id, value }: { id: number; value: boolean }) => {
+      if (value) {
+        await restoreUser(id);
+      } else {
+        await deleteUser(id);
+      }
+    },
+    onSuccess: (_data, { id }) => {
+      queryClient.invalidateQueries({ queryKey: ["user", String(id)] });
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
+  });
+
   if (!search.id) {
     return <div>Usuário inválido</div>;
   }
@@ -49,7 +63,15 @@ function UserEditPage() {
   }
 
   return (
-    <CreateView formId="user-form">
+    <CreateView
+      formId="user-form"
+      recordId={userQuery.data.id}
+      logEntity="user"
+      active={userQuery.data.isActive}
+      onActiveChange={(value) =>
+        toggleActiveMutation.mutate({ id: userQuery.data.id, value })
+      }
+    >
       <UserForm
         initialValues={{
           name: userQuery.data.name,
