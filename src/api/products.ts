@@ -22,12 +22,12 @@ export type Product = {
 };
 
 export type CreateProductRequest = {
-  name: string;
-  code: string;
+  name?: string;
+  code?: string;
   description?: string;
-  categoryId: number;
-  measurementUnitId: number;
-  brandId: number;
+  categoryId?: number;
+  measurementUnitId?: number;
+  brandId?: number;
   minStock?: number;
   maxStock?: number;
 };
@@ -57,6 +57,11 @@ export async function fetchProducts(
   filters: ProductFilters
 ): Promise<PaginatedData<Product>> {
   return fetchPaginated<Product>("/products", filters);
+}
+
+export async function fetchProductById(id: number): Promise<Product> {
+  const { data } = await api.get<Product>(`/products/${id}`);
+  return data;
 }
 
 export async function createProduct(
