@@ -75,7 +75,7 @@ const MENU_DATA: MenuGroup[] = [
   {
     title: "Requisições",
     icon: ArrowRightLeftIcon,
-    items: [{ title: "Solicitação de Material", href: "/material-request" }],
+    items: [{ title: "Solicitação de Material", href: "/stock-requisition" }],
   },
   {
     title: "Relatórios",
