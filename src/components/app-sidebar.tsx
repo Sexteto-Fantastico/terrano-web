@@ -57,10 +57,9 @@ const MENU_DATA: MenuGroup[] = [
       { title: "Marca", href: "/product-brand" },
       { title: "Categoria", href: "/category" },
       { title: "Unidade de Medida", href: "/unit" },
-      { title: "Estoque", href: "/stock" },
+      { title: "Estoque", href: "/stock-location" },
       { title: "Fornecedor", href: "/supplier" },
-      { title: "Departamento", href: "/department" },
-      { title: "Centro de Custo", href: "/cost-center" },
+      { title: "Departamento", href: "/department" }
     ],
   },
   {
@@ -75,7 +74,7 @@ const MENU_DATA: MenuGroup[] = [
   {
     title: "Requisições",
     icon: ArrowRightLeftIcon,
-    items: [{ title: "Solicitação de Material", href: "/material-request" }],
+    items: [{ title: "Solicitação de Material", href: "/stock-requisition" }],
   },
   {
     title: "Relatórios",
