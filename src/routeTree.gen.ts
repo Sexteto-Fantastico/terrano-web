@@ -29,6 +29,12 @@ import { Route as AppDepartmentIndexRouteImport } from './pages/_app/department/
 import { Route as AppCategoryIndexRouteImport } from './pages/_app/category/index'
 import { Route as AppUserNewRouteImport } from './pages/_app/user/new'
 import { Route as AppUserEditRouteImport } from './pages/_app/user/edit'
+import { Route as AppUnitNewRouteImport } from './pages/_app/unit/new'
+import { Route as AppUnitEditRouteImport } from './pages/_app/unit/edit'
+import { Route as AppStockRequisitionNewRouteImport } from './pages/_app/stock-requisition/new'
+import { Route as AppStockRequisitionEditRouteImport } from './pages/_app/stock-requisition/edit'
+import { Route as AppStockLocationNewRouteImport } from './pages/_app/stock-location/new'
+import { Route as AppStockLocationEditRouteImport } from './pages/_app/stock-location/edit'
 import { Route as AppPurchaseNewRouteImport } from './pages/_app/purchase/new'
 import { Route as AppPurchaseEditRouteImport } from './pages/_app/purchase/edit'
 import { Route as AppProductBrandNewRouteImport } from './pages/_app/product-brand/new'
@@ -272,6 +278,9 @@ export interface FileRoutesByTo {
   '/product-brand': typeof AppProductBrandIndexRoute
   '/product': typeof AppProductIndexRoute
   '/purchase': typeof AppPurchaseIndexRoute
+  '/stock-location': typeof AppStockLocationIndexRoute
+  '/stock-requisition': typeof AppStockRequisitionIndexRoute
+  '/unit': typeof AppUnitIndexRoute
   '/user': typeof AppUserIndexRoute
 }
 export interface FileRoutesById {
@@ -306,6 +315,9 @@ export interface FileRoutesById {
   '/_app/product-brand/': typeof AppProductBrandIndexRoute
   '/_app/product/': typeof AppProductIndexRoute
   '/_app/purchase/': typeof AppPurchaseIndexRoute
+  '/_app/stock-location/': typeof AppStockLocationIndexRoute
+  '/_app/stock-requisition/': typeof AppStockRequisitionIndexRoute
+  '/_app/unit/': typeof AppUnitIndexRoute
   '/_app/user/': typeof AppUserIndexRoute
 }
 export interface FileRouteTypes {
@@ -339,6 +351,9 @@ export interface FileRouteTypes {
     | '/product-brand/'
     | '/product/'
     | '/purchase/'
+    | '/stock-location/'
+    | '/stock-requisition/'
+    | '/unit/'
     | '/user/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -370,6 +385,9 @@ export interface FileRouteTypes {
     | '/product-brand'
     | '/product'
     | '/purchase'
+    | '/stock-location'
+    | '/stock-requisition'
+    | '/unit'
     | '/user'
   id:
     | '__root__'
@@ -403,6 +421,9 @@ export interface FileRouteTypes {
     | '/_app/product-brand/'
     | '/_app/product/'
     | '/_app/purchase/'
+    | '/_app/stock-location/'
+    | '/_app/stock-requisition/'
+    | '/_app/unit/'
     | '/_app/user/'
   fileRoutesById: FileRoutesById
 }
