@@ -25,6 +25,7 @@ export type CreateDepartmentRequestDTO = {
 export type UpdateDepartmentRequestDTO = {
   id: number;
   name?: string;
+  managerId?: number;
   manager?: DepartmentManager | null;
   isActive?: boolean;
 };

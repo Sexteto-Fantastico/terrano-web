@@ -3,7 +3,12 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { z } from 'zod'
 import { CreateView } from '@/components/views/create-view'
 import { CategoryForm } from './-components/category-form'
-import { fetchProductCategoryById, updateProductCategory } from '@/api/product-categories'
+import {
+  fetchProductCategoryById,
+  updateProductCategory,
+  deleteProductCategory,
+  restoreProductCategory,
+} from '@/api/product-categories'
 
 export const Route = createFileRoute('/_app/category/edit')({
   component: CategoryEditComponent,
@@ -36,6 +41,20 @@ function CategoryEditComponent() {
     },
   })
 
+  const toggleActiveMutation = useMutation({
+    mutationFn: async ({ id, value }: { id: number; value: boolean }) => {
+      if (value) {
+        await restoreProductCategory(id)
+      } else {
+        await deleteProductCategory(id)
+      }
+    },
+    onSuccess: (_data, { id }) => {
+      queryClient.invalidateQueries({ queryKey: ['category', String(id)] })
+      queryClient.invalidateQueries({ queryKey: ['categories'] })
+    },
+  })
+
   if (!search.id) {
     return <div>Categoria inválida</div>
   }
@@ -49,7 +68,15 @@ function CategoryEditComponent() {
   }
 
   return (
-    <CreateView formId="category-form">
+    <CreateView
+      formId="category-form"
+      recordId={categoryQuery.data.id}
+      logEntity="product-category"
+      active={categoryQuery.data.isActive ?? categoryQuery.data.deletedAt == null}
+      onActiveChange={(value) =>
+        toggleActiveMutation.mutate({ id: categoryQuery.data.id, value })
+      }
+    >
       <CategoryForm
         initialName={categoryQuery.data.name}
         initialDescription={categoryQuery.data.description}

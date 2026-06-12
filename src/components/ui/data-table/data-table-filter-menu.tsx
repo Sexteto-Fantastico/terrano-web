@@ -70,13 +70,21 @@ export function DataTableFilterMenu<TFilters extends Record<string, unknown>>({
       const nextFilters = filterableColumns.reduce<Partial<TFilters>>(
         (acc, column) => {
           const draftValue = value[column.id] ?? "";
-
-          if (column.variant === "checkbox") {
-            acc[column.id as keyof TFilters] =
-              (draftValue || "false") as TFilters[keyof TFilters];
-            return acc;
-          }
-
+if (column.variant === "checkbox") {
+  acc[column.id as keyof TFilters] =
+    (draftValue === "true" ? "true" : "false") as TFilters[keyof TFilters];
+  return acc;
+}
+  if (column.variant === "dateRange") {
+        const parsed =
+          typeof draftValue === "object" && draftValue !== null
+            ? draftValue
+            : (() => {
+                try { return JSON.parse(draftValue as string); } catch { return undefined; }
+              })();
+        acc[column.id as keyof TFilters] = (parsed ?? undefined) as TFilters[keyof TFilters];
+        return acc;
+      }
           if (!draftValue.trim()) {
             acc[column.id as keyof TFilters] =
               undefined as TFilters[keyof TFilters];
@@ -113,9 +121,11 @@ export function DataTableFilterMenu<TFilters extends Record<string, unknown>>({
       (acc, column) => {
         const rawValue = filters[column.id as keyof TFilters];
         acc[column.id] =
-          rawValue === undefined || rawValue === null
-            ? (column.defaultValue ?? "")
-            : String(rawValue);
+  rawValue === undefined || rawValue === null
+    ? (column.defaultValue ?? "")
+    : column.variant === "dateRange"
+      ? JSON.stringify(rawValue)   
+      : String(rawValue);
         return acc;
       },
       {}

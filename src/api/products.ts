@@ -59,6 +59,11 @@ export async function fetchProducts(
   return fetchPaginated<Product>("/products", filters);
 }
 
+export async function fetchAllProducts(): Promise<Product[]> {
+  const { data } = await api.get<Product[]>("/products");
+  return data;
+}
+
 export async function createProduct(
   data: CreateProductRequest
 ): Promise<Product> {

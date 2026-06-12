@@ -10,6 +10,8 @@ import { MeasurementUnitForm } from "./-components/measurement-unit-form";
 import {
   fetchMeasurementUnitById,
   updateMeasurementUnit,
+  deleteMeasurementUnit,
+  restoreMeasurementUnit,
   typeFromSymbol,
 } from "@/api/measurement-units";
 
@@ -44,6 +46,22 @@ function MeasurementUnitEditPage() {
     },
   });
 
+  const toggleActiveMutation = useMutation({
+    mutationFn: async ({ id, value }: { id: number; value: boolean }) => {
+      if (value) {
+        await restoreMeasurementUnit(id);
+      } else {
+        await deleteMeasurementUnit(id);
+      }
+    },
+    onSuccess: (_data, { id }) => {
+      queryClient.invalidateQueries({
+        queryKey: ["measurement-unit", String(id)],
+      });
+      queryClient.invalidateQueries({ queryKey: ["measurement-units"] });
+    },
+  });
+
   if (!search.id) {
     return <div>Unidade de medida inválida</div>;
   }
@@ -57,7 +75,15 @@ function MeasurementUnitEditPage() {
   }
 
   return (
-    <CreateView formId="measurement-unit-form">
+    <CreateView
+      formId="measurement-unit-form"
+      recordId={unitQuery.data.id}
+      logEntity="measurement-unit"
+      active={unitQuery.data.isActive}
+      onActiveChange={(value) =>
+        toggleActiveMutation.mutate({ id: unitQuery.data.id, value })
+      }
+    >
       <MeasurementUnitForm
         initialName={unitQuery.data.name}
         initialSymbol={unitQuery.data.symbol}

@@ -3,7 +3,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { CreateView } from "@/components/views/create-view";
 import { DepartmentForm } from "./-components/department-form";
-import { fetchDepartmentById, updateDepartment } from "@/api/departments";
+import {
+  fetchDepartmentById,
+  updateDepartment,
+  deleteDepartment,
+  restoreDepartment,
+} from "@/api/departments";
 
 export const Route = createFileRoute("/_app/department/edit")({
   component: DepartmentEditPage,
@@ -36,6 +41,20 @@ function DepartmentEditPage() {
     },
   });
 
+  const toggleActiveMutation = useMutation({
+    mutationFn: async ({ id, value }: { id: number; value: boolean }) => {
+      if (value) {
+        await restoreDepartment(id);
+      } else {
+        await deleteDepartment(id);
+      }
+    },
+    onSuccess: (_data, { id }) => {
+      queryClient.invalidateQueries({ queryKey: ["department", String(id)] });
+      queryClient.invalidateQueries({ queryKey: ["departments"] });
+    },
+  });
+
   if (!search.id) {
     return <div>Departamento inválido</div>;
   }
@@ -48,7 +67,18 @@ function DepartmentEditPage() {
     return <div>Departamento não encontrado</div>;
   }
   return (
-    <CreateView formId="department-form">
+    <CreateView
+      formId="department-form"
+      recordId={departmentQuery.data.id}
+      logEntity="department"
+      active={
+        departmentQuery.data.isActive ??
+        departmentQuery.data.deletedAt == null
+      }
+      onActiveChange={(value) =>
+        toggleActiveMutation.mutate({ id: departmentQuery.data.id, value })
+      }
+    >
       <DepartmentForm
         initialName={departmentQuery.data.name}
         initialManager={departmentQuery.data.manager ?? null}
@@ -56,6 +86,7 @@ function DepartmentEditPage() {
           await updateMutation.mutateAsync({
             id: departmentQuery.data.id,
             name: values.name,
+            managerId: values.managerId,
             manager: { id: values.managerId, name: values.managerName},
           });
         }}
