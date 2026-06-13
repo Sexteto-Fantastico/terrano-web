@@ -302,30 +302,33 @@ export function DataTableFilterInput({
         </Select>
       );
     }
-
-    case "select": {
-      const currentValue = field.state.value as string | undefined;
-      return (
-        <Select
-          value={currentValue ?? ""}
-          onValueChange={(value) => field.handleChange(value)}
-          disabled={disabled}
-        >
-          <SelectTrigger className={cn("w-full", className)}>
-            <SelectValue
-              placeholder={placeholder ?? `Selecione ${label.toLowerCase()}`}
-            />
-          </SelectTrigger>
-          <SelectContent>
-            {options.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      );
-    }
+case "select": {
+  const EMPTY = "__none__";
+  const currentValue = (field.state.value as string | undefined) || EMPTY;
+  return (
+    <Select
+      value={currentValue}
+      onValueChange={(value) => field.handleChange(value === EMPTY ? "" : value)}
+      disabled={disabled}
+    >
+      <SelectTrigger className={cn("w-full", className)}>
+        <SelectValue
+          placeholder={placeholder ?? `Selecione ${label.toLowerCase()}`}
+        />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value={EMPTY}>
+          <span className="text-muted-foreground">Todos</span>
+        </SelectItem>
+        {options.map((option) => (
+          <SelectItem key={option.value} value={option.value}>
+            {option.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+}
 
     case "multiSelect": {
       const selectedValues = parseMultiSelectValue(

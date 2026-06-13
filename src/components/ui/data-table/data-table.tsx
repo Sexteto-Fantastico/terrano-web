@@ -17,6 +17,7 @@ interface DataTableProps<TData> extends React.ComponentProps<"div"> {
   isLoading?: boolean;
   actionBar?: React.ReactNode;
   getRowClassName?: (row: import("@tanstack/react-table").Row<TData>) => string;
+  emptyState?: React.ReactNode;
 }
 
 export function DataTable<TData>({
@@ -24,6 +25,7 @@ export function DataTable<TData>({
   isLoading,
   actionBar,
   getRowClassName,
+  emptyState,
   className,
   ...props
 }: DataTableProps<TData>) {
@@ -33,7 +35,7 @@ export function DataTable<TData>({
       {...props}
     >
       {actionBar}
-      <div className="overflow-hidden rounded-md border">
+      <div className="overflow-hidden rounded-md border bg-card">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -49,9 +51,9 @@ export function DataTable<TData>({
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -84,9 +86,9 @@ export function DataTable<TData>({
               <TableRow>
                 <TableCell
                   colSpan={table.getAllColumns().length}
-                  className="h-24 text-center"
+                  className="h-32 text-center"
                 >
-                  Sem resultados.
+                  {emptyState ?? "Sem resultados."}
                 </TableCell>
               </TableRow>
             )}

@@ -14,11 +14,11 @@ export const AddButton = ({
 }: AddButtonProps) => {
   const navigate = useNavigate();
 
-  function handleClick() {
+  function handleClick(event: React.MouseEvent<HTMLButtonElement>) {
     if (to) {
       navigate({ to: to as any });
     } else {
-      onClick?.();
+      onClick?.(event);
     }
   }
 

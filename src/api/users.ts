@@ -24,25 +24,13 @@ export type User = {
   managedDepartments?: Department[];
   isActive: boolean;
   requiresPasswordReset?: boolean;
+  profilePicture?: string;
 };
 
 type UserQuery = {
   name: string;
   onlyActive: string;
 };
-
-export type UserFilters = Filters<UserQuery>;
-
-export async function fetchUsers(
-  filters: UserFilters
-): Promise<PaginatedData<User>> {
-  return fetchPaginated<User>("/users", filters);
-}
-
-export async function getUserById(id: number): Promise<User> {
-  const { data } = await api.get(`/users/${id}`);
-  return data;
-}
 
 export type CreateUserRequestDTO = {
   name: string;
@@ -62,6 +50,18 @@ export type UpdateUserRequestDTO = {
   username?: string;
   isActive?: boolean;
 };
+export type UserFilters = Filters<UserQuery>;
+
+export async function fetchUsers(
+  filters: UserFilters
+): Promise<PaginatedData<User>> {
+  return fetchPaginated<User>("/users", filters);
+}
+
+export async function getUserById(id: number): Promise<User> {
+  const { data } = await api.get(`/users/${id}`);
+  return data;
+}
 
 export async function fetchAllUsers(): Promise<User[]> {
   const { data } = await api.get<User[]>("/users");
@@ -84,5 +84,18 @@ export async function deleteUser(id: number): Promise<void> {
 
 export async function restoreUser(id: number): Promise<User> {
   const { data } = await api.post<User>(`/users/${id}/restore`);
+  return data;
+}
+
+export async function uploadAvatar(userId: number, file: File): Promise<User> {
+  const formData = new FormData();
+  formData.append("avatar", file);
+  
+  const { data } = await api.patch<User>(`/users/${userId}/avatar`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  
   return data;
 }

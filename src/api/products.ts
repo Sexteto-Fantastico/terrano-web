@@ -22,12 +22,12 @@ export type Product = {
 };
 
 export type CreateProductRequest = {
-  name?: string;
-  code?: string;
+  name: string;
+  code: string;
   description?: string;
-  categoryId?: number;
-  measurementUnitId?: number;
-  brandId?: number;
+  categoryId: number;
+  measurementUnitId: number;
+  brandId: number;
   minStock?: number;
   maxStock?: number;
 };
