@@ -246,6 +246,7 @@ export interface FileRoutesByFullPath {
   '/stock-location/': typeof AppStockLocationIndexRoute
   '/stock-requisition/': typeof AppStockRequisitionIndexRoute
   '/unit/': typeof AppUnitIndexRoute
+  '/stock-positioning/': typeof AppStockPositioningIndexRoute
   '/user/': typeof AppUserIndexRoute
 }
 export interface FileRoutesByTo {
@@ -524,6 +525,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppStockLocationIndexRouteImport
       parentRoute: typeof AppLayoutRoute
     }
+    '/_app/stock-positioning/': {
+      id: '/_app/stock-positioning/'
+      path: '/stock-positioning'
+      fullPath: '/stock-positioning/'
+      preLoaderRoute: typeof AppStockPositioningIndexRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
     '/_app/purchase/': {
       id: '/_app/purchase/'
       path: '/purchase'
@@ -701,6 +709,7 @@ interface AppLayoutRouteChildren {
   AppStockLocationIndexRoute: typeof AppStockLocationIndexRoute
   AppStockRequisitionIndexRoute: typeof AppStockRequisitionIndexRoute
   AppUnitIndexRoute: typeof AppUnitIndexRoute
+  AppStockPositioningIndexRoute: typeof AppStockPositioningIndexRoute
   AppUserIndexRoute: typeof AppUserIndexRoute
 }
 
@@ -731,6 +740,7 @@ const AppLayoutRouteChildren: AppLayoutRouteChildren = {
   AppStockLocationIndexRoute: AppStockLocationIndexRoute,
   AppStockRequisitionIndexRoute: AppStockRequisitionIndexRoute,
   AppUnitIndexRoute: AppUnitIndexRoute,
+  AppStockPositioningIndexRoute: AppStockPositioningIndexRoute,
   AppUserIndexRoute: AppUserIndexRoute,
 }
 

@@ -86,6 +86,6 @@ export async function deleteProduct(id: number): Promise<void> {
 }
 
 export async function restoreProduct(id: number): Promise<Product> {
-  const { data: response } = await api.post<Product>(`/products/${id}/restore`);
+  const { data: response } = await api.patch<Product>(`/products/${id}/restore`);
   return response;
 }

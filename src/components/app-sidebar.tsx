@@ -79,7 +79,10 @@ const MENU_DATA: MenuGroup[] = [
   {
     title: "Relatórios",
     icon: FileTextIcon,
-    items: [{ title: "Relatórios", href: "/report" }],
+    items: [
+      { title: "Relatórios", href: "/report" },
+      { title: "Posicionamento de estoque", href: "/stock-positioning" },
+    ],
   },
   {
     title: "Controle de Acesso",
@@ -97,7 +100,7 @@ const MENU_DATA: MenuGroup[] = [
 ];
 
 function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { open } = useSidebar();
+  const { open, setOpen } = useSidebar();
   const [filter, setFilter] = React.useState("");
   const [openGroups, setOpenGroups] = React.useState<Record<string, boolean>>(
     () => Object.fromEntries(MENU_DATA.map((group) => [group.title, true]))
@@ -129,41 +132,53 @@ function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   }, [filter]);
 
   return (
-    <Sidebar {...props}>
-      <SidebarHeader>
-        <span className="text-center text-2xl font-extrabold">Terrano</span>
+    <Sidebar collapsible="icon" {...props}>
+      <SidebarHeader className="relative flex h-16 items-center justify-center overflow-hidden">
+        <span className="text-2xl font-extrabold whitespace-nowrap transition-all duration-200 ease-linear group-data-[collapsible=icon]:scale-0 group-data-[collapsible=icon]:opacity-0">
+          Terrano
+        </span>
+        <span className="absolute text-3xl font-extrabold transition-all duration-200 ease-linear scale-0 opacity-0 group-data-[collapsible=icon]:scale-100 group-data-[collapsible=icon]:opacity-100">
+          T
+        </span>
       </SidebarHeader>
       <SidebarContent className="px-2">
-        {open && (
-          <div className="p-2">
-            <InputGroup>
-              <InputGroupAddon>
-                <SearchIcon className="size-4" />
-              </InputGroupAddon>
-              <InputGroupInput
-                placeholder="Filtrar menu..."
-                value={filter}
-                onChange={(e) => setFilter(e.target.value)}
-              />
-            </InputGroup>
-          </div>
-        )}
+        <div className="p-2 transition-all duration-200 ease-linear group-data-[collapsible=icon]:hidden overflow-hidden">
+          <InputGroup>
+            <InputGroupAddon>
+              <SearchIcon className="size-4" />
+            </InputGroupAddon>
+            <InputGroupInput
+              placeholder="Filtrar menu..."
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+            />
+          </InputGroup>
+        </div>
         <SidebarMenu>
           {filteredGroups.map((group) => (
             <Collapsible
               key={group.title}
-              defaultOpen={openGroups[group.title]}
-              onOpenChange={(open) =>
-                setOpenGroups((prev) => ({ ...prev, [group.title]: open }))
+              open={openGroups[group.title]}
+              onOpenChange={(isOpen) =>
+                setOpenGroups((prev) => ({ ...prev, [group.title]: isOpen }))
               }
               className="group/collapsible"
             >
               <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
-                  <SidebarMenuButton tooltip={group.title}>
-                    <group.icon />
-                    <span>{group.title}</span>
-                    <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                  <SidebarMenuButton 
+                    tooltip={group.title}
+                    onClick={(e) => {
+                      if (!open) {
+                        e.preventDefault();
+                        setOpen(true);
+                        setOpenGroups((prev) => ({ ...prev, [group.title]: true }));
+                      }
+                    }}
+                  >
+                    <group.icon className="shrink-0" />
+                    <span className="truncate transition-opacity duration-200 ease-linear group-data-[collapsible=icon]:opacity-0">{group.title}</span>
+                    <ChevronRight className="ml-auto shrink-0 transition-all duration-200 ease-linear group-data-[state=open]/collapsible:rotate-90 group-data-[collapsible=icon]:opacity-0" />
                   </SidebarMenuButton>
                 </CollapsibleTrigger>
                 <CollapsibleContent>
@@ -175,7 +190,7 @@ function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                             to={item.href}
                             activeProps={{ className: "bg-sidebar-accent" }}
                           >
-                            <span>{item.title}</span>
+                            <span className="truncate">{item.title}</span>
                           </Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>

@@ -39,6 +39,11 @@ export async function fetchUsers(
   return fetchPaginated<User>("/users", filters);
 }
 
+export async function fetchAllUsers(): Promise<User[]> {
+  const { data } = await api.get<User[]>("/users");
+  return data;
+}
+
 export async function getUserById(id: number): Promise<User> {
   const { data } = await api.get(`/users/${id}`);
   return data;
