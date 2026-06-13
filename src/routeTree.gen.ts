@@ -21,6 +21,7 @@ import { Route as AppDefinePasswordRouteImport } from './pages/_app/define-passw
 import { Route as AppUserIndexRouteImport } from './pages/_app/user/index'
 import { Route as AppUnitIndexRouteImport } from './pages/_app/unit/index'
 import { Route as AppStockRequisitionIndexRouteImport } from './pages/_app/stock-requisition/index'
+import { Route as AppStockPositioningIndexRouteImport } from './pages/_app/stock-positioning/index'
 import { Route as AppStockOutIndexRouteImport } from './pages/_app/stock-out/index'
 import { Route as AppStockLocationIndexRouteImport } from './pages/_app/stock-location/index'
 import { Route as AppPurchaseIndexRouteImport } from './pages/_app/purchase/index'
@@ -103,6 +104,12 @@ const AppStockRequisitionIndexRoute =
   AppStockRequisitionIndexRouteImport.update({
     id: '/stock-requisition/',
     path: '/stock-requisition/',
+    getParentRoute: () => AppLayoutRoute,
+  } as any)
+const AppStockPositioningIndexRoute =
+  AppStockPositioningIndexRouteImport.update({
+    id: '/stock-positioning/',
+    path: '/stock-positioning/',
     getParentRoute: () => AppLayoutRoute,
   } as any)
 const AppStockOutIndexRoute = AppStockOutIndexRouteImport.update({
@@ -258,9 +265,9 @@ export interface FileRoutesByFullPath {
   '/purchase/': typeof AppPurchaseIndexRoute
   '/stock-location/': typeof AppStockLocationIndexRoute
   '/stock-out/': typeof AppStockOutIndexRoute
+  '/stock-positioning/': typeof AppStockPositioningIndexRoute
   '/stock-requisition/': typeof AppStockRequisitionIndexRoute
   '/unit/': typeof AppUnitIndexRoute
-  '/stock-positioning/': typeof AppStockPositioningIndexRoute
   '/user/': typeof AppUserIndexRoute
 }
 export interface FileRoutesByTo {
@@ -295,6 +302,7 @@ export interface FileRoutesByTo {
   '/purchase': typeof AppPurchaseIndexRoute
   '/stock-location': typeof AppStockLocationIndexRoute
   '/stock-out': typeof AppStockOutIndexRoute
+  '/stock-positioning': typeof AppStockPositioningIndexRoute
   '/stock-requisition': typeof AppStockRequisitionIndexRoute
   '/unit': typeof AppUnitIndexRoute
   '/user': typeof AppUserIndexRoute
@@ -334,6 +342,7 @@ export interface FileRoutesById {
   '/_app/purchase/': typeof AppPurchaseIndexRoute
   '/_app/stock-location/': typeof AppStockLocationIndexRoute
   '/_app/stock-out/': typeof AppStockOutIndexRoute
+  '/_app/stock-positioning/': typeof AppStockPositioningIndexRoute
   '/_app/stock-requisition/': typeof AppStockRequisitionIndexRoute
   '/_app/unit/': typeof AppUnitIndexRoute
   '/_app/user/': typeof AppUserIndexRoute
@@ -372,6 +381,7 @@ export interface FileRouteTypes {
     | '/purchase/'
     | '/stock-location/'
     | '/stock-out/'
+    | '/stock-positioning/'
     | '/stock-requisition/'
     | '/unit/'
     | '/user/'
@@ -408,6 +418,7 @@ export interface FileRouteTypes {
     | '/purchase'
     | '/stock-location'
     | '/stock-out'
+    | '/stock-positioning'
     | '/stock-requisition'
     | '/unit'
     | '/user'
@@ -446,6 +457,7 @@ export interface FileRouteTypes {
     | '/_app/purchase/'
     | '/_app/stock-location/'
     | '/_app/stock-out/'
+    | '/_app/stock-positioning/'
     | '/_app/stock-requisition/'
     | '/_app/unit/'
     | '/_app/user/'
@@ -542,6 +554,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppStockRequisitionIndexRouteImport
       parentRoute: typeof AppLayoutRoute
     }
+    '/_app/stock-positioning/': {
+      id: '/_app/stock-positioning/'
+      path: '/stock-positioning'
+      fullPath: '/stock-positioning/'
+      preLoaderRoute: typeof AppStockPositioningIndexRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
     '/_app/stock-out/': {
       id: '/_app/stock-out/'
       path: '/stock-out'
@@ -554,13 +573,6 @@ declare module '@tanstack/react-router' {
       path: '/stock-location'
       fullPath: '/stock-location/'
       preLoaderRoute: typeof AppStockLocationIndexRouteImport
-      parentRoute: typeof AppLayoutRoute
-    }
-    '/_app/stock-positioning/': {
-      id: '/_app/stock-positioning/'
-      path: '/stock-positioning'
-      fullPath: '/stock-positioning/'
-      preLoaderRoute: typeof AppStockPositioningIndexRouteImport
       parentRoute: typeof AppLayoutRoute
     }
     '/_app/purchase/': {
@@ -747,9 +759,9 @@ interface AppLayoutRouteChildren {
   AppPurchaseIndexRoute: typeof AppPurchaseIndexRoute
   AppStockLocationIndexRoute: typeof AppStockLocationIndexRoute
   AppStockOutIndexRoute: typeof AppStockOutIndexRoute
+  AppStockPositioningIndexRoute: typeof AppStockPositioningIndexRoute
   AppStockRequisitionIndexRoute: typeof AppStockRequisitionIndexRoute
   AppUnitIndexRoute: typeof AppUnitIndexRoute
-  AppStockPositioningIndexRoute: typeof AppStockPositioningIndexRoute
   AppUserIndexRoute: typeof AppUserIndexRoute
 }
 
@@ -780,9 +792,9 @@ const AppLayoutRouteChildren: AppLayoutRouteChildren = {
   AppPurchaseIndexRoute: AppPurchaseIndexRoute,
   AppStockLocationIndexRoute: AppStockLocationIndexRoute,
   AppStockOutIndexRoute: AppStockOutIndexRoute,
+  AppStockPositioningIndexRoute: AppStockPositioningIndexRoute,
   AppStockRequisitionIndexRoute: AppStockRequisitionIndexRoute,
   AppUnitIndexRoute: AppUnitIndexRoute,
-  AppStockPositioningIndexRoute: AppStockPositioningIndexRoute,
   AppUserIndexRoute: AppUserIndexRoute,
 }
 
