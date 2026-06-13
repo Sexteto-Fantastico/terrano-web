@@ -35,6 +35,7 @@ export type StockPositioningMetrics = {
 export type StockPositioningQuery = {
   stockLocationId?: string;
   search?: string;
+  status?: StockPositioningStatus;
 };
 
 export type StockPositioningFilters = Filters<StockPositioningQuery>;
@@ -42,7 +43,7 @@ export type StockPositioningFilters = Filters<StockPositioningQuery>;
 export async function fetchStockPositionings(
   filters: StockPositioningFilters
 ): Promise<PaginatedData<StockPositioning>> {
-  return fetchPaginated<StockPositioning>("/stock-positionings", filters as any);
+  return fetchPaginated<StockPositioning>("/stock-positionings", filters);
 }
 
 export async function fetchStockPositioningMetrics(

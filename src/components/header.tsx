@@ -27,7 +27,7 @@ export function Header({ children }: { children?: React.ReactNode }) {
       return false;
     }
 
-    if (match.routeId !== '__root__' && match.routeId.includes('/_')) {
+    if (match.routeId !== "__root__" && match.routeId.includes("/_")) {
       const matchRoute = router.routesById[match.routeId] as any;
       const hasTitle = !!matchRoute?.options.head?.()?.meta?.[0]?.title;
       if (!hasTitle) return false;
@@ -38,7 +38,7 @@ export function Header({ children }: { children?: React.ReactNode }) {
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex items-center gap-4">
+      <div className="flex items-center justify-between gap-4">
         <h1 className="text-2xl font-bold text-foreground">{pageTitle}</h1>
         {children}
       </div>

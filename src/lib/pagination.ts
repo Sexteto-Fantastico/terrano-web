@@ -1,9 +1,12 @@
 import api from "@/lib/axios";
-import type { Filters } from "@/components/ui/data-table/@types";
+import type {
+  PaginationParams,
+  SortParams,
+} from "@/components/ui/data-table/@types";
 
 export async function fetchPaginated<T>(
   url: string,
-  params?: Filters<T>
+  params?: Partial<PaginationParams & SortParams>
 ): Promise<{ result: T[]; rowCount: number }> {
   const { pageIndex = 0, pageSize = 10, ...rest } = params ?? {};
 
