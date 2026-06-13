@@ -87,6 +87,11 @@ export async function restoreUser(id: number): Promise<User> {
   return data;
 }
 
+export async function getMyPermissions(): Promise<Record<string, Array<Record<string, string[]>>>> {
+  const { data } = await api.get("/users/me/permissions");
+  return data;
+}
+
 export async function uploadAvatar(userId: number, file: File): Promise<User> {
   const formData = new FormData();
   formData.append("avatar", file);

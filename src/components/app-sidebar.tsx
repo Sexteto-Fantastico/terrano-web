@@ -56,6 +56,7 @@ import { uploadAvatar } from "@/api/users";
 interface MenuItem {
   title: string;
   href: string;
+  permission?: { resource: string; action: string };
 }
 
 interface MenuGroup {
@@ -69,55 +70,54 @@ const MENU_DATA: MenuGroup[] = [
     title: "Cadastros",
     icon: CircleFadingPlusIcon,
     items: [
-      { title: "Produto", href: "/product" },
-      { title: "Marca", href: "/product-brand" },
-      { title: "Categoria", href: "/category" },
-      { title: "Unidade de Medida", href: "/unit" },
-      { title: "Estoque", href: "/stock-location" },
-      { title: "Fornecedor", href: "/supplier" },
-      { title: "Departamento", href: "/department" }
+      { title: "Produto", href: "/product", permission: { resource: "PRODUCT", action: "read" } },
+      { title: "Marca", href: "/product-brand", permission: { resource: "PRODUCT_BRAND", action: "read" } },
+      { title: "Categoria", href: "/category", permission: { resource: "PRODUCT_CATEGORY", action: "read" } },
+      { title: "Unidade de Medida", href: "/unit", permission: { resource: "MEASUREMENT_UNIT", action: "read" } },
+      { title: "Estoque", href: "/stock-location", permission: { resource: "STOCK_LOCATION", action: "read" } },
+      { title: "Fornecedor", href: "/supplier", permission: { resource: "SUPPLIER", action: "read" } },
+      { title: "Departamento", href: "/department", permission: { resource: "DEPARTMENT", action: "read" } }
     ],
   },
   {
     title: "Transações",
     icon: TrendingUpIcon,
     items: [
-      { title: "Compra", href: "/purchase" },
-      { title: "Entrada de Estoque", href: "/stock-in" },
-      { title: "Saída de Estoque", href: "/stock-out" },
+      { title: "Compra", href: "/purchase", permission: { resource: "PURCHASE", action: "read" } },
+      { title: "Entrada de Estoque", href: "/stock-in", permission: { resource: "MOVEMENT_ENTRY", action: "read" } },
+      { title: "Saída de Estoque", href: "/stock-out", permission: { resource: "MOVEMENT_EXIT", action: "read" } },
     ],
   },
   {
     title: "Requisições",
     icon: ArrowRightLeftIcon,
-    items: [{ title: "Solicitação de Material", href: "/stock-requisition" }],
+    items: [{ title: "Solicitação de Material", href: "/stock-requisition", permission: { resource: "MATERIAL_REQUESTER", action: "read" } }],
   },
   {
     title: "Relatórios",
     icon: FileTextIcon,
     items: [
-      { title: "Relatórios", href: "/report" },
-      { title: "Posicionamento de estoque", href: "/stock-positioning" },
+      { title: "Posicionamento de estoque", href: "/stock-positioning", permission: { resource: "STOCK_POSITION", action: "read" } },
     ],
   },
   {
     title: "Controle de Acesso",
     icon: UserCogIcon,
     items: [
-      { title: "Usuário", href: "/user" },
-      { title: "Perfil de Acesso", href: "/access-profile" },
+      { title: "Usuário", href: "/user", permission: { resource: "USER", action: "read" } },
+      { title: "Perfil de Acesso", href: "/access-profile", permission: { resource: "USER", action: "read" } },
     ],
   },
   {
     title: "Notificações",
     icon: BadgeAlertIcon,
-    items: [{ title: "Alertas", href: "/alert" }],
+    items: [{ title: "Alertas", href: "/alert", permission: { resource: "ALERT", action: "read" } }],
   },
 ];
 
 function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { open, setOpen } = useSidebar();
-  const { user, updateUser, logout, isLoggingOut } = useAuth();
+  const { user, updateUser, logout, isLoggingOut, can: canAccess } = useAuth();
   const [filter, setFilter] = React.useState("");
   const [openGroups, setOpenGroups] = React.useState<Record<string, boolean>>(
     () => Object.fromEntries(MENU_DATA.map((group) => [group.title, true]))
@@ -151,14 +151,25 @@ function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     }
   };
 
+  const visibleGroups = React.useMemo(() => {
+    return MENU_DATA
+      .map((group) => ({
+        ...group,
+        items: group.items.filter((item) =>
+          !item.permission || canAccess(item.permission.resource, item.permission.action)
+        ),
+      }))
+      .filter((group) => group.items.length > 0);
+  }, [canAccess]);
+
   const filteredGroups = React.useMemo(() => {
     if (!filter.trim()) {
-      return MENU_DATA;
+      return visibleGroups;
     }
 
     const lowerFilter = filter.toLowerCase();
 
-    return MENU_DATA.map((group) => {
+    return visibleGroups.map((group) => {
       const matchesGroup = group.title.toLowerCase().includes(lowerFilter);
       const filteredItems = group.items.filter((item) =>
         item.title.toLowerCase().includes(lowerFilter)
@@ -174,7 +185,7 @@ function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
       return null;
     }).filter((group): group is MenuGroup => group !== null);
-  }, [filter]);
+  }, [filter, visibleGroups]);
 
   const serverBaseUrl = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:3000';
 

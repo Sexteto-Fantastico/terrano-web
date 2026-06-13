@@ -1,8 +1,9 @@
 import { createContext, useState, useCallback, useEffect } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import { setAuthDependencies } from "../lib/axios";
-import { getUserById, type User } from "@/api/users";
+import { getUserById, getMyPermissions, type User } from "@/api/users";
 import { jwtDecode, type JwtPayload } from "jwt-decode";
+import { flattenPermissions, can, type PermissionsMap } from "@/lib/permissions";
 
 const STORAGE_KEY = "terrano_auth_token";
 const EXPIRES_AT_KEY = "terrano_auth_expires_at";
@@ -10,7 +11,9 @@ const EXPIRES_AT_KEY = "terrano_auth_expires_at";
 interface AuthContextValue {
   token: string | null;
   user: User | null;
+  permissions: PermissionsMap | null;
   mustResetPassword: boolean;
+  can: (resource: string, action: string) => boolean;
   setToken: (token: string | null, expiresAt?: string) => void;
   setUser: Dispatch<SetStateAction<User | null>>;
   updateUser: (user: User) => void;
@@ -26,8 +29,10 @@ interface TerranoJwtPayload extends JwtPayload {
 export const AuthContext = createContext<AuthContextValue>({
   token: null,
   user: null,
+  permissions: null,
   mustResetPassword: false,
   isLoggingOut: false,
+  can: () => false,
   setToken: () => {},
   setUser: () => {},
   updateUser: () => {},
@@ -58,6 +63,7 @@ export function AuthProvider({
     return null;
   });
   const [userState, setUserState] = useState<User | null>(null);
+  const [permissionsState, setPermissionsState] = useState<PermissionsMap | null>(null);
   const [mustResetPassword, setMustResetPassword] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
@@ -86,6 +92,7 @@ export function AuthProvider({
     setIsLoggingOut(true);
     setToken(null);
     setUserState(null);
+    setPermissionsState(null);
     setMustResetPassword(false);
     window.location.href = "/sign-in";
   }, [setToken, setUserState, setMustResetPassword]);
@@ -96,8 +103,12 @@ export function AuthProvider({
         const decoded = jwtDecode<TerranoJwtPayload>(token);
         const userId = decoded.id || decoded.sub;
         if (userId) {
-          const user = await getUserById(Number(userId));
+          const [user, permissionsData] = await Promise.all([
+            getUserById(Number(userId)),
+            getMyPermissions().catch(() => null),
+          ]);
           setUserState(user);
+          setPermissionsState(flattenPermissions(permissionsData ?? undefined));
         } else {
           logout();
         }
@@ -110,7 +121,10 @@ export function AuthProvider({
     if (tokenState) {
       fetchUser(tokenState);
     } else {
-      queueMicrotask(() => setUserState(null));
+      queueMicrotask(() => {
+        setUserState(null);
+        setPermissionsState(null);
+      });
     }
   }, [tokenState, logout]);
 
@@ -124,7 +138,9 @@ export function AuthProvider({
       value={{
         token: tokenState,
         user: userState,
+        permissions: permissionsState,
         mustResetPassword,
+        can: (resource: string, action: string) => can(permissionsState, resource, action),
         setToken,
         setUser: setUserState,
         updateUser,
