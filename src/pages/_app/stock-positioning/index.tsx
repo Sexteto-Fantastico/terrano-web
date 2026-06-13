@@ -13,7 +13,7 @@ import {
   type StockPositioningFilters,
   type StockPositioning,
 } from "@/api/stock-positioning";
-import { fetchAllStockLocations } from "@/api/stock-locations";
+import { fetchStockLocations } from "@/api/stock-locations";
 import { useMemo, useState, useEffect } from "react";
 import {
   Select,
@@ -61,17 +61,21 @@ export const Route = createFileRoute("/_app/stock-positioning/")({
 
 function StockPositioningPage() {
   const { filters, setFilters } = useFilters(Route.id);
+  const [prevFilterSearch, setPrevFilterSearch] = useState(filters.search);
   const [searchVal, setSearchVal] = useState(filters.search ?? "");
   const [isExporting, setIsExporting] = useState(false);
 
-  useEffect(() => {
+  if (filters.search !== prevFilterSearch) {
+    setPrevFilterSearch(filters.search);
     setSearchVal(filters.search ?? "");
-  }, [filters.search]);
+  }
 
-  const { data: stockLocations = [] } = useQuery({
+  const { data: stockLocationsData } = useQuery({
     queryKey: ["stock-locations"],
-    queryFn: fetchAllStockLocations,
+    queryFn: () => fetchStockLocations({}),
   });
+
+  const stockLocations = useMemo(() => stockLocationsData?.result ?? [], [stockLocationsData]);
 
   useEffect(() => {
     if (!filters.stockLocationId && stockLocations.length > 0) {
@@ -109,7 +113,7 @@ function StockPositioningPage() {
       setIsExporting(true);
       await generateStockReport(activeStockLocationId);
       toast.success("Relatório gerado com sucesso!");
-    } catch (error) {
+    } catch {
       toast.error("Erro ao gerar relatório.");
     } finally {
       setIsExporting(false);
@@ -179,7 +183,7 @@ function StockPositioningPage() {
             value={activeStockLocationId || ""}
             onValueChange={(val) => setFilters({ stockLocationId: val })}
           >
-            <SelectTrigger className="w-[260px] h-10 gap-2 font-medium bg-background border-border shadow-sm">
+            <SelectTrigger className="w-65 h-10 gap-2 font-medium bg-background border-border shadow-sm">
               <Building2 className="h-4 w-4 text-muted-foreground" />
               <SelectValue placeholder="Selecione o local de estoque" />
             </SelectTrigger>

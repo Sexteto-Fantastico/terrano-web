@@ -9,8 +9,20 @@ import {
   UserCogIcon,
   BadgeAlertIcon,
   ChevronRight,
+  LogOutIcon,
+  UploadCloudIcon,
+  ChevronsUpDown,
 } from "lucide-react";
+import { toast } from "sonner";
 
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
+} from "@/components/ui/dropdown-menu";
 import {
   Collapsible,
   CollapsibleContent,
@@ -35,7 +47,11 @@ import {
   SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Spinner } from "@/components/ui/spinner";
 import { Link } from "@tanstack/react-router";
+import { useAuth } from "@/hooks/use-auth";
+import { uploadAvatar } from "@/api/users";
 
 interface MenuItem {
   title: string;
@@ -101,10 +117,39 @@ const MENU_DATA: MenuGroup[] = [
 
 function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { open, setOpen } = useSidebar();
+  const { user, updateUser, logout, isLoggingOut } = useAuth();
   const [filter, setFilter] = React.useState("");
   const [openGroups, setOpenGroups] = React.useState<Record<string, boolean>>(
     () => Object.fromEntries(MENU_DATA.map((group) => [group.title, true]))
   );
+  const [isUploading, setIsUploading] = React.useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file || !user) return;
+
+    try {
+      setIsUploading(true);
+      const updatedUser = await uploadAvatar(user.id, file);
+      updateUser(updatedUser);
+      toast.success("Foto de perfil atualizada com sucesso!");
+    } catch (error) {
+      console.error("Erro ao enviar avatar:", error);
+      toast.error("Erro ao atualizar foto de perfil. Tente novamente.");
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
 
   const filteredGroups = React.useMemo(() => {
     if (!filter.trim()) {
@@ -130,6 +175,12 @@ function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       return null;
     }).filter((group): group is MenuGroup => group !== null);
   }, [filter]);
+
+  const serverBaseUrl = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:3000';
+
+  const avatarUrl = user?.profilePicture 
+    ? `${serverBaseUrl}${user.profilePicture}` 
+    : undefined;
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -211,21 +262,81 @@ function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarFooter className="mt-auto border-t">
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton
-                size="lg"
-                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-              >
-                {/*
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.avatar} />
-                  <AvatarFallback className="rounded-lg">{user.name.charAt(0).toUpperCase()}</AvatarFallback>
-                </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
-                  <span className="truncate text-xs">{user.role}</span>
-                </div>
-                */}
-              </SidebarMenuButton>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    disabled={isUploading || isLoggingOut}
+                    className="w-full flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm font-medium cursor-pointer hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground disabled:opacity-50 disabled:cursor-not-allowed group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:justify-center"
+                  >
+                    <div className="relative h-8 w-8 rounded-lg overflow-hidden shrink-0">
+                      <Avatar className="h-8 w-8 rounded-lg">
+                        <AvatarImage
+                          src={avatarUrl}
+                          alt={user?.name}
+                          className="object-cover"
+                        />
+                        <AvatarFallback className="rounded-lg text-xs font-semibold">
+                          {user?.name?.charAt(0).toUpperCase() || "U"}
+                        </AvatarFallback>
+                      </Avatar>
+                      {isUploading && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                          <Spinner className="h-4 w-4 text-white" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="grid flex-1 text-left text-sm leading-tight transition-opacity duration-200 ease-linear group-data-[collapsible=icon]:hidden">
+                      <span className="truncate font-medium">
+                        {isLoggingOut ? "Saindo..." : user?.name}
+                      </span>
+                      <span className="truncate text-xs text-muted-foreground">
+                        {isLoggingOut ? "" : user?.email}
+                      </span>
+                    </div>
+                    <ChevronsUpDown className="ml-auto size-4 transition-opacity duration-200 ease-linear group-data-[collapsible=icon]:hidden" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+                  side="top"
+                  align="end"
+                  sideOffset={4}
+                >
+                  <DropdownMenuLabel className="p-0 font-normal">
+                    <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                      <Avatar className="h-8 w-8 rounded-lg">
+                        <AvatarImage src={avatarUrl} alt={user?.name} className="object-cover" />
+                        <AvatarFallback className="rounded-lg text-xs font-semibold">
+                          {user?.name?.charAt(0).toUpperCase() || "U"}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="grid flex-1 text-left text-sm leading-tight">
+                        <span className="truncate font-medium">{user?.name}</span>
+                        <span className="truncate text-xs text-muted-foreground">
+                          {user?.email}
+                        </span>
+                      </div>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleAvatarClick} disabled={isUploading}>
+                    <UploadCloudIcon className="mr-2 h-4 w-4" />
+                    <span>Alterar foto de perfil</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={logout}>
+                    <LogOutIcon className="mr-2 h-4 w-4" />
+                    <span>Sair</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg, image/png, image/webp"
+                onChange={handleFileChange}
+                className="hidden"
+                disabled={isUploading}
+              />
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarFooter>
