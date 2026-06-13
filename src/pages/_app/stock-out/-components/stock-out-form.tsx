@@ -26,13 +26,15 @@ export function StockOutForm({
   onSubmit,
 }: StockOutFormProps) {
   const { setIsSaving } = useCreateView();
-  const [stockLocationId, setStockLocationId] = useState<string>("1");
+  const [stockLocationId, setStockLocationId] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [internalNotes, setInternalNotes] = useState<string>("");
   const [stockRequisitionId, setStockRequisitionId] = useState<string>("");
   const [items, setItems] = useState<Array<{ id: string, productId: string, quantity: string, unitCost: string }>>([
     { id: "1", productId: "", quantity: "1", unitCost: "0" }
   ]);
+
+  const displayedStockLocationId = stockLocationId || (stockLocations.length > 0 ? String(stockLocations[0].id) : "");
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -41,7 +43,7 @@ export function StockOutForm({
     try {
       setIsSaving(true);
       await onSubmit({
-        stockLocationId: Number(stockLocationId) || 0,
+        stockLocationId: Number(displayedStockLocationId) || 0,
         category: category as MovementExitCategory,
         internalNotes: internalNotes || null,
         stockRequisitionId: stockRequisitionId ? Number(stockRequisitionId) : undefined,
@@ -65,10 +67,9 @@ export function StockOutForm({
     >
       <FieldSet className="space-y-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {/* TODO: Descomentar quando a API de stock-locations estiver implementada no front
           <Field>
             <FieldLabel htmlFor="stockLocationId">Local de Estoque (Origem)</FieldLabel>
-            <Select value={stockLocationId} onValueChange={setStockLocationId} required>
+            <Select value={displayedStockLocationId} onValueChange={setStockLocationId} required>
               <SelectTrigger id="stockLocationId" className="bg-background w-full">
                 <SelectValue placeholder="Selecione o local" />
               </SelectTrigger>
@@ -81,7 +82,6 @@ export function StockOutForm({
               </SelectContent>
             </Select>
           </Field>
-          */}
 
           <Field>
             <FieldLabel htmlFor="category">Categoria da Saída</FieldLabel>

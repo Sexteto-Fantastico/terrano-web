@@ -3,7 +3,7 @@ import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { CreateView } from "@/components/views/create-view";
 import { StockOutForm, type StockOutFormValues } from "./-components/stock-out-form";
 import { createMovementExit } from "@/api/movement-exit";
-// import { fetchAllStockLocations } from "@/api/stock-locations"; // TODO: Descomentar quando implementada
+import { fetchStockLocations } from "@/api/stock-locations";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/stock-out/new")({
@@ -21,14 +21,12 @@ function StockOutNewPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  // TODO: Descomentar quando a API de locations estiver implementada
-  /*
-  const { data: stockLocations = [] } = useQuery({
+  const { data: stockLocationsData } = useQuery({
     queryKey: ["stock-locations"],
-    queryFn: fetchAllStockLocations,
+    queryFn: () => fetchStockLocations({}),
   });
-  */
-  const stockLocations: any[] = [];
+
+  const stockLocations = stockLocationsData?.result ?? [];
 
   const createMutation = useMutation({
     mutationFn: createMovementExit,

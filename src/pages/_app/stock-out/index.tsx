@@ -64,8 +64,8 @@ function StockOutPage() {
   const { table } = useDataTable({
     data,
     columns,
-    filters: filters as any,
-    setFilters: setFilters as any,
+    filters: filters as MovementExitFilters,
+    setFilters: setFilters as (f: MovementExitFilters) => void,
   });
 
   const handleConfirmDelete = async () => {
@@ -74,7 +74,7 @@ function StockOutPage() {
       await deleteMovementExit(exitToDelete.id);
       toast.success("Saída excluída com sucesso. O saldo foi estornado.");
       queryClient.invalidateQueries({ queryKey: ["movement-exits"] });
-    } catch (e) {
+    } catch {
       toast.error("Erro ao excluir a saída.");
       queryClient.invalidateQueries({ queryKey: ["movement-exits"] });
     } finally {

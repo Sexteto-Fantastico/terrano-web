@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchProducts, type Product } from "@/api/products";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -17,30 +17,30 @@ export function ProductCombobox({ value, onValueChange, required }: ProductCombo
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedSearch(search), 300);
     return () => clearTimeout(timer);
   }, [search]);
 
+  type FetchProductsOptions = Parameters<typeof fetchProducts>[0];
+  const queryParams: FetchProductsOptions = {
+    name: debouncedSearch,
+    pageSize: 50,
+    activeOnly: "true",
+  };
+
   const { data: productsData, isLoading } = useQuery({
-    queryKey: ["products", { name: debouncedSearch, pageSize: 50, activeOnly: "true" }],
-    queryFn: () => fetchProducts({ name: debouncedSearch, pageSize: 50, activeOnly: "true" } as any),
+    queryKey: ["products", queryParams],
+    queryFn: () => fetchProducts(queryParams),
     staleTime: 1000 * 60 * 5,
   });
 
-  const products = productsData?.result || [];
+  const products = useMemo(() => productsData?.result || [], [productsData]);
 
-  useEffect(() => {
-    if (value && products.length) {
-      const match = products.find((p) => String(p.id) === value);
-      if (match) {
-        setSelectedProduct(match);
-      }
-    } else if (!value) {
-      setSelectedProduct(null);
-    }
+  const selectedProduct = useMemo<Product | null>(() => {
+    if (!value || !products.length) return null;
+    return products.find((p) => String(p.id) === value) ?? null;
   }, [value, products]);
 
   return (
