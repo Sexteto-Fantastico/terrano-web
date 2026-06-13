@@ -52,7 +52,6 @@ import { Spinner } from "@/components/ui/spinner";
 import { Link } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/use-auth";
 import { uploadAvatar } from "@/api/users";
-import { env } from "@/env";
 
 interface MenuItem {
   title: string;
@@ -177,8 +176,10 @@ function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     }).filter((group): group is MenuGroup => group !== null);
   }, [filter]);
 
-  const avatarSrc = user?.profile_picture
-    ? `${env.VITE_API_BASE_URL}${user.profile_picture}`
+  const serverBaseUrl = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:3000';
+
+  const avatarUrl = user?.profilePicture 
+    ? `${serverBaseUrl}${user.profilePicture}` 
     : undefined;
 
   return (
@@ -265,12 +266,12 @@ function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <DropdownMenuTrigger asChild>
                   <button
                     disabled={isUploading}
-                    className="w-full flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm font-medium cursor-pointer hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm font-medium cursor-pointer hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground disabled:opacity-50 disabled:cursor-not-allowed group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:justify-center"
                   >
-                    <div className="relative h-8 w-8 rounded-lg overflow-hidden">
+                    <div className="relative h-8 w-8 rounded-lg overflow-hidden shrink-0">
                       <Avatar className="h-8 w-8 rounded-lg">
                         <AvatarImage
-                          src={avatarSrc}
+                          src={avatarUrl}
                           alt={user?.name}
                           className="object-cover"
                         />
@@ -284,13 +285,13 @@ function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         </div>
                       )}
                     </div>
-                    <div className="grid flex-1 text-left text-sm leading-tight transition-opacity duration-200 ease-linear group-data-[collapsible=icon]:opacity-0">
+                    <div className="grid flex-1 text-left text-sm leading-tight transition-opacity duration-200 ease-linear group-data-[collapsible=icon]:hidden">
                       <span className="truncate font-medium">{user?.name}</span>
                       <span className="truncate text-xs text-muted-foreground">
                         {user?.email}
                       </span>
                     </div>
-                    <ChevronsUpDown className="ml-auto size-4 transition-opacity duration-200 ease-linear group-data-[collapsible=icon]:opacity-0" />
+                    <ChevronsUpDown className="ml-auto size-4 transition-opacity duration-200 ease-linear group-data-[collapsible=icon]:hidden" />
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
@@ -302,7 +303,7 @@ function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <DropdownMenuLabel className="p-0 font-normal">
                     <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                       <Avatar className="h-8 w-8 rounded-lg">
-                        <AvatarImage src={avatarSrc} alt={user?.name} className="object-cover" />
+                        <AvatarImage src={avatarUrl} alt={user?.name} className="object-cover" />
                         <AvatarFallback className="rounded-lg text-xs font-semibold">
                           {user?.name?.charAt(0).toUpperCase() || "U"}
                         </AvatarFallback>

@@ -24,7 +24,7 @@ export type User = {
   managedDepartments?: Department[];
   isActive: boolean;
   requiresPasswordReset?: boolean;
-  profile_picture?: string;
+  profilePicture?: string;
 };
 
 type UserQuery = {
