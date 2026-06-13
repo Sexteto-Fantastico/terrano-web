@@ -2,6 +2,7 @@ import { createContext, useState, useCallback, useEffect } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import { setAuthDependencies } from "../lib/axios";
 import { getUserById, type User } from "@/api/users";
+import { jwtDecode, type JwtPayload } from "jwt-decode";
 
 const STORAGE_KEY = "terrano_auth_token";
 const EXPIRES_AT_KEY = "terrano_auth_expires_at";
@@ -15,6 +16,10 @@ interface AuthContextValue {
   updateUser: (user: User) => void;
   setMustResetPassword: Dispatch<SetStateAction<boolean>>;
   logout: () => void;
+}
+
+interface TerranoJwtPayload extends JwtPayload {
+  id?: number;
 }
 
 export const AuthContext = createContext<AuthContextValue>({
@@ -78,39 +83,29 @@ export function AuthProvider({
     setUserState(null);
     setMustResetPassword(false);
     window.location.href = "/sign-in";
-  }, [setToken]);
+  }, [setToken, setUserState, setMustResetPassword]);
 
   useEffect(() => {
-    if (tokenState) {
+    const fetchUser = async (token: string) => {
       try {
-        const base64Url = tokenState.split(".")[1];
-        if (base64Url) {
-          const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-          const jsonPayload = decodeURIComponent(
-            window
-              .atob(base64)
-              .split("")
-              .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
-              .join("")
-          );
-          const decoded = JSON.parse(jsonPayload);
-          const userId = decoded?.sub || decoded?.id;
-          if (userId) {
-            getUserById(Number(userId))
-              .then(setUserState)
-              .catch((err) => {
-                console.error("Failed to fetch user data:", err);
-                if (err.response?.status === 401) {
-                  logout();
-                }
-              });
-          }
+        const decoded = jwtDecode<TerranoJwtPayload>(token);
+        const userId = decoded.id || decoded.sub;
+        if (userId) {
+          const user = await getUserById(Number(userId));
+          setUserState(user);
+        } else {
+          logout();
         }
       } catch (error) {
         console.error("Failed to decode token", error);
+        logout();
       }
+    };
+
+    if (tokenState) {
+      fetchUser(tokenState);
     } else {
-      setUserState(null);
+      queueMicrotask(() => setUserState(null));
     }
   }, [tokenState, logout]);
 
