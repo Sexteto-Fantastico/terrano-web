@@ -185,12 +185,14 @@ function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader className="relative flex h-16 items-center justify-center overflow-hidden">
-        <span className="text-2xl font-extrabold whitespace-nowrap transition-all duration-200 ease-linear group-data-[collapsible=icon]:scale-0 group-data-[collapsible=icon]:opacity-0">
+        <Link to="/">
+          <span className="text-2xl font-extrabold whitespace-nowrap transition-all duration-200 ease-linear group-data-[collapsible=icon]:scale-0 group-data-[collapsible=icon]:opacity-0">
           Terrano
         </span>
         <span className="absolute text-3xl font-extrabold transition-all duration-200 ease-linear scale-0 opacity-0 group-data-[collapsible=icon]:scale-100 group-data-[collapsible=icon]:opacity-100">
           T
         </span>
+        </Link>
       </SidebarHeader>
       <SidebarContent className="px-2">
         <div className="p-2 transition-all duration-200 ease-linear group-data-[collapsible=icon]:hidden overflow-hidden">
