@@ -9,6 +9,7 @@ import { routeTree } from "./routeTree.gen";
 import { AuthProvider } from "./context/auth-context";
 import { useAuth } from "./hooks/use-auth";
 import { queryClient } from "./lib/react-query";
+import { Toaster } from "sonner";
 
 const router = createRouter({
   routeTree,
@@ -41,6 +42,7 @@ export function App() {
       <TooltipProvider>
         <AuthProvider>
           <InnerApp />
+          <Toaster />
         </AuthProvider>
       </TooltipProvider>
     </QueryClientProvider>
