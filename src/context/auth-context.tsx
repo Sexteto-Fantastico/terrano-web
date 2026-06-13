@@ -16,6 +16,7 @@ interface AuthContextValue {
   updateUser: (user: User) => void;
   setMustResetPassword: Dispatch<SetStateAction<boolean>>;
   logout: () => void;
+  isLoggingOut: boolean;
 }
 
 interface TerranoJwtPayload extends JwtPayload {
@@ -26,11 +27,13 @@ export const AuthContext = createContext<AuthContextValue>({
   token: null,
   user: null,
   mustResetPassword: false,
+  isLoggingOut: false,
   setToken: () => {},
   setUser: () => {},
   updateUser: () => {},
   setMustResetPassword: () => {},
   logout: () => {},
+  
 });
 
 export type AuthState = Pick<
@@ -56,6 +59,7 @@ export function AuthProvider({
   });
   const [userState, setUserState] = useState<User | null>(null);
   const [mustResetPassword, setMustResetPassword] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const setToken = useCallback(
     (newToken: string | null, expiresAt?: string) => {
@@ -79,6 +83,7 @@ export function AuthProvider({
   }, []);
 
   const logout = useCallback(() => {
+    setIsLoggingOut(true);
     setToken(null);
     setUserState(null);
     setMustResetPassword(false);
@@ -125,6 +130,7 @@ export function AuthProvider({
         updateUser,
         setMustResetPassword,
         logout,
+        isLoggingOut,
       }}
     >
       {children}

@@ -117,7 +117,7 @@ const MENU_DATA: MenuGroup[] = [
 
 function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { open, setOpen } = useSidebar();
-  const { user, updateUser, logout } = useAuth();
+  const { user, updateUser, logout, isLoggingOut } = useAuth();
   const [filter, setFilter] = React.useState("");
   const [openGroups, setOpenGroups] = React.useState<Record<string, boolean>>(
     () => Object.fromEntries(MENU_DATA.map((group) => [group.title, true]))
@@ -265,7 +265,7 @@ function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button
-                    disabled={isUploading}
+                    disabled={isUploading || isLoggingOut}
                     className="w-full flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm font-medium cursor-pointer hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground disabled:opacity-50 disabled:cursor-not-allowed group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:justify-center"
                   >
                     <div className="relative h-8 w-8 rounded-lg overflow-hidden shrink-0">
@@ -286,9 +286,11 @@ function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       )}
                     </div>
                     <div className="grid flex-1 text-left text-sm leading-tight transition-opacity duration-200 ease-linear group-data-[collapsible=icon]:hidden">
-                      <span className="truncate font-medium">{user?.name}</span>
+                      <span className="truncate font-medium">
+                        {isLoggingOut ? "Saindo..." : user?.name}
+                      </span>
                       <span className="truncate text-xs text-muted-foreground">
-                        {user?.email}
+                        {isLoggingOut ? "" : user?.email}
                       </span>
                     </div>
                     <ChevronsUpDown className="ml-auto size-4 transition-opacity duration-200 ease-linear group-data-[collapsible=icon]:hidden" />
