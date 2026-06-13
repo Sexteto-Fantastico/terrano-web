@@ -59,8 +59,8 @@ export async function fetchProducts(
   return fetchPaginated<Product>("/products", filters);
 }
 
-export async function fetchAllProducts(): Promise<Product[]> {
-  const { data } = await api.get<Product[]>("/products");
+export async function fetchProductById(id: number): Promise<Product> {
+  const { data } = await api.get<Product>(`/products/${id}`);
   return data;
 }
 
@@ -86,6 +86,6 @@ export async function deleteProduct(id: number): Promise<void> {
 }
 
 export async function restoreProduct(id: number): Promise<Product> {
-  const { data: response } = await api.patch<Product>(`/products/${id}/restore`);
+  const { data: response } = await api.post<Product>(`/products/${id}/restore`);
   return response;
 }

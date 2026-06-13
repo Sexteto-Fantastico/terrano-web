@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { DataTableFilterMenu } from "@/components/ui/data-table/data-table-filter-menu";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
 import { useMemo, useState } from "react";
@@ -25,7 +25,6 @@ import { Separator } from "@/components/ui/separator";
 import { DataTableToolbar } from "@/components/ui/data-table/data-table-toolbar";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { AddButton } from "@/components/button/add-button";
-import { ProductFormDialog } from "./-components/product-form-dialog";
 import { getProductTableColumns } from "./-components/product-table-columns";
 import { getProductFilterConfig } from "./-components/product-filter-config";
 
@@ -43,7 +42,7 @@ export const Route = createFileRoute("/_app/product/")({
 
 function ProductPage() {
   const { filters, setFilters, resetFilters } = useFilters(Route.id);
-  const [productToEdit, setProductToEdit] = useState<Product | undefined>();
+  const navigate = useNavigate();
   const [productToDelete, setProductToDelete] = useState<number | undefined>();
 
   const { data: categories = [] } = useQuery({
@@ -116,7 +115,7 @@ function ProductPage() {
   });
 
   function handleEdit(product: Product) {
-    setProductToEdit(product);
+    navigate({ to: "/product/edit", search: { id: String(product.id) } });
   }
 
   function handleDelete(productId: number) {
@@ -195,14 +194,6 @@ function ProductPage() {
       />
 
       <DataTablePagination table={table} isLoading={isLoading} />
-
-      <ProductFormDialog
-        open={!!productToEdit}
-        onOpenChange={(open) => {
-          if (!open) setProductToEdit(undefined);
-        }}
-        productToEdit={productToEdit}
-      />
 
       <ConfirmDialog
         open={!!productToDelete}

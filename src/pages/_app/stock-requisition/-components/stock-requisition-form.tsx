@@ -24,7 +24,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { fetchAllProducts, type Product } from "@/api/products";
+import { fetchProducts, type Product } from "@/api/products";
 
 export type StockRequisitionFormValues = {
   requesterJustification: string;
@@ -74,7 +74,7 @@ useEffect(() => {
 
   const { data: products = [] } = useQuery({
     queryKey: ["products-all"],
-    queryFn: fetchAllProducts,
+    queryFn: fetchProducts,
   });
 
   function addItem() {
