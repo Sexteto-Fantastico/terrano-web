@@ -21,6 +21,7 @@ import { Route as AppDefinePasswordRouteImport } from './pages/_app/define-passw
 import { Route as AppDashboardRouteImport } from './pages/_app/dashboard'
 import { Route as AppUserIndexRouteImport } from './pages/_app/user/index'
 import { Route as AppUnitIndexRouteImport } from './pages/_app/unit/index'
+import { Route as AppSupplierIndexRouteImport } from './pages/_app/supplier/index'
 import { Route as AppStockRequisitionIndexRouteImport } from './pages/_app/stock-requisition/index'
 import { Route as AppStockPositioningIndexRouteImport } from './pages/_app/stock-positioning/index'
 import { Route as AppStockOutIndexRouteImport } from './pages/_app/stock-out/index'
@@ -37,6 +38,8 @@ import { Route as AppUserNewRouteImport } from './pages/_app/user/new'
 import { Route as AppUserEditRouteImport } from './pages/_app/user/edit'
 import { Route as AppUnitNewRouteImport } from './pages/_app/unit/new'
 import { Route as AppUnitEditRouteImport } from './pages/_app/unit/edit'
+import { Route as AppSupplierNewRouteImport } from './pages/_app/supplier/new'
+import { Route as AppSupplierEditRouteImport } from './pages/_app/supplier/edit'
 import { Route as AppStockRequisitionNewRouteImport } from './pages/_app/stock-requisition/new'
 import { Route as AppStockRequisitionEditRouteImport } from './pages/_app/stock-requisition/edit'
 import { Route as AppStockOutNewRouteImport } from './pages/_app/stock-out/new'
@@ -113,6 +116,11 @@ const AppUserIndexRoute = AppUserIndexRouteImport.update({
 const AppUnitIndexRoute = AppUnitIndexRouteImport.update({
   id: '/unit/',
   path: '/unit/',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
+const AppSupplierIndexRoute = AppSupplierIndexRouteImport.update({
+  id: '/supplier/',
+  path: '/supplier/',
   getParentRoute: () => AppLayoutRoute,
 } as any)
 const AppStockRequisitionIndexRoute =
@@ -195,6 +203,16 @@ const AppUnitNewRoute = AppUnitNewRouteImport.update({
 const AppUnitEditRoute = AppUnitEditRouteImport.update({
   id: '/unit/edit',
   path: '/unit/edit',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
+const AppSupplierNewRoute = AppSupplierNewRouteImport.update({
+  id: '/supplier/new',
+  path: '/supplier/new',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
+const AppSupplierEditRoute = AppSupplierEditRouteImport.update({
+  id: '/supplier/edit',
+  path: '/supplier/edit',
   getParentRoute: () => AppLayoutRoute,
 } as any)
 const AppStockRequisitionNewRoute = AppStockRequisitionNewRouteImport.update({
@@ -321,6 +339,8 @@ export interface FileRoutesByFullPath {
   '/stock-out/new': typeof AppStockOutNewRoute
   '/stock-requisition/edit': typeof AppStockRequisitionEditRoute
   '/stock-requisition/new': typeof AppStockRequisitionNewRoute
+  '/supplier/edit': typeof AppSupplierEditRoute
+  '/supplier/new': typeof AppSupplierNewRoute
   '/unit/edit': typeof AppUnitEditRoute
   '/unit/new': typeof AppUnitNewRoute
   '/user/edit': typeof AppUserEditRoute
@@ -337,6 +357,7 @@ export interface FileRoutesByFullPath {
   '/stock-out/': typeof AppStockOutIndexRoute
   '/stock-positioning/': typeof AppStockPositioningIndexRoute
   '/stock-requisition/': typeof AppStockRequisitionIndexRoute
+  '/supplier/': typeof AppSupplierIndexRoute
   '/unit/': typeof AppUnitIndexRoute
   '/user/': typeof AppUserIndexRoute
 }
@@ -368,6 +389,8 @@ export interface FileRoutesByTo {
   '/stock-out/new': typeof AppStockOutNewRoute
   '/stock-requisition/edit': typeof AppStockRequisitionEditRoute
   '/stock-requisition/new': typeof AppStockRequisitionNewRoute
+  '/supplier/edit': typeof AppSupplierEditRoute
+  '/supplier/new': typeof AppSupplierNewRoute
   '/unit/edit': typeof AppUnitEditRoute
   '/unit/new': typeof AppUnitNewRoute
   '/user/edit': typeof AppUserEditRoute
@@ -384,6 +407,7 @@ export interface FileRoutesByTo {
   '/stock-out': typeof AppStockOutIndexRoute
   '/stock-positioning': typeof AppStockPositioningIndexRoute
   '/stock-requisition': typeof AppStockRequisitionIndexRoute
+  '/supplier': typeof AppSupplierIndexRoute
   '/unit': typeof AppUnitIndexRoute
   '/user': typeof AppUserIndexRoute
 }
@@ -418,6 +442,8 @@ export interface FileRoutesById {
   '/_app/stock-out/new': typeof AppStockOutNewRoute
   '/_app/stock-requisition/edit': typeof AppStockRequisitionEditRoute
   '/_app/stock-requisition/new': typeof AppStockRequisitionNewRoute
+  '/_app/supplier/edit': typeof AppSupplierEditRoute
+  '/_app/supplier/new': typeof AppSupplierNewRoute
   '/_app/unit/edit': typeof AppUnitEditRoute
   '/_app/unit/new': typeof AppUnitNewRoute
   '/_app/user/edit': typeof AppUserEditRoute
@@ -434,6 +460,7 @@ export interface FileRoutesById {
   '/_app/stock-out/': typeof AppStockOutIndexRoute
   '/_app/stock-positioning/': typeof AppStockPositioningIndexRoute
   '/_app/stock-requisition/': typeof AppStockRequisitionIndexRoute
+  '/_app/supplier/': typeof AppSupplierIndexRoute
   '/_app/unit/': typeof AppUnitIndexRoute
   '/_app/user/': typeof AppUserIndexRoute
 }
@@ -467,6 +494,8 @@ export interface FileRouteTypes {
     | '/stock-out/new'
     | '/stock-requisition/edit'
     | '/stock-requisition/new'
+    | '/supplier/edit'
+    | '/supplier/new'
     | '/unit/edit'
     | '/unit/new'
     | '/user/edit'
@@ -483,6 +512,7 @@ export interface FileRouteTypes {
     | '/stock-out/'
     | '/stock-positioning/'
     | '/stock-requisition/'
+    | '/supplier/'
     | '/unit/'
     | '/user/'
   fileRoutesByTo: FileRoutesByTo
@@ -514,6 +544,8 @@ export interface FileRouteTypes {
     | '/stock-out/new'
     | '/stock-requisition/edit'
     | '/stock-requisition/new'
+    | '/supplier/edit'
+    | '/supplier/new'
     | '/unit/edit'
     | '/unit/new'
     | '/user/edit'
@@ -530,6 +562,7 @@ export interface FileRouteTypes {
     | '/stock-out'
     | '/stock-positioning'
     | '/stock-requisition'
+    | '/supplier'
     | '/unit'
     | '/user'
   id:
@@ -563,6 +596,8 @@ export interface FileRouteTypes {
     | '/_app/stock-out/new'
     | '/_app/stock-requisition/edit'
     | '/_app/stock-requisition/new'
+    | '/_app/supplier/edit'
+    | '/_app/supplier/new'
     | '/_app/unit/edit'
     | '/_app/unit/new'
     | '/_app/user/edit'
@@ -579,6 +614,7 @@ export interface FileRouteTypes {
     | '/_app/stock-out/'
     | '/_app/stock-positioning/'
     | '/_app/stock-requisition/'
+    | '/_app/supplier/'
     | '/_app/unit/'
     | '/_app/user/'
   fileRoutesById: FileRoutesById
@@ -672,6 +708,13 @@ declare module '@tanstack/react-router' {
       path: '/unit'
       fullPath: '/unit/'
       preLoaderRoute: typeof AppUnitIndexRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
+    '/_app/supplier/': {
+      id: '/_app/supplier/'
+      path: '/supplier'
+      fullPath: '/supplier/'
+      preLoaderRoute: typeof AppSupplierIndexRouteImport
       parentRoute: typeof AppLayoutRoute
     }
     '/_app/stock-requisition/': {
@@ -784,6 +827,20 @@ declare module '@tanstack/react-router' {
       path: '/unit/edit'
       fullPath: '/unit/edit'
       preLoaderRoute: typeof AppUnitEditRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
+    '/_app/supplier/new': {
+      id: '/_app/supplier/new'
+      path: '/supplier/new'
+      fullPath: '/supplier/new'
+      preLoaderRoute: typeof AppSupplierNewRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
+    '/_app/supplier/edit': {
+      id: '/_app/supplier/edit'
+      path: '/supplier/edit'
+      fullPath: '/supplier/edit'
+      preLoaderRoute: typeof AppSupplierEditRouteImport
       parentRoute: typeof AppLayoutRoute
     }
     '/_app/stock-requisition/new': {
@@ -945,6 +1002,8 @@ interface AppLayoutRouteChildren {
   AppStockOutNewRoute: typeof AppStockOutNewRoute
   AppStockRequisitionEditRoute: typeof AppStockRequisitionEditRoute
   AppStockRequisitionNewRoute: typeof AppStockRequisitionNewRoute
+  AppSupplierEditRoute: typeof AppSupplierEditRoute
+  AppSupplierNewRoute: typeof AppSupplierNewRoute
   AppUnitEditRoute: typeof AppUnitEditRoute
   AppUnitNewRoute: typeof AppUnitNewRoute
   AppUserEditRoute: typeof AppUserEditRoute
@@ -961,6 +1020,7 @@ interface AppLayoutRouteChildren {
   AppStockOutIndexRoute: typeof AppStockOutIndexRoute
   AppStockPositioningIndexRoute: typeof AppStockPositioningIndexRoute
   AppStockRequisitionIndexRoute: typeof AppStockRequisitionIndexRoute
+  AppSupplierIndexRoute: typeof AppSupplierIndexRoute
   AppUnitIndexRoute: typeof AppUnitIndexRoute
   AppUserIndexRoute: typeof AppUserIndexRoute
 }
@@ -988,6 +1048,8 @@ const AppLayoutRouteChildren: AppLayoutRouteChildren = {
   AppStockOutNewRoute: AppStockOutNewRoute,
   AppStockRequisitionEditRoute: AppStockRequisitionEditRoute,
   AppStockRequisitionNewRoute: AppStockRequisitionNewRoute,
+  AppSupplierEditRoute: AppSupplierEditRoute,
+  AppSupplierNewRoute: AppSupplierNewRoute,
   AppUnitEditRoute: AppUnitEditRoute,
   AppUnitNewRoute: AppUnitNewRoute,
   AppUserEditRoute: AppUserEditRoute,
@@ -1004,6 +1066,7 @@ const AppLayoutRouteChildren: AppLayoutRouteChildren = {
   AppStockOutIndexRoute: AppStockOutIndexRoute,
   AppStockPositioningIndexRoute: AppStockPositioningIndexRoute,
   AppStockRequisitionIndexRoute: AppStockRequisitionIndexRoute,
+  AppSupplierIndexRoute: AppSupplierIndexRoute,
   AppUnitIndexRoute: AppUnitIndexRoute,
   AppUserIndexRoute: AppUserIndexRoute,
 }
