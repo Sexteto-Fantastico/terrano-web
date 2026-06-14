@@ -2,6 +2,9 @@ import { useSearch, useNavigate, createFileRoute } from "@tanstack/react-router"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { CreateView } from "@/components/views/create-view";
+import { FeedbackDialog } from "@/components/ui/feedback-dialog";
+import { useFeedbackDialog } from "@/hooks/use-feedback-dialog";
+import { getApiErrorMessage } from "@/lib/errors";
 import { ProductForm } from "./-components/product-form";
 import {
   fetchProductById,
@@ -26,6 +29,7 @@ function ProductEditPage() {
   const search = useSearch({ from: "/_app/product/edit" });
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const feedback = useFeedbackDialog();
 
   const productQuery = useQuery({
     queryKey: ["product", search.id],
@@ -37,7 +41,12 @@ function ProductEditPage() {
     mutationFn: updateProduct,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
-      navigate({ to: "/product" });
+      feedback.success("Produto atualizado com sucesso!", () =>
+        navigate({ to: "/product" })
+      );
+    },
+    onError: (error) => {
+      feedback.error(getApiErrorMessage(error));
     },
   });
 
@@ -95,6 +104,7 @@ function ProductEditPage() {
           await updateMutation.mutateAsync({ id: product.id, ...values });
         }}
       />
+      <FeedbackDialog {...feedback.props} />
     </CreateView>
   );
 }

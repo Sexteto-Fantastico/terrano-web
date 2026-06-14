@@ -2,6 +2,9 @@ import { useSearch, useNavigate, createFileRoute } from "@tanstack/react-router"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { CreateView } from "@/components/views/create-view";
+import { FeedbackDialog } from "@/components/ui/feedback-dialog";
+import { useFeedbackDialog } from "@/hooks/use-feedback-dialog";
+import { getApiErrorMessage } from "@/lib/errors";
 import { DepartmentForm } from "./-components/department-form";
 import {
   fetchDepartmentById,
@@ -26,6 +29,7 @@ function DepartmentEditPage() {
   const search = useSearch({ from: "/_app/department/edit" });
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const feedback = useFeedbackDialog();
 
   const departmentQuery = useQuery({
     queryKey: ["department", search.id],
@@ -37,7 +41,12 @@ function DepartmentEditPage() {
     mutationFn: updateDepartment,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["departments"] });
-      navigate({ to: "/department" });
+      feedback.success("Departamento atualizado com sucesso!", () =>
+        navigate({ to: "/department" })
+      );
+    },
+    onError: (error) => {
+      feedback.error(getApiErrorMessage(error));
     },
   });
 
@@ -91,6 +100,7 @@ function DepartmentEditPage() {
           });
         }}
       />
+      <FeedbackDialog {...feedback.props} />
     </CreateView>
   );
 }

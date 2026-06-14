@@ -2,6 +2,9 @@ import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { CreateView } from "@/components/views/create-view";
+import { FeedbackDialog } from "@/components/ui/feedback-dialog";
+import { useFeedbackDialog } from "@/hooks/use-feedback-dialog";
+import { getApiErrorMessage } from "@/lib/errors";
 import { PurchaseForm, type PurchaseFormValues } from "./-components/purchase-form";
 import { getPurchaseById, updatePurchase } from "@/api/purchases";
 
@@ -21,6 +24,7 @@ function PurchaseEditPage() {
   const search = useSearch({ from: "/_app/purchase/edit" });
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const feedback = useFeedbackDialog();
 
   const purchaseQuery = useQuery({
     queryKey: ["purchase", search.id],
@@ -32,7 +36,12 @@ function PurchaseEditPage() {
     mutationFn: updatePurchase,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["purchases"] });
-      navigate({ to: "/purchase" });
+      feedback.success("Compra atualizada com sucesso!", () =>
+        navigate({ to: "/purchase" })
+      );
+    },
+    onError: (error) => {
+      feedback.error(getApiErrorMessage(error));
     },
   });
 
@@ -82,6 +91,7 @@ function PurchaseEditPage() {
   return (
     <CreateView formId="purchase-form">
       <PurchaseForm initialValues={initialValues} onSubmit={handleSubmit} />
+      <FeedbackDialog {...feedback.props} />
     </CreateView>
   );
 }

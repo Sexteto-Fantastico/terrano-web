@@ -6,6 +6,9 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { CreateView } from "@/components/views/create-view";
+import { FeedbackDialog } from "@/components/ui/feedback-dialog";
+import { useFeedbackDialog } from "@/hooks/use-feedback-dialog";
+import { getApiErrorMessage } from "@/lib/errors";
 import {
   StockLocationForm,
   type StockLocationFormValues,
@@ -33,6 +36,7 @@ function StockLocationEditPage() {
   const search = useSearch({ from: "/_app/stock-location/edit" });
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const feedback = useFeedbackDialog();
 
   const stockLocationQuery = useQuery({
     queryKey: ["stock-location", search.id],
@@ -44,7 +48,12 @@ function StockLocationEditPage() {
     mutationFn: updateStockLocation,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["stock-locations"] });
-      navigate({ to: "/stock-location" });
+      feedback.success("Estoque atualizado com sucesso!", () =>
+        navigate({ to: "/stock-location" })
+      );
+    },
+    onError: (error) => {
+      feedback.error(getApiErrorMessage(error));
     },
   });
 
@@ -102,6 +111,7 @@ function StockLocationEditPage() {
           });
         }}
       />
+      <FeedbackDialog {...feedback.props} />
     </CreateView>
   );
 }

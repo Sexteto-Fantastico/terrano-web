@@ -2,6 +2,9 @@ import { useSearch, useNavigate, createFileRoute } from '@tanstack/react-router'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { z } from 'zod'
 import { CreateView } from '@/components/views/create-view'
+import { FeedbackDialog } from '@/components/ui/feedback-dialog'
+import { useFeedbackDialog } from '@/hooks/use-feedback-dialog'
+import { getApiErrorMessage } from '@/lib/errors'
 import { CategoryForm } from './-components/category-form'
 import {
   fetchProductCategoryById,
@@ -26,6 +29,7 @@ function CategoryEditComponent() {
   const search = useSearch({ from: '/_app/category/edit' })
   const navigate = useNavigate()
   const queryClient = useQueryClient()
+  const feedback = useFeedbackDialog()
 
   const categoryQuery = useQuery({
     queryKey: ['category', search.id],
@@ -37,7 +41,12 @@ function CategoryEditComponent() {
     mutationFn: updateProductCategory,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['categories'] })
-      navigate({ to: '/category' })
+      feedback.success('Categoria atualizada com sucesso!', () =>
+        navigate({ to: '/category' })
+      )
+    },
+    onError: (error) => {
+      feedback.error(getApiErrorMessage(error))
     },
   })
 
@@ -90,6 +99,7 @@ function CategoryEditComponent() {
           })
         }}
       />
+      <FeedbackDialog {...feedback.props} />
     </CreateView>
   )
 }

@@ -13,6 +13,9 @@ import {
 import { z } from "zod";
 
 import { CreateView } from "@/components/views/create-view";
+import { FeedbackDialog } from "@/components/ui/feedback-dialog";
+import { useFeedbackDialog } from "@/hooks/use-feedback-dialog";
+import { getApiErrorMessage } from "@/lib/errors";
 
 import { StockRequisitionForm } from "./-components/stock-requisition-form";
 
@@ -48,6 +51,8 @@ function StockRequisitionEditPage() {
 
   const queryClient = useQueryClient();
 
+  const feedback = useFeedbackDialog();
+
   const requisitionQuery = useQuery({
     queryKey: ["stock-requisition", search.id],
 
@@ -73,10 +78,14 @@ function StockRequisitionEditPage() {
     queryKey: ["stock-requisition", search.id],
   });
 
-  navigate({
-    to: "/stock-requisition",
-  });
-}
+  feedback.success("Solicitação atualizada com sucesso!", () =>
+    navigate({ to: "/stock-requisition" })
+  );
+    },
+
+    onError: (error) => {
+      feedback.error(getApiErrorMessage(error));
+    },
   });
 
   if (!search.id) {
@@ -113,6 +122,7 @@ function StockRequisitionEditPage() {
   });
 }}
 />
+      <FeedbackDialog {...feedback.props} />
     </CreateView>
   );
 }

@@ -7,6 +7,7 @@ import { CancelButton } from "@/components/button/cancel-button";
 import { SaveButton } from "@/components/button/save-button";
 import { Header } from "@/components/header";
 import { RecordLogDialog } from "@/components/views/record-log-dialog";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import type { LogEntity } from "@/api/system-logs";
 
 interface CreateViewContextValue {
@@ -42,6 +43,7 @@ export function CreateView({
 }: CreateViewProps) {
   const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
+  const [confirmCancelOpen, setConfirmCancelOpen] = useState(false);
 
   function goBack() {
     router.history.back();
@@ -74,11 +76,24 @@ export function CreateView({
             )}
           </div>
           <div className="flex gap-3">
-            <CancelButton onClick={goBack} />
+            <CancelButton onClick={() => setConfirmCancelOpen(true)} />
             <SaveButton type="submit" form={formId} disabled={isSaving} />
           </div>
         </div>
       </div>
+
+      <ConfirmDialog
+        open={confirmCancelOpen}
+        onOpenChange={setConfirmCancelOpen}
+        title="Descartar alterações?"
+        description="As informações preenchidas ainda não foram salvas e serão perdidas."
+        confirmText="Sim, cancelar"
+        cancelText="Continuar editando"
+        onConfirm={() => {
+          setConfirmCancelOpen(false);
+          goBack();
+        }}
+      />
     </CreateViewContext.Provider>
   );
 }
