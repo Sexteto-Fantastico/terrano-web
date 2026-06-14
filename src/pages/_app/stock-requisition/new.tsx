@@ -2,6 +2,9 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { CreateView } from "@/components/views/create-view";
+import { FeedbackDialog } from "@/components/ui/feedback-dialog";
+import { useFeedbackDialog } from "@/hooks/use-feedback-dialog";
+import { getApiErrorMessage } from "@/lib/errors";
 
 import {
   StockRequisitionForm,
@@ -22,6 +25,8 @@ function StockRequisitionNewPage() {
   const queryClient =
     useQueryClient();
 
+  const feedback = useFeedbackDialog();
+
   const createMutation =
     useMutation({
       mutationFn:
@@ -34,9 +39,13 @@ function StockRequisitionNewPage() {
           ],
         });
 
-        navigate({
-          to: "/stock-requisition",
-        });
+        feedback.success("Solicitação criada com sucesso!", () =>
+          navigate({ to: "/stock-requisition" })
+        );
+      },
+
+      onError: (error) => {
+        feedback.error(getApiErrorMessage(error));
       },
     });
 
@@ -56,6 +65,7 @@ function StockRequisitionNewPage() {
       <StockRequisitionForm
         onSubmit={handleSubmit}
       />
+      <FeedbackDialog {...feedback.props} />
     </CreateView>
   );
 }

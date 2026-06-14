@@ -6,6 +6,9 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { CreateView } from "@/components/views/create-view";
+import { FeedbackDialog } from "@/components/ui/feedback-dialog";
+import { useFeedbackDialog } from "@/hooks/use-feedback-dialog";
+import { getApiErrorMessage } from "@/lib/errors";
 import { MeasurementUnitForm } from "./-components/measurement-unit-form";
 import {
   fetchMeasurementUnitById,
@@ -31,6 +34,7 @@ function MeasurementUnitEditPage() {
   const search = useSearch({ from: "/_app/unit/edit" });
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const feedback = useFeedbackDialog();
 
   const unitQuery = useQuery({
     queryKey: ["measurement-unit", search.id],
@@ -42,7 +46,12 @@ function MeasurementUnitEditPage() {
     mutationFn: updateMeasurementUnit,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["measurement-units"] });
-      navigate({ to: "/unit" });
+      feedback.success("Unidade de medida atualizada com sucesso!", () =>
+        navigate({ to: "/unit" })
+      );
+    },
+    onError: (error) => {
+      feedback.error(getApiErrorMessage(error));
     },
   });
 
@@ -96,6 +105,7 @@ function MeasurementUnitEditPage() {
           });
         }}
       />
+      <FeedbackDialog {...feedback.props} />
     </CreateView>
   );
 }

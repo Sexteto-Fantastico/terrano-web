@@ -2,6 +2,9 @@ import { useSearch, useNavigate, createFileRoute } from "@tanstack/react-router"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { CreateView } from "@/components/views/create-view";
+import { FeedbackDialog } from "@/components/ui/feedback-dialog";
+import { useFeedbackDialog } from "@/hooks/use-feedback-dialog";
+import { getApiErrorMessage } from "@/lib/errors";
 import { UserForm } from "./-components/user-form";
 import { getUserById, updateUser, deleteUser, restoreUser } from "@/api/users";
 
@@ -21,6 +24,7 @@ function UserEditPage() {
   const search = useSearch({ from: "/_app/user/edit" });
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const feedback = useFeedbackDialog();
 
   const userQuery = useQuery({
     queryKey: ["user", search.id],
@@ -32,7 +36,12 @@ function UserEditPage() {
     mutationFn: updateUser,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
-      navigate({ to: "/user" });
+      feedback.success("Usuário atualizado com sucesso!", () =>
+        navigate({ to: "/user" })
+      );
+    },
+    onError: (error) => {
+      feedback.error(getApiErrorMessage(error));
     },
   });
 
@@ -87,6 +96,7 @@ function UserEditPage() {
           });
         }}
       />
+      <FeedbackDialog {...feedback.props} />
     </CreateView>
   );
 }
