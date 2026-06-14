@@ -10,11 +10,6 @@ interface FeedbackState {
   onAction?: () => void;
 }
 
-/**
- * Gerencia o estado de um `FeedbackDialog`, reduzindo o wiring de cada página
- * a poucas linhas. Use `success`/`error` para abrir e espalhe `props` no
- * componente: `<FeedbackDialog {...feedback.props} />`.
- */
 export function useFeedbackDialog() {
   const [state, setState] = useState<FeedbackState>({
     open: false,
