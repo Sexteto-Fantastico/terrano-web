@@ -18,7 +18,7 @@ export const STOCK_REQUISITION_STATUS = {
 export type StockRequisitionStatus =
   (typeof STOCK_REQUISITION_STATUS)[keyof typeof STOCK_REQUISITION_STATUS];
 
-export const STOCK_REQUISITION_STATUS_LABELS: Record <StockRequisitionStatus,string> = {
+export const STOCK_REQUISITION_STATUS_LABELS: Record<StockRequisitionStatus, string> = {
   PENDING: "Pendente",
   CANCELLED: "Cancelada",
   DENIED: "Negada",
@@ -55,6 +55,7 @@ export type StockRequisition = {
 };
 
 export type CreateStockRequisitionDTO = {
+  departmentId?: number;
   requesterJustification: string;
   items: {
     productId: number;
@@ -86,6 +87,7 @@ export type StockRequisitionFilters = Filters<{
   pageIndex?: number;
   pageSize?: number;
 }>;
+
 export async function fetchStockRequisitions(
   filters: StockRequisitionFilters
 ): Promise<PaginatedData<StockRequisition>> {
@@ -98,7 +100,7 @@ export async function fetchStockRequisitions(
   delete (apiFilters as any).period;
 
   if (apiFilters.status) {
-    delete (apiFilters as any).openOnly;  
+    delete (apiFilters as any).openOnly;
   }
 
   return fetchPaginated<StockRequisition>("/stock-requisitions", apiFilters);
