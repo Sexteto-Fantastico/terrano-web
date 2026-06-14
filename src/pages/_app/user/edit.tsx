@@ -90,6 +90,7 @@ function UserEditPage() {
           phone: userQuery.data.phone,
         }}
         initialRoleId={userQuery.data.role?.id}
+        initialDepartmentId={userQuery.data.department?.id}
         onSubmit={async (values) => {
           await updateMutation.mutateAsync({
             id: userQuery.data.id,

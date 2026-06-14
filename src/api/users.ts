@@ -31,6 +31,7 @@ type UserQuery = {
   name: string;
   onlyActive: string;
   roleId: string;
+  departmentId: string;
 };
 
 export type CreateUserRequestDTO = {
@@ -38,6 +39,8 @@ export type CreateUserRequestDTO = {
   email: string;
   username: string;
   roleId: number;
+  departmentId: number;
+  password: string;
   phone?: string;
   cpf?: string;
   isActive?: boolean;
@@ -51,6 +54,7 @@ export type UpdateUserRequestDTO = {
   email?: string;
   username?: string;
   roleId?: number;
+  departmentId?: number;
   isActive?: boolean;
 };
 export type UserFilters = Filters<UserQuery>;

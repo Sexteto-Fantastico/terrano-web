@@ -1,5 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Link } from "@/components/ui/link";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -15,42 +14,48 @@ import {
   FieldDescription,
 } from "@/components/ui/field";
 import { useAuth } from "@/hooks/use-auth";
-import { login } from "@/api/auth";
+import { definePassword } from "@/api/auth";
 
-export const Route = createFileRoute("/_auth/sign-in")({
-  component: SignInPage,
+export const Route = createFileRoute("/_auth/define-password")({
+  beforeLoad: ({ context }) => {
+    if (!context.auth.token) {
+      throw redirect({ to: "/sign-in" });
+    }
+  },
+  component: DefinePasswordPage,
 });
 
-const signInSchema = z.object({
-  email: z.email("Email inválido"),
-  password: z.string().min(8, "A senha deve ter pelo menos 8 caracteres"),
-});
+const definePasswordSchema = z
+  .object({
+    password: z.string().min(8, "A senha deve ter pelo menos 8 caracteres"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "As senhas não coincidem",
+    path: ["confirmPassword"],
+  });
 
-function SignInPage() {
-  const { setToken, setMustResetPassword } = useAuth();
+function DefinePasswordPage() {
+  const { setMustResetPassword } = useAuth();
   const navigate = useNavigate();
 
-  const signInForm = useForm({
+  const form = useForm({
     defaultValues: {
-      email: "",
       password: "",
+      confirmPassword: "",
     },
     validators: {
-      onSubmit: signInSchema,
+      onSubmit: definePasswordSchema,
     },
     onSubmit: async ({ value }) => {
       try {
-        const response = await login(value);
-        setToken(response.token, response.expiresAt);
-        setMustResetPassword(response.mustResetPassword ?? false);
-        if (response.mustResetPassword) {
-          navigate({ to: "/define-password" });
-        } else {
-          navigate({ to: "/" });
-        }
+        await definePassword({ password: value.password });
+        setMustResetPassword(false);
+        toast.success("Senha atualizada com sucesso");
+        navigate({ to: "/" });
       } catch (error: unknown) {
         const message =
-          error instanceof Error ? error.message : "Erro ao fazer login";
+          error instanceof Error ? error.message : "Erro ao atualizar senha";
         toast.error(message);
       }
     },
@@ -58,50 +63,30 @@ function SignInPage() {
 
   return (
     <form
-      id="sign-in-form"
+      id="define-password-form"
       className="w-full max-w-sm"
       onSubmit={(e) => {
         e.preventDefault();
         e.stopPropagation();
-        signInForm.handleSubmit();
+        form.handleSubmit();
       }}
     >
       <FieldSet className="space-y-4">
-        <FieldLegend variant="legend">Entre com a sua conta</FieldLegend>
+        <FieldLegend variant="legend">Definir senha</FieldLegend>
         <FieldDescription>
-          Bem-vindo! Por favor, insira suas informações.
+          Você precisa definir uma nova senha para continuar.
         </FieldDescription>
         <FieldGroup>
-          <signInForm.Field name="email">
+          <form.Field name="password">
             {(field) => (
               <Field>
-                <FieldLabel htmlFor={field.name}>Email</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  type="email"
-                  placeholder="seu@email.com"
-                  autoComplete="email"
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  aria-invalid={field.state.meta.errors.length > 0}
-                />
-                <FieldError errors={field.state.meta.errors} />
-              </Field>
-            )}
-          </signInForm.Field>
-
-          <signInForm.Field name="password">
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>Senha</FieldLabel>
+                <FieldLabel htmlFor={field.name}>Nova senha</FieldLabel>
                 <Input
                   id={field.name}
                   name={field.name}
                   type="password"
                   placeholder="••••••••"
-                  autoComplete="current-password"
+                  autoComplete="new-password"
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
@@ -110,18 +95,36 @@ function SignInPage() {
                 <FieldError errors={field.state.meta.errors} />
               </Field>
             )}
-          </signInForm.Field>
+          </form.Field>
+
+          <form.Field name="confirmPassword">
+            {(field) => (
+              <Field>
+                <FieldLabel htmlFor={field.name}>Confirmar senha</FieldLabel>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  type="password"
+                  placeholder="••••••••"
+                  autoComplete="new-password"
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  aria-invalid={field.state.meta.errors.length > 0}
+                />
+                <FieldError errors={field.state.meta.errors} />
+              </Field>
+            )}
+          </form.Field>
         </FieldGroup>
 
         <Button
           type="submit"
-          form="sign-in-form"
+          form="define-password-form"
           className="w-full"
         >
-          Entrar
+          Definir senha
         </Button>
-
-        <Link to="/forgot-password">Esqueci minha senha</Link>
       </FieldSet>
     </form>
   );
