@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { requirePermission } from "@/lib/route-guard";
 import { type PaginatedData } from "@/components/ui/data-table/@types";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
 import { useMemo } from "react";
@@ -30,6 +31,7 @@ import { getProductBrandTableColumns } from "./-components/product-brand-table-c
 
 export const Route = createFileRoute("/_app/product-brand/")({
   component: BrandPage,
+  beforeLoad: requirePermission("PRODUCT_BRAND", "read"),
   validateSearch: (): ProductBrandFilters => ({}),
   head: () => ({
     meta: [

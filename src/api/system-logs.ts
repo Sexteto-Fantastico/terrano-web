@@ -7,7 +7,8 @@ export type LogEntity =
   | "department"
   | "product-brand"
   | "product-category"
-  | "measurement-unit";
+  | "measurement-unit"
+  | "access-profile";
 
 const LOG_ENTITY_BASE: Record<LogEntity, string> = {
   user: "/users",
@@ -17,6 +18,7 @@ const LOG_ENTITY_BASE: Record<LogEntity, string> = {
   "product-brand": "/product-brands",
   "product-category": "/product-categories",
   "measurement-unit": "/measurement-units",
+  "access-profile": "/roles",
 };
 
 export type SystemLogUser = {

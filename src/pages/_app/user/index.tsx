@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { requirePermission } from "@/lib/route-guard";
 import { DataTableFilterMenu } from "@/components/ui/data-table/data-table-filter-menu";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
 import { useMemo } from "react";
@@ -9,6 +10,7 @@ import {
   type User,
   type UserFilters,
 } from "@/api/users";
+import { fetchRoles, type Role } from "@/api/roles";
 import {
   keepPreviousData,
   useQuery,
@@ -25,10 +27,11 @@ import { DataTableToolbar } from "@/components/ui/data-table/data-table-toolbar"
 import { AddButton } from "@/components/button/add-button";
 import { ExportButton } from "@/components/button/export-button";
 import { getUserTableColumns } from "./-components/user-table-columns";
-import { userFilterConfig } from "./-components/user-filter-config";
+import { getUserFilterConfig } from "./-components/user-filter-config";
 
 export const Route = createFileRoute("/_app/user/")({
   component: UserPage,
+  beforeLoad: requirePermission("USER", "read"),
   validateSearch: () => ({}) as UserFilters,
   head: () => ({
     meta: [
@@ -44,10 +47,14 @@ function UserPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
+  const { data: roles } = useQuery({
+    queryKey: ["roles"],
+    queryFn: () => fetchRoles({}),
+  });
+
   const { data, isLoading } = useQuery<PaginatedData<User>>({
     queryKey: ["users", filters],
     queryFn: () => fetchUsers(filters),
-    placeholderData: keepPreviousData,
   });
 
   const deleteMutation = useMutation({
@@ -125,6 +132,11 @@ function UserPage() {
         onToggleActive: handleToggleActive,
       }),
     [deleteMutation, restoreMutation]
+  );
+
+  const userFilterConfig = useMemo(
+    () => getUserFilterConfig(roles?.result),
+    [roles]
   );
 
   const { table } = useDataTable({

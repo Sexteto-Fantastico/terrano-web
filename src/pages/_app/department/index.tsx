@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { requirePermission } from "@/lib/route-guard";
 import { type PaginatedData } from "@/components/ui/data-table/@types";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
 import { useMemo } from "react";
@@ -25,6 +26,7 @@ import { getDepartmentTableColumns } from "./-components/department-table-column
 
 export const Route = createFileRoute("/_app/department/")({
   component: DepartmentPage,
+  beforeLoad: requirePermission("DEPARTMENT", "read"),
   validateSearch: (): DepartmentFilters => ({}),
   head: () => ({
     meta: [

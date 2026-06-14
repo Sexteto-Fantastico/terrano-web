@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { requirePermission } from "@/lib/route-guard";
 import { type PaginatedData } from "@/components/ui/data-table/@types";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
 import { useMemo } from "react";
@@ -25,6 +26,7 @@ import { getMeasurementUnitTableColumns } from "./-components/measurement-unit-t
 
 export const Route = createFileRoute("/_app/unit/")({
   component: MeasurementUnitPage,
+  beforeLoad: requirePermission("MEASUREMENT_UNIT", "read"),
   validateSearch: (): MeasurementUnitFilters => ({}),
   head: () => ({
     meta: [

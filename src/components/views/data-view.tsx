@@ -9,12 +9,11 @@ interface DataViewProps {
 export function DataView({ children, headerActions }: DataViewProps) {
   return (
     <div className="flex h-screen flex-col">
-      <div className="px-4 pt-4 sm:px-6 sm:pt-6 lg:px-8 lg:pt-8">
+      <div className="px-4 pt-4">
         <Header children={headerActions} />
-        <Separator className="mt-4 sm:mt-6 lg:mt-8" />
+        <Separator className="mt-4" />
       </div>
       <div className="flex-1 overflow-auto p-4 sm:p-6 lg:p-8">{children}</div>
     </div>
   );
 }
-
