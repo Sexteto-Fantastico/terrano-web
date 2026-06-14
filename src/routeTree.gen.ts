@@ -27,6 +27,7 @@ import { Route as AppStockOutIndexRouteImport } from './pages/_app/stock-out/ind
 import { Route as AppStockLocationIndexRouteImport } from './pages/_app/stock-location/index'
 import { Route as AppPurchaseIndexRouteImport } from './pages/_app/purchase/index'
 import { Route as AppProductIndexRouteImport } from './pages/_app/product/index'
+import { Route as AppProductTrackingIndexRouteImport } from './pages/_app/product-tracking/index'
 import { Route as AppProductBrandIndexRouteImport } from './pages/_app/product-brand/index'
 import { Route as AppDepartmentIndexRouteImport } from './pages/_app/department/index'
 import { Route as AppCategoryIndexRouteImport } from './pages/_app/category/index'
@@ -141,6 +142,11 @@ const AppPurchaseIndexRoute = AppPurchaseIndexRouteImport.update({
 const AppProductIndexRoute = AppProductIndexRouteImport.update({
   id: '/product/',
   path: '/product/',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
+const AppProductTrackingIndexRoute = AppProductTrackingIndexRouteImport.update({
+  id: '/product-tracking/',
+  path: '/product-tracking/',
   getParentRoute: () => AppLayoutRoute,
 } as any)
 const AppProductBrandIndexRoute = AppProductBrandIndexRouteImport.update({
@@ -303,6 +309,7 @@ export interface FileRoutesByFullPath {
   '/category/': typeof AppCategoryIndexRoute
   '/department/': typeof AppDepartmentIndexRoute
   '/product-brand/': typeof AppProductBrandIndexRoute
+  '/product-tracking/': typeof AppProductTrackingIndexRoute
   '/product/': typeof AppProductIndexRoute
   '/purchase/': typeof AppPurchaseIndexRoute
   '/stock-location/': typeof AppStockLocationIndexRoute
@@ -346,6 +353,7 @@ export interface FileRoutesByTo {
   '/category': typeof AppCategoryIndexRoute
   '/department': typeof AppDepartmentIndexRoute
   '/product-brand': typeof AppProductBrandIndexRoute
+  '/product-tracking': typeof AppProductTrackingIndexRoute
   '/product': typeof AppProductIndexRoute
   '/purchase': typeof AppPurchaseIndexRoute
   '/stock-location': typeof AppStockLocationIndexRoute
@@ -392,6 +400,7 @@ export interface FileRoutesById {
   '/_app/category/': typeof AppCategoryIndexRoute
   '/_app/department/': typeof AppDepartmentIndexRoute
   '/_app/product-brand/': typeof AppProductBrandIndexRoute
+  '/_app/product-tracking/': typeof AppProductTrackingIndexRoute
   '/_app/product/': typeof AppProductIndexRoute
   '/_app/purchase/': typeof AppPurchaseIndexRoute
   '/_app/stock-location/': typeof AppStockLocationIndexRoute
@@ -437,6 +446,7 @@ export interface FileRouteTypes {
     | '/category/'
     | '/department/'
     | '/product-brand/'
+    | '/product-tracking/'
     | '/product/'
     | '/purchase/'
     | '/stock-location/'
@@ -480,6 +490,7 @@ export interface FileRouteTypes {
     | '/category'
     | '/department'
     | '/product-brand'
+    | '/product-tracking'
     | '/product'
     | '/purchase'
     | '/stock-location'
@@ -525,6 +536,7 @@ export interface FileRouteTypes {
     | '/_app/category/'
     | '/_app/department/'
     | '/_app/product-brand/'
+    | '/_app/product-tracking/'
     | '/_app/product/'
     | '/_app/purchase/'
     | '/_app/stock-location/'
@@ -666,6 +678,13 @@ declare module '@tanstack/react-router' {
       path: '/product'
       fullPath: '/product/'
       preLoaderRoute: typeof AppProductIndexRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
+    '/_app/product-tracking/': {
+      id: '/_app/product-tracking/'
+      path: '/product-tracking'
+      fullPath: '/product-tracking/'
+      preLoaderRoute: typeof AppProductTrackingIndexRouteImport
       parentRoute: typeof AppLayoutRoute
     }
     '/_app/product-brand/': {
@@ -875,6 +894,7 @@ interface AppLayoutRouteChildren {
   AppCategoryIndexRoute: typeof AppCategoryIndexRoute
   AppDepartmentIndexRoute: typeof AppDepartmentIndexRoute
   AppProductBrandIndexRoute: typeof AppProductBrandIndexRoute
+  AppProductTrackingIndexRoute: typeof AppProductTrackingIndexRoute
   AppProductIndexRoute: typeof AppProductIndexRoute
   AppPurchaseIndexRoute: typeof AppPurchaseIndexRoute
   AppStockLocationIndexRoute: typeof AppStockLocationIndexRoute
@@ -914,6 +934,7 @@ const AppLayoutRouteChildren: AppLayoutRouteChildren = {
   AppCategoryIndexRoute: AppCategoryIndexRoute,
   AppDepartmentIndexRoute: AppDepartmentIndexRoute,
   AppProductBrandIndexRoute: AppProductBrandIndexRoute,
+  AppProductTrackingIndexRoute: AppProductTrackingIndexRoute,
   AppProductIndexRoute: AppProductIndexRoute,
   AppPurchaseIndexRoute: AppPurchaseIndexRoute,
   AppStockLocationIndexRoute: AppStockLocationIndexRoute,

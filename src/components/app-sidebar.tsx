@@ -100,6 +100,7 @@ const MENU_DATA: MenuGroup[] = [
     items: [
       { title: "Dashboard", href: "/dashboard", permission: { resource: "DASHBOARD", action: "read" } },
       { title: "Posicionamento de estoque", href: "/stock-positioning", permission: { resource: "STOCK_POSITION", action: "read" } },
+      { title: "Rastreamento de Produto", href: "/product-tracking" },
     ],
   },
   {
