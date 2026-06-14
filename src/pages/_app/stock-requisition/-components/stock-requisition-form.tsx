@@ -72,10 +72,19 @@ useEffect(() => {
   didInit.current = true;
 }, []);
 
-  const { data: products = [] } = useQuery({
-    queryKey: ["products-all"],
-    queryFn: fetchProducts,
-  });
+const { data } = useQuery({
+  queryKey: ["products-all"],
+  queryFn: () =>
+    fetchProducts({
+      pageIndex: 0,
+      pageSize: 100,
+      activeOnly: "true",
+    }),
+});
+
+const products = Array.isArray(data)
+  ? data
+  : data?.result ?? [];
 
   function addItem() {
     setItems((old) => [...old, { productId: 0, quantity: 1 }]);
