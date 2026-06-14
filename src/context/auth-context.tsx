@@ -101,6 +101,7 @@ export function AuthProvider({
           getMyPermissions().catch(() => null),
         ]);
         setUserState(user);
+        setMustResetPassword(user.requiresPasswordReset ?? false);
         setPermissionsState(flattenPermissions(permissionsData ?? undefined));
       } catch (error) {
         console.error("Failed to fetch user data", error);

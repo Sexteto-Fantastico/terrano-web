@@ -45,7 +45,7 @@ function UserNewPage() {
 
   return (
     <CreateView formId="user-form">
-      <UserForm onSubmit={handleSubmit} />
+      <UserForm showPassword onSubmit={handleSubmit} />
       <FeedbackDialog {...feedback.props} />
     </CreateView>
   );

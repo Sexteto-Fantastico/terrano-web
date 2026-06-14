@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { requirePermission } from "@/lib/route-guard";
+import { fetchAllDepartments } from "@/api/departments";
 import { DataTableFilterMenu } from "@/components/ui/data-table/data-table-filter-menu";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
 import { useMemo } from "react";
@@ -50,6 +51,11 @@ function UserPage() {
   const { data: roles } = useQuery({
     queryKey: ["roles"],
     queryFn: () => fetchRoles({}),
+  });
+
+  const { data: departments } = useQuery({
+    queryKey: ["departments"],
+    queryFn: () => fetchAllDepartments(),
   });
 
   const { data, isLoading } = useQuery<PaginatedData<User>>({
@@ -135,8 +141,8 @@ function UserPage() {
   );
 
   const userFilterConfig = useMemo(
-    () => getUserFilterConfig(roles?.result),
-    [roles]
+    () => getUserFilterConfig(roles?.result, departments),
+    [roles, departments]
   );
 
   const { table } = useDataTable({

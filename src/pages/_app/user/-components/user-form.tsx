@@ -1,5 +1,5 @@
 import type { FormEvent } from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useCreateView } from "@/components/views/create-view";
 import { Field, FieldLabel, FieldSet } from "@/components/ui/field";
@@ -9,12 +9,15 @@ import {
   NativeSelectOption,
 } from "@/components/ui/native-select";
 import { fetchRoles } from "@/api/roles";
+import { fetchAllDepartments } from "@/api/departments";
 
 type UserFormValues = {
   name: string;
   email: string;
   username: string;
   roleId: number;
+  departmentId: number;
+  password?: string;
   cpf?: string;
   phone?: string;
 };
@@ -22,12 +25,16 @@ type UserFormValues = {
 interface UserFormProps {
   initialValues?: Partial<UserFormValues>;
   initialRoleId?: number;
+  initialDepartmentId?: number;
+  showPassword?: boolean;
   onSubmit: (values: UserFormValues) => Promise<void>;
 }
 
 export function UserForm({
   initialValues = {},
   initialRoleId,
+  initialDepartmentId,
+  showPassword,
   onSubmit,
 }: UserFormProps) {
   const { setIsSaving } = useCreateView();
@@ -35,6 +42,8 @@ export function UserForm({
   const [email, setEmail] = useState(initialValues.email ?? "");
   const [username, setUsername] = useState(initialValues.username ?? "");
   const [roleId, setRoleId] = useState<number>(initialRoleId ?? 0);
+  const [departmentId, setDepartmentId] = useState<number>(initialDepartmentId ?? 0);
+  const [password, setPassword] = useState("");
   const [cpf, setCpf] = useState(initialValues.cpf ?? "");
   const [phone, setPhone] = useState(initialValues.phone ?? "");
 
@@ -43,19 +52,10 @@ export function UserForm({
     queryFn: () => fetchRoles({}),
   });
 
-  useEffect(() => {
-    setName(initialValues.name ?? "");
-    setEmail(initialValues.email ?? "");
-    setUsername(initialValues.username ?? "");
-    setCpf(initialValues.cpf ?? "");
-    setPhone(initialValues.phone ?? "");
-  }, [initialValues]);
-
-  useEffect(() => {
-    if (initialRoleId !== undefined) {
-      setRoleId(initialRoleId);
-    }
-  }, [initialRoleId]);
+  const { data: departments } = useQuery({
+    queryKey: ["departments"],
+    queryFn: () => fetchAllDepartments(),
+  });
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -68,6 +68,8 @@ export function UserForm({
         email: email.trim(),
         username: username.trim(),
         roleId,
+        departmentId,
+        ...(showPassword && { password }),
         cpf: cpf.trim() || undefined,
         phone: phone.trim() || undefined,
       });
@@ -136,6 +138,38 @@ export function UserForm({
             ))}
           </NativeSelect>
         </Field>
+        <Field>
+          <FieldLabel htmlFor="user-department">Departamento</FieldLabel>
+          <NativeSelect
+            id="user-department"
+            value={departmentId}
+            onChange={(event) => setDepartmentId(Number(event.target.value))}
+            required
+          >
+            <NativeSelectOption value={0} disabled>
+              Selecione um departamento
+            </NativeSelectOption>
+            {departments?.map((dept) => (
+              <NativeSelectOption key={dept.id} value={dept.id}>
+                {dept.name}
+              </NativeSelectOption>
+            ))}
+          </NativeSelect>
+        </Field>
+        {showPassword && (
+          <Field>
+            <FieldLabel htmlFor="user-password">Senha temporária</FieldLabel>
+            <Input
+              id="user-password"
+              name="password"
+              type="password"
+              placeholder="Senha inicial do usuário"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              required
+            />
+          </Field>
+        )}
         <Field>
           <FieldLabel htmlFor="user-cpf">CPF</FieldLabel>
           <Input

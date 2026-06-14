@@ -16,8 +16,8 @@ import { Route as AuthUnauthorizedRouteImport } from './pages/_auth/unauthorized
 import { Route as AuthSignInRouteImport } from './pages/_auth/sign-in'
 import { Route as AuthResetPasswordRouteImport } from './pages/_auth/reset-password'
 import { Route as AuthForgotPasswordRouteImport } from './pages/_auth/forgot-password'
+import { Route as AuthDefinePasswordRouteImport } from './pages/_auth/define-password'
 import { Route as AuthCheckEmailRouteImport } from './pages/_auth/check-email'
-import { Route as AppDefinePasswordRouteImport } from './pages/_app/define-password'
 import { Route as AppDashboardRouteImport } from './pages/_app/dashboard'
 import { Route as AppUserIndexRouteImport } from './pages/_app/user/index'
 import { Route as AppUnitIndexRouteImport } from './pages/_app/unit/index'
@@ -93,15 +93,15 @@ const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
   path: '/forgot-password',
   getParentRoute: () => AuthLayoutRoute,
 } as any)
+const AuthDefinePasswordRoute = AuthDefinePasswordRouteImport.update({
+  id: '/define-password',
+  path: '/define-password',
+  getParentRoute: () => AuthLayoutRoute,
+} as any)
 const AuthCheckEmailRoute = AuthCheckEmailRouteImport.update({
   id: '/check-email',
   path: '/check-email',
   getParentRoute: () => AuthLayoutRoute,
-} as any)
-const AppDefinePasswordRoute = AppDefinePasswordRouteImport.update({
-  id: '/define-password',
-  path: '/define-password',
-  getParentRoute: () => AppLayoutRoute,
 } as any)
 const AppDashboardRoute = AppDashboardRouteImport.update({
   id: '/dashboard',
@@ -314,8 +314,8 @@ const AppAccessProfileEditRoute = AppAccessProfileEditRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/dashboard': typeof AppDashboardRoute
-  '/define-password': typeof AppDefinePasswordRoute
   '/check-email': typeof AuthCheckEmailRoute
+  '/define-password': typeof AuthDefinePasswordRoute
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
@@ -364,8 +364,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof AppIndexRoute
   '/dashboard': typeof AppDashboardRoute
-  '/define-password': typeof AppDefinePasswordRoute
   '/check-email': typeof AuthCheckEmailRoute
+  '/define-password': typeof AuthDefinePasswordRoute
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
@@ -416,8 +416,8 @@ export interface FileRoutesById {
   '/_app': typeof AppLayoutRouteWithChildren
   '/_auth': typeof AuthLayoutRouteWithChildren
   '/_app/dashboard': typeof AppDashboardRoute
-  '/_app/define-password': typeof AppDefinePasswordRoute
   '/_auth/check-email': typeof AuthCheckEmailRoute
+  '/_auth/define-password': typeof AuthDefinePasswordRoute
   '/_auth/forgot-password': typeof AuthForgotPasswordRoute
   '/_auth/reset-password': typeof AuthResetPasswordRoute
   '/_auth/sign-in': typeof AuthSignInRoute
@@ -469,8 +469,8 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/dashboard'
-    | '/define-password'
     | '/check-email'
+    | '/define-password'
     | '/forgot-password'
     | '/reset-password'
     | '/sign-in'
@@ -519,8 +519,8 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/dashboard'
-    | '/define-password'
     | '/check-email'
+    | '/define-password'
     | '/forgot-password'
     | '/reset-password'
     | '/sign-in'
@@ -570,8 +570,8 @@ export interface FileRouteTypes {
     | '/_app'
     | '/_auth'
     | '/_app/dashboard'
-    | '/_app/define-password'
     | '/_auth/check-email'
+    | '/_auth/define-password'
     | '/_auth/forgot-password'
     | '/_auth/reset-password'
     | '/_auth/sign-in'
@@ -675,19 +675,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthForgotPasswordRouteImport
       parentRoute: typeof AuthLayoutRoute
     }
+    '/_auth/define-password': {
+      id: '/_auth/define-password'
+      path: '/define-password'
+      fullPath: '/define-password'
+      preLoaderRoute: typeof AuthDefinePasswordRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
     '/_auth/check-email': {
       id: '/_auth/check-email'
       path: '/check-email'
       fullPath: '/check-email'
       preLoaderRoute: typeof AuthCheckEmailRouteImport
       parentRoute: typeof AuthLayoutRoute
-    }
-    '/_app/define-password': {
-      id: '/_app/define-password'
-      path: '/define-password'
-      fullPath: '/define-password'
-      preLoaderRoute: typeof AppDefinePasswordRouteImport
-      parentRoute: typeof AppLayoutRoute
     }
     '/_app/dashboard': {
       id: '/_app/dashboard'
@@ -981,7 +981,6 @@ declare module '@tanstack/react-router' {
 
 interface AppLayoutRouteChildren {
   AppDashboardRoute: typeof AppDashboardRoute
-  AppDefinePasswordRoute: typeof AppDefinePasswordRoute
   AppIndexRoute: typeof AppIndexRoute
   AppAccessProfileEditRoute: typeof AppAccessProfileEditRoute
   AppAccessProfileNewRoute: typeof AppAccessProfileNewRoute
@@ -1027,7 +1026,6 @@ interface AppLayoutRouteChildren {
 
 const AppLayoutRouteChildren: AppLayoutRouteChildren = {
   AppDashboardRoute: AppDashboardRoute,
-  AppDefinePasswordRoute: AppDefinePasswordRoute,
   AppIndexRoute: AppIndexRoute,
   AppAccessProfileEditRoute: AppAccessProfileEditRoute,
   AppAccessProfileNewRoute: AppAccessProfileNewRoute,
@@ -1077,6 +1075,7 @@ const AppLayoutRouteWithChildren = AppLayoutRoute._addFileChildren(
 
 interface AuthLayoutRouteChildren {
   AuthCheckEmailRoute: typeof AuthCheckEmailRoute
+  AuthDefinePasswordRoute: typeof AuthDefinePasswordRoute
   AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
   AuthResetPasswordRoute: typeof AuthResetPasswordRoute
   AuthSignInRoute: typeof AuthSignInRoute
@@ -1085,6 +1084,7 @@ interface AuthLayoutRouteChildren {
 
 const AuthLayoutRouteChildren: AuthLayoutRouteChildren = {
   AuthCheckEmailRoute: AuthCheckEmailRoute,
+  AuthDefinePasswordRoute: AuthDefinePasswordRoute,
   AuthForgotPasswordRoute: AuthForgotPasswordRoute,
   AuthResetPasswordRoute: AuthResetPasswordRoute,
   AuthSignInRoute: AuthSignInRoute,
