@@ -46,6 +46,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
   SidebarRail,
+  SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -71,35 +72,89 @@ const MENU_DATA: MenuGroup[] = [
     title: "Cadastros",
     icon: CircleFadingPlusIcon,
     items: [
-      { title: "Produto", href: "/product", permission: { resource: "PRODUCT", action: "read" } },
-      { title: "Marca", href: "/product-brand", permission: { resource: "PRODUCT_BRAND", action: "read" } },
-      { title: "Categoria", href: "/category", permission: { resource: "PRODUCT_CATEGORY", action: "read" } },
-      { title: "Unidade de Medida", href: "/unit", permission: { resource: "MEASUREMENT_UNIT", action: "read" } },
-      { title: "Estoque", href: "/stock-location", permission: { resource: "STOCK_LOCATION", action: "read" } },
-      { title: "Fornecedor", href: "/supplier", permission: { resource: "SUPPLIER", action: "read" } },
-      { title: "Departamento", href: "/department", permission: { resource: "DEPARTMENT", action: "read" } }
+      {
+        title: "Produto",
+        href: "/product",
+        permission: { resource: "PRODUCT", action: "read" },
+      },
+      {
+        title: "Marca",
+        href: "/product-brand",
+        permission: { resource: "PRODUCT_BRAND", action: "read" },
+      },
+      {
+        title: "Categoria",
+        href: "/category",
+        permission: { resource: "PRODUCT_CATEGORY", action: "read" },
+      },
+      {
+        title: "Unidade de Medida",
+        href: "/unit",
+        permission: { resource: "MEASUREMENT_UNIT", action: "read" },
+      },
+      {
+        title: "Estoque",
+        href: "/stock-location",
+        permission: { resource: "STOCK_LOCATION", action: "read" },
+      },
+      {
+        title: "Fornecedor",
+        href: "/supplier",
+        permission: { resource: "SUPPLIER", action: "read" },
+      },
+      {
+        title: "Departamento",
+        href: "/department",
+        permission: { resource: "DEPARTMENT", action: "read" },
+      },
     ],
   },
   {
     title: "Transações",
     icon: TrendingUpIcon,
     items: [
-      { title: "Compra", href: "/purchase", permission: { resource: "PURCHASE", action: "read" } },
-      { title: "Entrada de Estoque", href: "/stock-in", permission: { resource: "MOVEMENT_ENTRY", action: "read" } },
-      { title: "Saída de Estoque", href: "/stock-out", permission: { resource: "MOVEMENT_EXIT", action: "read" } },
+      {
+        title: "Compra",
+        href: "/purchase",
+        permission: { resource: "PURCHASE", action: "read" },
+      },
+      {
+        title: "Entrada de Estoque",
+        href: "/stock-in",
+        permission: { resource: "MOVEMENT_ENTRY", action: "read" },
+      },
+      {
+        title: "Saída de Estoque",
+        href: "/stock-out",
+        permission: { resource: "MOVEMENT_EXIT", action: "read" },
+      },
     ],
   },
   {
     title: "Requisições",
     icon: ArrowRightLeftIcon,
-    items: [{ title: "Solicitação de Material", href: "/stock-requisition", permission: { resource: "MATERIAL_REQUESTER", action: "read" } }],
+    items: [
+      {
+        title: "Solicitação de Material",
+        href: "/stock-requisition",
+        permission: { resource: "MATERIAL_REQUESTER", action: "read" },
+      },
+    ],
   },
   {
     title: "Relatórios",
     icon: FileTextIcon,
     items: [
-      { title: "Dashboard", href: "/dashboard", permission: { resource: "DASHBOARD", action: "read" } },
-      { title: "Posicionamento de estoque", href: "/stock-positioning", permission: { resource: "STOCK_POSITION", action: "read" } },
+      {
+        title: "Dashboard",
+        href: "/dashboard",
+        permission: { resource: "DASHBOARD", action: "read" },
+      },
+      {
+        title: "Posicionamento de estoque",
+        href: "/stock-positioning",
+        permission: { resource: "STOCK_POSITION", action: "read" },
+      },
       { title: "Rastreamento de Produto", href: "/product-tracking" },
     ],
   },
@@ -107,14 +162,28 @@ const MENU_DATA: MenuGroup[] = [
     title: "Controle de Acesso",
     icon: UserCogIcon,
     items: [
-      { title: "Usuário", href: "/user", permission: { resource: "USER", action: "read" } },
-      { title: "Perfil de Acesso", href: "/access-profile", permission: { resource: "USER", action: "read" } },
+      {
+        title: "Usuário",
+        href: "/user",
+        permission: { resource: "USER", action: "read" },
+      },
+      {
+        title: "Perfil de Acesso",
+        href: "/access-profile",
+        permission: { resource: "USER", action: "read" },
+      },
     ],
   },
   {
     title: "Notificações",
     icon: BadgeAlertIcon,
-    items: [{ title: "Alertas", href: "/alert", permission: { resource: "ALERT", action: "read" } }],
+    items: [
+      {
+        title: "Alertas",
+        href: "/alert",
+        permission: { resource: "ALERT", action: "read" },
+      },
+    ],
   },
 ];
 
@@ -155,14 +224,14 @@ function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   };
 
   const visibleGroups = React.useMemo(() => {
-    return MENU_DATA
-      .map((group) => ({
-        ...group,
-        items: group.items.filter((item) =>
-          !item.permission || canAccess(item.permission.resource, item.permission.action)
-        ),
-      }))
-      .filter((group) => group.items.length > 0);
+    return MENU_DATA.map((group) => ({
+      ...group,
+      items: group.items.filter(
+        (item) =>
+          !item.permission ||
+          canAccess(item.permission.resource, item.permission.action)
+      ),
+    })).filter((group) => group.items.length > 0);
   }, [canAccess]);
 
   const filteredGroups = React.useMemo(() => {
@@ -172,44 +241,46 @@ function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
     const lowerFilter = filter.toLowerCase();
 
-    return visibleGroups.map((group) => {
-      const matchesGroup = group.title.toLowerCase().includes(lowerFilter);
-      const filteredItems = group.items.filter((item) =>
-        item.title.toLowerCase().includes(lowerFilter)
-      );
+    return visibleGroups
+      .map((group) => {
+        const matchesGroup = group.title.toLowerCase().includes(lowerFilter);
+        const filteredItems = group.items.filter((item) =>
+          item.title.toLowerCase().includes(lowerFilter)
+        );
 
-      if (matchesGroup) {
-        return { ...group, items: group.items };
-      }
+        if (matchesGroup) {
+          return { ...group, items: group.items };
+        }
 
-      if (filteredItems.length > 0) {
-        return { ...group, items: filteredItems };
-      }
+        if (filteredItems.length > 0) {
+          return { ...group, items: filteredItems };
+        }
 
-      return null;
-    }).filter((group): group is MenuGroup => group !== null);
+        return null;
+      })
+      .filter((group): group is MenuGroup => group !== null);
   }, [filter, visibleGroups]);
 
-  const serverBaseUrl = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:3000';
+  const serverBaseUrl =
+    import.meta.env.VITE_API_BASE_URL?.replace("/api", "") ||
+    "http://localhost:3000";
 
-  const avatarUrl = user?.profilePicture 
-    ? `${serverBaseUrl}${user.profilePicture}` 
+  const avatarUrl = user?.profilePicture
+    ? `${serverBaseUrl}${user.profilePicture}`
     : undefined;
 
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader className="relative flex h-16 items-center justify-center overflow-hidden">
-        <Link to="/">
-          <span className="text-2xl font-extrabold whitespace-nowrap transition-all duration-200 ease-linear group-data-[collapsible=icon]:scale-0 group-data-[collapsible=icon]:opacity-0">
-          Terrano
-        </span>
-        <span className="absolute text-3xl font-extrabold transition-all duration-200 ease-linear scale-0 opacity-0 group-data-[collapsible=icon]:scale-100 group-data-[collapsible=icon]:opacity-100">
-          T
-        </span>
-        </Link>
-      </SidebarHeader>
-      <SidebarContent className="px-2">
-        <div className="p-2 transition-all duration-200 ease-linear group-data-[collapsible=icon]:hidden overflow-hidden">
+      <SidebarHeader className="flex flex-col items-stretch justify-center gap-1 p-2">
+        <div className="flex h-12 items-center justify-center">
+          <Link to="/">
+            <span className="text-2xl font-extrabold whitespace-nowrap transition-all duration-200 ease-linear group-data-[collapsible=icon]:scale-0 group-data-[collapsible=icon]:opacity-0">
+              Terrano
+            </span>
+          </Link>
+          <SidebarTrigger className="absolute scale-0 opacity-0 transition-all duration-200 ease-linear group-data-[collapsible=icon]:scale-100 group-data-[collapsible=icon]:opacity-100" />
+        </div>
+        <div className="overflow-hidden p-1 transition-all duration-200 ease-linear group-data-[collapsible=icon]:hidden">
           <InputGroup>
             <InputGroupAddon>
               <SearchIcon className="size-4" />
@@ -221,6 +292,8 @@ function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             />
           </InputGroup>
         </div>
+      </SidebarHeader>
+      <SidebarContent className="px-2">
         <SidebarMenu>
           {filteredGroups.map((group) => (
             <Collapsible
@@ -233,19 +306,24 @@ function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             >
               <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
-                  <SidebarMenuButton 
+                  <SidebarMenuButton
                     tooltip={group.title}
                     onClick={(e) => {
                       if (!open) {
                         e.preventDefault();
                         setOpen(true);
-                        setOpenGroups((prev) => ({ ...prev, [group.title]: true }));
+                        setOpenGroups((prev) => ({
+                          ...prev,
+                          [group.title]: true,
+                        }));
                       }
                     }}
                   >
                     <group.icon className="shrink-0" />
-                    <span className="truncate transition-opacity duration-200 ease-linear group-data-[collapsible=icon]:opacity-0">{group.title}</span>
-                    <ChevronRight className="ml-auto shrink-0 transition-all duration-200 ease-linear group-data-[state=open]/collapsible:rotate-90 group-data-[collapsible=icon]:opacity-0" />
+                    <span className="truncate transition-opacity duration-200 ease-linear group-data-[collapsible=icon]:opacity-0">
+                      {group.title}
+                    </span>
+                    <ChevronRight className="ml-auto shrink-0 transition-all duration-200 ease-linear group-data-[collapsible=icon]:opacity-0 group-data-[state=open]/collapsible:rotate-90" />
                   </SidebarMenuButton>
                 </CollapsibleTrigger>
                 <CollapsibleContent>
@@ -282,9 +360,9 @@ function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <DropdownMenuTrigger asChild>
                   <button
                     disabled={isUploading || isLoggingOut}
-                    className="w-full flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm font-medium cursor-pointer hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground disabled:opacity-50 disabled:cursor-not-allowed group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:justify-center"
+                    className="flex w-full cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm font-medium transition-colors group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground disabled:cursor-not-allowed disabled:opacity-50 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                   >
-                    <div className="relative h-8 w-8 rounded-lg overflow-hidden shrink-0">
+                    <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-lg">
                       <Avatar className="h-8 w-8 rounded-lg">
                         <AvatarImage
                           src={avatarUrl}
@@ -321,13 +399,19 @@ function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <DropdownMenuLabel className="p-0 font-normal">
                     <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                       <Avatar className="h-8 w-8 rounded-lg">
-                        <AvatarImage src={avatarUrl} alt={user?.name} className="object-cover" />
+                        <AvatarImage
+                          src={avatarUrl}
+                          alt={user?.name}
+                          className="object-cover"
+                        />
                         <AvatarFallback className="rounded-lg text-xs font-semibold">
                           {user?.name?.charAt(0).toUpperCase() || "U"}
                         </AvatarFallback>
                       </Avatar>
                       <div className="grid flex-1 text-left text-sm leading-tight">
-                        <span className="truncate font-medium">{user?.name}</span>
+                        <span className="truncate font-medium">
+                          {user?.name}
+                        </span>
                         <span className="truncate text-xs text-muted-foreground">
                           {user?.email}
                         </span>
@@ -335,7 +419,10 @@ function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleAvatarClick} disabled={isUploading}>
+                  <DropdownMenuItem
+                    onClick={handleAvatarClick}
+                    disabled={isUploading}
+                  >
                     <UploadCloudIcon className="mr-2 h-4 w-4" />
                     <span>Alterar foto de perfil</span>
                   </DropdownMenuItem>
