@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { requirePermission } from "@/lib/route-guard";
 import { type PaginatedData } from "@/components/ui/data-table/@types";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
 import { useMemo } from "react";
@@ -29,6 +30,7 @@ import { getAccessProfileTableColumns } from "./-components/access-profile-table
 
 export const Route = createFileRoute("/_app/access-profile/")({
   component: AccessProfilePage,
+  beforeLoad: requirePermission("USER", "read"),
   validateSearch: (): RoleFilters => ({}),
   head: () => ({
     meta: [{ title: "Perfis de Acesso" }],

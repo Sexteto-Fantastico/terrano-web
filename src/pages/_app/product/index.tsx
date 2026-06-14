@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { requirePermission } from "@/lib/route-guard";
 import { DataTableFilterMenu } from "@/components/ui/data-table/data-table-filter-menu";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
 import { useMemo, useState } from "react";
@@ -30,6 +31,7 @@ import { getProductFilterConfig } from "./-components/product-filter-config";
 
 export const Route = createFileRoute("/_app/product/")({
   component: ProductPage,
+  beforeLoad: requirePermission("PRODUCT", "read"),
   validateSearch: () => ({}) as ProductFilters,
   head: () => ({
     meta: [

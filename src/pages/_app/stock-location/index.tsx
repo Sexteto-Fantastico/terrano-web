@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { requirePermission } from "@/lib/route-guard";
 import { useMemo } from "react";
 import {
   keepPreviousData,
@@ -28,6 +29,7 @@ import { getStockLocationTableColumns } from "./-components/stock-location-table
 
 export const Route = createFileRoute("/_app/stock-location/")({
   component: StockLocationPage,
+  beforeLoad: requirePermission("STOCK_LOCATION", "read"),
   validateSearch: (): StockLocationFilters => ({}),
   head: () => ({
     meta: [

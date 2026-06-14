@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { requirePermission } from "@/lib/route-guard";
 import { DataTableFilterMenu } from "@/components/ui/data-table/data-table-filter-menu";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
 import { useMemo } from "react";
@@ -29,6 +30,7 @@ import { getPurchaseFilterConfig } from "./-components/purchase-filter-config";
 
 export const Route = createFileRoute("/_app/purchase/")({
   component: PurchasePage,
+  beforeLoad: requirePermission("PURCHASE", "read"),
   validateSearch: () => ({}) as PurchaseFilters,
   head: () => ({
     meta: [

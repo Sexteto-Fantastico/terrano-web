@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { requirePermission } from "@/lib/route-guard";
 import { useQuery } from "@tanstack/react-query";
 import { DataView } from "@/components/views/data-view";
 import { fetchHomeSummary, type HomeResponse } from "@/api/home";
@@ -12,6 +13,7 @@ import { InventoryLevels } from "./-components/inventory-levels";
 
 export const Route = createFileRoute("/_app/dashboard")({
   component: RouteComponent,
+  beforeLoad: requirePermission("DASHBOARD", "read"),
   head: () => ({
     meta: [
       {

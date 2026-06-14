@@ -39,7 +39,7 @@ export const AuthContext = createContext<AuthContextValue>({
 
 export type AuthState = Pick<
   AuthContextValue,
-  "token" | "user" | "mustResetPassword" | "logout"
+  "token" | "user" | "mustResetPassword" | "logout" | "can"
 >;
 
 export function AuthProvider({

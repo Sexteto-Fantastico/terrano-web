@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { requirePermission } from "@/lib/route-guard";
 import { useMemo, useState, useCallback } from "react";
 import {
   keepPreviousData,
@@ -32,6 +33,7 @@ import { StockRequisitionHistoryDialog } from "./-components/stock-requisition-h
 
 export const Route = createFileRoute("/_app/stock-requisition/")({
   component: StockRequisitionPage,
+  beforeLoad: requirePermission("MATERIAL_REQUESTER", "read"),
 validateSearch: (search: Record<string, unknown>): StockRequisitionFilters => ({
   pageIndex: search.pageIndex ? Number(search.pageIndex) : undefined,
   pageSize: search.pageSize ? Number(search.pageSize) : undefined,
