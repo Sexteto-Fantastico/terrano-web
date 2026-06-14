@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './pages/__root'
 import { Route as AppLayoutRouteImport } from './pages/_app/layout'
 import { Route as AppIndexRouteImport } from './pages/_app/index'
 import { Route as AppDefinePasswordRouteImport } from './pages/_app/define-password'
+import { Route as AppDashboardRouteImport } from './pages/_app/dashboard'
 import { Route as AppUserIndexRouteImport } from './pages/_app/user/index'
 import { Route as AppUnitIndexRouteImport } from './pages/_app/unit/index'
 import { Route as AppSupplierIndexRouteImport } from './pages/_app/supplier/index'
@@ -24,6 +25,7 @@ import { Route as AppProductIndexRouteImport } from './pages/_app/product/index'
 import { Route as AppProductBrandIndexRouteImport } from './pages/_app/product-brand/index'
 import { Route as AppDepartmentIndexRouteImport } from './pages/_app/department/index'
 import { Route as AppCategoryIndexRouteImport } from './pages/_app/category/index'
+import { Route as AppAccessProfileIndexRouteImport } from './pages/_app/access-profile/index'
 import { Route as AppUserNewRouteImport } from './pages/_app/user/new'
 import { Route as AppUserEditRouteImport } from './pages/_app/user/edit'
 import { Route as AppUnitNewRouteImport } from './pages/_app/unit/new'
@@ -45,6 +47,8 @@ import { Route as AppDepartmentNewRouteImport } from './pages/_app/department/ne
 import { Route as AppDepartmentEditRouteImport } from './pages/_app/department/edit'
 import { Route as AppCategoryNewRouteImport } from './pages/_app/category/new'
 import { Route as AppCategoryEditRouteImport } from './pages/_app/category/edit'
+import { Route as AppAccessProfileNewRouteImport } from './pages/_app/access-profile/new'
+import { Route as AppAccessProfileEditRouteImport } from './pages/_app/access-profile/edit'
 
 const AppLayoutRoute = AppLayoutRouteImport.update({
   id: '/_app',
@@ -58,6 +62,11 @@ const AppIndexRoute = AppIndexRouteImport.update({
 const AppDefinePasswordRoute = AppDefinePasswordRouteImport.update({
   id: '/define-password',
   path: '/define-password',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
+const AppDashboardRoute = AppDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => AppLayoutRoute,
 } as any)
 const AppUserIndexRoute = AppUserIndexRouteImport.update({
@@ -120,6 +129,11 @@ const AppDepartmentIndexRoute = AppDepartmentIndexRouteImport.update({
 const AppCategoryIndexRoute = AppCategoryIndexRouteImport.update({
   id: '/category/',
   path: '/category/',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
+const AppAccessProfileIndexRoute = AppAccessProfileIndexRouteImport.update({
+  id: '/access-profile/',
+  path: '/access-profile/',
   getParentRoute: () => AppLayoutRoute,
 } as any)
 const AppUserNewRoute = AppUserNewRouteImport.update({
@@ -227,10 +241,28 @@ const AppCategoryEditRoute = AppCategoryEditRouteImport.update({
   path: '/category/edit',
   getParentRoute: () => AppLayoutRoute,
 } as any)
+const AppAccessProfileNewRoute = AppAccessProfileNewRouteImport.update({
+  id: '/access-profile/new',
+  path: '/access-profile/new',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
+const AppAccessProfileEditRoute = AppAccessProfileEditRouteImport.update({
+  id: '/access-profile/edit',
+  path: '/access-profile/edit',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
+  '/dashboard': typeof AppDashboardRoute
   '/define-password': typeof AppDefinePasswordRoute
+  '/check-email': typeof AuthCheckEmailRoute
+  '/forgot-password': typeof AuthForgotPasswordRoute
+  '/reset-password': typeof AuthResetPasswordRoute
+  '/sign-in': typeof AuthSignInRoute
+  '/unauthorized': typeof AuthUnauthorizedRoute
+  '/access-profile/edit': typeof AppAccessProfileEditRoute
+  '/access-profile/new': typeof AppAccessProfileNewRoute
   '/category/edit': typeof AppCategoryEditRoute
   '/category/new': typeof AppCategoryNewRoute
   '/department/edit': typeof AppDepartmentEditRoute
@@ -252,6 +284,7 @@ export interface FileRoutesByFullPath {
   '/unit/new': typeof AppUnitNewRoute
   '/user/edit': typeof AppUserEditRoute
   '/user/new': typeof AppUserNewRoute
+  '/access-profile/': typeof AppAccessProfileIndexRoute
   '/category/': typeof AppCategoryIndexRoute
   '/department/': typeof AppDepartmentIndexRoute
   '/product-brand/': typeof AppProductBrandIndexRoute
@@ -266,8 +299,16 @@ export interface FileRoutesByFullPath {
   '/user/': typeof AppUserIndexRoute
 }
 export interface FileRoutesByTo {
-  '/define-password': typeof AppDefinePasswordRoute
   '/': typeof AppIndexRoute
+  '/dashboard': typeof AppDashboardRoute
+  '/define-password': typeof AppDefinePasswordRoute
+  '/check-email': typeof AuthCheckEmailRoute
+  '/forgot-password': typeof AuthForgotPasswordRoute
+  '/reset-password': typeof AuthResetPasswordRoute
+  '/sign-in': typeof AuthSignInRoute
+  '/unauthorized': typeof AuthUnauthorizedRoute
+  '/access-profile/edit': typeof AppAccessProfileEditRoute
+  '/access-profile/new': typeof AppAccessProfileNewRoute
   '/category/edit': typeof AppCategoryEditRoute
   '/category/new': typeof AppCategoryNewRoute
   '/department/edit': typeof AppDepartmentEditRoute
@@ -289,6 +330,7 @@ export interface FileRoutesByTo {
   '/unit/new': typeof AppUnitNewRoute
   '/user/edit': typeof AppUserEditRoute
   '/user/new': typeof AppUserNewRoute
+  '/access-profile': typeof AppAccessProfileIndexRoute
   '/category': typeof AppCategoryIndexRoute
   '/department': typeof AppDepartmentIndexRoute
   '/product-brand': typeof AppProductBrandIndexRoute
@@ -305,8 +347,12 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppLayoutRouteWithChildren
+  '/_auth': typeof AuthLayoutRouteWithChildren
+  '/_app/dashboard': typeof AppDashboardRoute
   '/_app/define-password': typeof AppDefinePasswordRoute
   '/_app/': typeof AppIndexRoute
+  '/_app/access-profile/edit': typeof AppAccessProfileEditRoute
+  '/_app/access-profile/new': typeof AppAccessProfileNewRoute
   '/_app/category/edit': typeof AppCategoryEditRoute
   '/_app/category/new': typeof AppCategoryNewRoute
   '/_app/department/edit': typeof AppDepartmentEditRoute
@@ -328,6 +374,7 @@ export interface FileRoutesById {
   '/_app/unit/new': typeof AppUnitNewRoute
   '/_app/user/edit': typeof AppUserEditRoute
   '/_app/user/new': typeof AppUserNewRoute
+  '/_app/access-profile/': typeof AppAccessProfileIndexRoute
   '/_app/category/': typeof AppCategoryIndexRoute
   '/_app/department/': typeof AppDepartmentIndexRoute
   '/_app/product-brand/': typeof AppProductBrandIndexRoute
@@ -345,7 +392,15 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/dashboard'
     | '/define-password'
+    | '/check-email'
+    | '/forgot-password'
+    | '/reset-password'
+    | '/sign-in'
+    | '/unauthorized'
+    | '/access-profile/edit'
+    | '/access-profile/new'
     | '/category/edit'
     | '/category/new'
     | '/department/edit'
@@ -367,6 +422,7 @@ export interface FileRouteTypes {
     | '/unit/new'
     | '/user/edit'
     | '/user/new'
+    | '/access-profile/'
     | '/category/'
     | '/department/'
     | '/product-brand/'
@@ -381,8 +437,16 @@ export interface FileRouteTypes {
     | '/user/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/define-password'
     | '/'
+    | '/dashboard'
+    | '/define-password'
+    | '/check-email'
+    | '/forgot-password'
+    | '/reset-password'
+    | '/sign-in'
+    | '/unauthorized'
+    | '/access-profile/edit'
+    | '/access-profile/new'
     | '/category/edit'
     | '/category/new'
     | '/department/edit'
@@ -404,6 +468,7 @@ export interface FileRouteTypes {
     | '/unit/new'
     | '/user/edit'
     | '/user/new'
+    | '/access-profile'
     | '/category'
     | '/department'
     | '/product-brand'
@@ -419,8 +484,12 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_app'
+    | '/_auth'
+    | '/_app/dashboard'
     | '/_app/define-password'
     | '/_app/'
+    | '/_app/access-profile/edit'
+    | '/_app/access-profile/new'
     | '/_app/category/edit'
     | '/_app/category/new'
     | '/_app/department/edit'
@@ -442,6 +511,7 @@ export interface FileRouteTypes {
     | '/_app/unit/new'
     | '/_app/user/edit'
     | '/_app/user/new'
+    | '/_app/access-profile/'
     | '/_app/category/'
     | '/_app/department/'
     | '/_app/product-brand/'
@@ -481,6 +551,13 @@ declare module '@tanstack/react-router' {
       path: '/define-password'
       fullPath: '/define-password'
       preLoaderRoute: typeof AppDefinePasswordRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
+    '/_app/dashboard': {
+      id: '/_app/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AppDashboardRouteImport
       parentRoute: typeof AppLayoutRoute
     }
     '/_app/user/': {
@@ -565,6 +642,13 @@ declare module '@tanstack/react-router' {
       path: '/category'
       fullPath: '/category/'
       preLoaderRoute: typeof AppCategoryIndexRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
+    '/_app/access-profile/': {
+      id: '/_app/access-profile/'
+      path: '/access-profile'
+      fullPath: '/access-profile/'
+      preLoaderRoute: typeof AppAccessProfileIndexRouteImport
       parentRoute: typeof AppLayoutRoute
     }
     '/_app/user/new': {
@@ -714,12 +798,29 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCategoryEditRouteImport
       parentRoute: typeof AppLayoutRoute
     }
+    '/_app/access-profile/new': {
+      id: '/_app/access-profile/new'
+      path: '/access-profile/new'
+      fullPath: '/access-profile/new'
+      preLoaderRoute: typeof AppAccessProfileNewRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
+    '/_app/access-profile/edit': {
+      id: '/_app/access-profile/edit'
+      path: '/access-profile/edit'
+      fullPath: '/access-profile/edit'
+      preLoaderRoute: typeof AppAccessProfileEditRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
   }
 }
 
 interface AppLayoutRouteChildren {
+  AppDashboardRoute: typeof AppDashboardRoute
   AppDefinePasswordRoute: typeof AppDefinePasswordRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppAccessProfileEditRoute: typeof AppAccessProfileEditRoute
+  AppAccessProfileNewRoute: typeof AppAccessProfileNewRoute
   AppCategoryEditRoute: typeof AppCategoryEditRoute
   AppCategoryNewRoute: typeof AppCategoryNewRoute
   AppDepartmentEditRoute: typeof AppDepartmentEditRoute
@@ -741,6 +842,7 @@ interface AppLayoutRouteChildren {
   AppUnitNewRoute: typeof AppUnitNewRoute
   AppUserEditRoute: typeof AppUserEditRoute
   AppUserNewRoute: typeof AppUserNewRoute
+  AppAccessProfileIndexRoute: typeof AppAccessProfileIndexRoute
   AppCategoryIndexRoute: typeof AppCategoryIndexRoute
   AppDepartmentIndexRoute: typeof AppDepartmentIndexRoute
   AppProductBrandIndexRoute: typeof AppProductBrandIndexRoute
@@ -756,8 +858,11 @@ interface AppLayoutRouteChildren {
 }
 
 const AppLayoutRouteChildren: AppLayoutRouteChildren = {
+  AppDashboardRoute: AppDashboardRoute,
   AppDefinePasswordRoute: AppDefinePasswordRoute,
   AppIndexRoute: AppIndexRoute,
+  AppAccessProfileEditRoute: AppAccessProfileEditRoute,
+  AppAccessProfileNewRoute: AppAccessProfileNewRoute,
   AppCategoryEditRoute: AppCategoryEditRoute,
   AppCategoryNewRoute: AppCategoryNewRoute,
   AppDepartmentEditRoute: AppDepartmentEditRoute,
@@ -779,6 +884,7 @@ const AppLayoutRouteChildren: AppLayoutRouteChildren = {
   AppUnitNewRoute: AppUnitNewRoute,
   AppUserEditRoute: AppUserEditRoute,
   AppUserNewRoute: AppUserNewRoute,
+  AppAccessProfileIndexRoute: AppAccessProfileIndexRoute,
   AppCategoryIndexRoute: AppCategoryIndexRoute,
   AppDepartmentIndexRoute: AppDepartmentIndexRoute,
   AppProductBrandIndexRoute: AppProductBrandIndexRoute,

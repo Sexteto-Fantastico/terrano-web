@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { requirePermission } from "@/lib/route-guard";
 import { useQuery } from "@tanstack/react-query";
 import { DataView } from "@/components/views/data-view";
 import { useFilters } from "@/hooks/use-filters";
@@ -43,6 +44,7 @@ import { DataTableToolbar } from "@/components/ui/data-table/data-table-toolbar"
 
 export const Route = createFileRoute("/_app/stock-positioning/")({
   component: StockPositioningPage,
+  beforeLoad: requirePermission("STOCK_POSITION", "read"),
   validateSearch: (search: Record<string, unknown>): StockPositioningFilters => ({
     pageIndex: search.pageIndex ? Number(search.pageIndex) : undefined,
     pageSize: search.pageSize ? Number(search.pageSize) : undefined,

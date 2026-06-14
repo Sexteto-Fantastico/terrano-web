@@ -30,12 +30,14 @@ export type User = {
 type UserQuery = {
   name: string;
   onlyActive: string;
+  roleId: string;
 };
 
 export type CreateUserRequestDTO = {
   name: string;
   email: string;
   username: string;
+  roleId: number;
   phone?: string;
   cpf?: string;
   isActive?: boolean;
@@ -48,6 +50,7 @@ export type UpdateUserRequestDTO = {
   cpf?: string;
   email?: string;
   username?: string;
+  roleId?: number;
   isActive?: boolean;
 };
 export type UserFilters = Filters<UserQuery>;
@@ -87,15 +90,22 @@ export async function restoreUser(id: number): Promise<User> {
   return data;
 }
 
+export async function getMyPermissions(): Promise<
+  Record<string, Array<Record<string, string[]>>>
+> {
+  const { data } = await api.get("/users/me/permissions");
+  return data;
+}
+
 export async function uploadAvatar(userId: number, file: File): Promise<User> {
   const formData = new FormData();
   formData.append("avatar", file);
-  
+
   const { data } = await api.patch<User>(`/users/${userId}/avatar`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
   });
-  
+
   return data;
 }
