@@ -1,38 +1,29 @@
 import type { DataTableFilterConfigItem } from "@/components/ui/data-table/@types";
+import type { Role } from "@/api/users";
 
-export const userFilterConfig: DataTableFilterConfigItem[] = [
-  {
-    id: "name",
-    label: "Nome",
-    variant: "text",
-    placeholder: "Filtrar por nome",
-  },
-  {
-    id: "cpf",
-    label: "CPF",
-    variant: "text",
-    placeholder: "Filtrar por CPF",
-  },
-  {
-    id: "department",
-    label: "Departamento",
-    variant: "select",
-    placeholder: "Selecione um departamento",
-    options: [
-      { label: "TI", value: "TI" },
-      { label: "RH", value: "RH" },
-      { label: "Financeiro", value: "Financeiro" },
-    ],
-  },
-  {
-    id: "role",
-    label: "Perfil",
-    variant: "select",
-    placeholder: "Selecione um perfil",
-    options: [
-      { label: "Admin", value: "Admin" },
-      { label: "User", value: "User" },
-      { label: "Manager", value: "Manager" },
-    ],
-  },
-];
+export function getUserFilterConfig(roles: Role[] = []): DataTableFilterConfigItem[] {
+  return [
+    {
+      id: "name",
+      label: "Nome",
+      variant: "text",
+      placeholder: "Filtrar por nome",
+    },
+    {
+      id: "cpf",
+      label: "CPF",
+      variant: "text",
+      placeholder: "Filtrar por CPF",
+    },
+    {
+      id: "roleId",
+      label: "Perfil",
+      variant: "select",
+      placeholder: "Selecione um perfil",
+      options: roles.map((role) => ({
+        label: role.name,
+        value: String(role.id),
+      })),
+    },
+  ];
+}

@@ -80,6 +80,7 @@ function UserEditPage() {
           cpf: userQuery.data.cpf,
           phone: userQuery.data.phone,
         }}
+        initialRoleId={userQuery.data.role?.id}
         onSubmit={async (values) => {
           await updateMutation.mutateAsync({
             id: userQuery.data.id,

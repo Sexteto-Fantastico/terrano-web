@@ -1,8 +1,8 @@
 import { createContext, useState, useCallback, useEffect } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import { setAuthDependencies } from "../lib/axios";
-import { getUserById, getMyPermissions, type User } from "@/api/users";
-import { jwtDecode, type JwtPayload } from "jwt-decode";
+import { getMe } from "@/api/auth";
+import { getMyPermissions, type User } from "@/api/users";
 import { flattenPermissions, can, type PermissionsMap } from "@/lib/permissions";
 
 const STORAGE_KEY = "terrano_auth_token";
@@ -20,10 +20,6 @@ interface AuthContextValue {
   setMustResetPassword: Dispatch<SetStateAction<boolean>>;
   logout: () => void;
   isLoggingOut: boolean;
-}
-
-interface TerranoJwtPayload extends JwtPayload {
-  id?: number;
 }
 
 export const AuthContext = createContext<AuthContextValue>({
@@ -100,20 +96,14 @@ export function AuthProvider({
   useEffect(() => {
     const fetchUser = async (token: string) => {
       try {
-        const decoded = jwtDecode<TerranoJwtPayload>(token);
-        const userId = decoded.id || decoded.sub;
-        if (userId) {
-          const [user, permissionsData] = await Promise.all([
-            getUserById(Number(userId)),
-            getMyPermissions().catch(() => null),
-          ]);
-          setUserState(user);
-          setPermissionsState(flattenPermissions(permissionsData ?? undefined));
-        } else {
-          logout();
-        }
+        const [user, permissionsData] = await Promise.all([
+          getMe(),
+          getMyPermissions().catch(() => null),
+        ]);
+        setUserState(user);
+        setPermissionsState(flattenPermissions(permissionsData ?? undefined));
       } catch (error) {
-        console.error("Failed to decode token", error);
+        console.error("Failed to fetch user data", error);
         logout();
       }
     };

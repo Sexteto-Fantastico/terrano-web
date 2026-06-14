@@ -8,6 +8,7 @@ import {
   FileTextIcon,
   UserCogIcon,
   BadgeAlertIcon,
+  LayoutDashboardIcon,
   ChevronRight,
   LogOutIcon,
   UploadCloudIcon,
@@ -67,6 +68,13 @@ interface MenuGroup {
 
 const MENU_DATA: MenuGroup[] = [
   {
+    title: "Dashboard",
+    icon: LayoutDashboardIcon,
+    items: [
+      { title: "Dashboard", href: "/dashboard", permission: { resource: "DASHBOARD", action: "read" } },
+    ],
+  },
+  {
     title: "Cadastros",
     icon: CircleFadingPlusIcon,
     items: [
@@ -97,6 +105,7 @@ const MENU_DATA: MenuGroup[] = [
     title: "Relatórios",
     icon: FileTextIcon,
     items: [
+      { title: "Dashboard", href: "/dashboard", permission: { resource: "DASHBOARD", action: "read" } },
       { title: "Posicionamento de estoque", href: "/stock-positioning", permission: { resource: "STOCK_POSITION", action: "read" } },
     ],
   },

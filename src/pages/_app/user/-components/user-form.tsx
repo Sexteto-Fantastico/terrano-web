@@ -1,32 +1,47 @@
 import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useCreateView } from "@/components/views/create-view";
 import { Field, FieldLabel, FieldSet } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@/components/ui/native-select";
+import { fetchRoles } from "@/api/roles";
 
 type UserFormValues = {
   name: string;
   email: string;
   username: string;
+  roleId: number;
   cpf?: string;
   phone?: string;
 };
 
 interface UserFormProps {
   initialValues?: Partial<UserFormValues>;
+  initialRoleId?: number;
   onSubmit: (values: UserFormValues) => Promise<void>;
 }
 
 export function UserForm({
   initialValues = {},
+  initialRoleId,
   onSubmit,
 }: UserFormProps) {
   const { setIsSaving } = useCreateView();
   const [name, setName] = useState(initialValues.name ?? "");
   const [email, setEmail] = useState(initialValues.email ?? "");
   const [username, setUsername] = useState(initialValues.username ?? "");
+  const [roleId, setRoleId] = useState<number>(initialRoleId ?? 0);
   const [cpf, setCpf] = useState(initialValues.cpf ?? "");
   const [phone, setPhone] = useState(initialValues.phone ?? "");
+
+  const { data: roles } = useQuery({
+    queryKey: ["roles"],
+    queryFn: () => fetchRoles({}),
+  });
 
   useEffect(() => {
     setName(initialValues.name ?? "");
@@ -35,6 +50,12 @@ export function UserForm({
     setCpf(initialValues.cpf ?? "");
     setPhone(initialValues.phone ?? "");
   }, [initialValues]);
+
+  useEffect(() => {
+    if (initialRoleId !== undefined) {
+      setRoleId(initialRoleId);
+    }
+  }, [initialRoleId]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -46,6 +67,7 @@ export function UserForm({
         name: name.trim(),
         email: email.trim(),
         username: username.trim(),
+        roleId,
         cpf: cpf.trim() || undefined,
         phone: phone.trim() || undefined,
       });
@@ -95,6 +117,24 @@ export function UserForm({
             onChange={(event) => setUsername(event.target.value)}
             required
           />
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="user-role">Perfil de acesso</FieldLabel>
+          <NativeSelect
+            id="user-role"
+            value={roleId}
+            onChange={(event) => setRoleId(Number(event.target.value))}
+            required
+          >
+            <NativeSelectOption value={0} disabled>
+              Selecione um perfil
+            </NativeSelectOption>
+            {roles?.result?.map((role) => (
+              <NativeSelectOption key={role.id} value={role.id}>
+                {role.name}
+              </NativeSelectOption>
+            ))}
+          </NativeSelect>
         </Field>
         <Field>
           <FieldLabel htmlFor="user-cpf">CPF</FieldLabel>

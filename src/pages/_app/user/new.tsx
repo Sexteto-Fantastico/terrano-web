@@ -27,6 +27,7 @@ function UserNewPage() {
     name: string;
     email: string;
     username: string;
+    roleId: number;
     cpf?: string;
     phone?: string;
   }) {

@@ -1,4 +1,5 @@
 import api from "@/lib/axios";
+import type { User } from "./users";
 
 export type LoginRequestDto = {
   email: string;
@@ -48,4 +49,9 @@ export async function definePassword(
 ): Promise<{ message: string }> {
   const { data: response } = await api.patch("/auth/password", data);
   return response;
+}
+
+export async function getMe(): Promise<User> {
+  const { data } = await api.get<User>("/auth/me");
+  return data;
 }
