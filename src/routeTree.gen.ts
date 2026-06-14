@@ -9,20 +9,14 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './pages/__root'
-import { Route as AuthLayoutRouteImport } from './pages/_auth/layout'
 import { Route as AppLayoutRouteImport } from './pages/_app/layout'
 import { Route as AppIndexRouteImport } from './pages/_app/index'
-import { Route as AuthUnauthorizedRouteImport } from './pages/_auth/unauthorized'
-import { Route as AuthSignInRouteImport } from './pages/_auth/sign-in'
-import { Route as AuthResetPasswordRouteImport } from './pages/_auth/reset-password'
-import { Route as AuthForgotPasswordRouteImport } from './pages/_auth/forgot-password'
-import { Route as AuthCheckEmailRouteImport } from './pages/_auth/check-email'
 import { Route as AppDefinePasswordRouteImport } from './pages/_app/define-password'
 import { Route as AppUserIndexRouteImport } from './pages/_app/user/index'
 import { Route as AppUnitIndexRouteImport } from './pages/_app/unit/index'
+import { Route as AppSupplierIndexRouteImport } from './pages/_app/supplier/index'
 import { Route as AppStockRequisitionIndexRouteImport } from './pages/_app/stock-requisition/index'
 import { Route as AppStockPositioningIndexRouteImport } from './pages/_app/stock-positioning/index'
-import { Route as AppStockPositionReportIndexRouteImport } from './pages/_app/stock-position-report/index'
 import { Route as AppStockOutIndexRouteImport } from './pages/_app/stock-out/index'
 import { Route as AppStockLocationIndexRouteImport } from './pages/_app/stock-location/index'
 import { Route as AppPurchaseIndexRouteImport } from './pages/_app/purchase/index'
@@ -34,6 +28,8 @@ import { Route as AppUserNewRouteImport } from './pages/_app/user/new'
 import { Route as AppUserEditRouteImport } from './pages/_app/user/edit'
 import { Route as AppUnitNewRouteImport } from './pages/_app/unit/new'
 import { Route as AppUnitEditRouteImport } from './pages/_app/unit/edit'
+import { Route as AppSupplierNewRouteImport } from './pages/_app/supplier/new'
+import { Route as AppSupplierEditRouteImport } from './pages/_app/supplier/edit'
 import { Route as AppStockRequisitionNewRouteImport } from './pages/_app/stock-requisition/new'
 import { Route as AppStockRequisitionEditRouteImport } from './pages/_app/stock-requisition/edit'
 import { Route as AppStockOutNewRouteImport } from './pages/_app/stock-out/new'
@@ -50,10 +46,6 @@ import { Route as AppDepartmentEditRouteImport } from './pages/_app/department/e
 import { Route as AppCategoryNewRouteImport } from './pages/_app/category/new'
 import { Route as AppCategoryEditRouteImport } from './pages/_app/category/edit'
 
-const AuthLayoutRoute = AuthLayoutRouteImport.update({
-  id: '/_auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AppLayoutRoute = AppLayoutRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
@@ -62,31 +54,6 @@ const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppLayoutRoute,
-} as any)
-const AuthUnauthorizedRoute = AuthUnauthorizedRouteImport.update({
-  id: '/unauthorized',
-  path: '/unauthorized',
-  getParentRoute: () => AuthLayoutRoute,
-} as any)
-const AuthSignInRoute = AuthSignInRouteImport.update({
-  id: '/sign-in',
-  path: '/sign-in',
-  getParentRoute: () => AuthLayoutRoute,
-} as any)
-const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
-  getParentRoute: () => AuthLayoutRoute,
-} as any)
-const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
-  id: '/forgot-password',
-  path: '/forgot-password',
-  getParentRoute: () => AuthLayoutRoute,
-} as any)
-const AuthCheckEmailRoute = AuthCheckEmailRouteImport.update({
-  id: '/check-email',
-  path: '/check-email',
-  getParentRoute: () => AuthLayoutRoute,
 } as any)
 const AppDefinePasswordRoute = AppDefinePasswordRouteImport.update({
   id: '/define-password',
@@ -103,6 +70,11 @@ const AppUnitIndexRoute = AppUnitIndexRouteImport.update({
   path: '/unit/',
   getParentRoute: () => AppLayoutRoute,
 } as any)
+const AppSupplierIndexRoute = AppSupplierIndexRouteImport.update({
+  id: '/supplier/',
+  path: '/supplier/',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
 const AppStockRequisitionIndexRoute =
   AppStockRequisitionIndexRouteImport.update({
     id: '/stock-requisition/',
@@ -113,12 +85,6 @@ const AppStockPositioningIndexRoute =
   AppStockPositioningIndexRouteImport.update({
     id: '/stock-positioning/',
     path: '/stock-positioning/',
-    getParentRoute: () => AppLayoutRoute,
-  } as any)
-const AppStockPositionReportIndexRoute =
-  AppStockPositionReportIndexRouteImport.update({
-    id: '/stock-position-report/',
-    path: '/stock-position-report/',
     getParentRoute: () => AppLayoutRoute,
   } as any)
 const AppStockOutIndexRoute = AppStockOutIndexRouteImport.update({
@@ -174,6 +140,16 @@ const AppUnitNewRoute = AppUnitNewRouteImport.update({
 const AppUnitEditRoute = AppUnitEditRouteImport.update({
   id: '/unit/edit',
   path: '/unit/edit',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
+const AppSupplierNewRoute = AppSupplierNewRouteImport.update({
+  id: '/supplier/new',
+  path: '/supplier/new',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
+const AppSupplierEditRoute = AppSupplierEditRouteImport.update({
+  id: '/supplier/edit',
+  path: '/supplier/edit',
   getParentRoute: () => AppLayoutRoute,
 } as any)
 const AppStockRequisitionNewRoute = AppStockRequisitionNewRouteImport.update({
@@ -255,11 +231,6 @@ const AppCategoryEditRoute = AppCategoryEditRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/define-password': typeof AppDefinePasswordRoute
-  '/check-email': typeof AuthCheckEmailRoute
-  '/forgot-password': typeof AuthForgotPasswordRoute
-  '/reset-password': typeof AuthResetPasswordRoute
-  '/sign-in': typeof AuthSignInRoute
-  '/unauthorized': typeof AuthUnauthorizedRoute
   '/category/edit': typeof AppCategoryEditRoute
   '/category/new': typeof AppCategoryNewRoute
   '/department/edit': typeof AppDepartmentEditRoute
@@ -275,6 +246,8 @@ export interface FileRoutesByFullPath {
   '/stock-out/new': typeof AppStockOutNewRoute
   '/stock-requisition/edit': typeof AppStockRequisitionEditRoute
   '/stock-requisition/new': typeof AppStockRequisitionNewRoute
+  '/supplier/edit': typeof AppSupplierEditRoute
+  '/supplier/new': typeof AppSupplierNewRoute
   '/unit/edit': typeof AppUnitEditRoute
   '/unit/new': typeof AppUnitNewRoute
   '/user/edit': typeof AppUserEditRoute
@@ -286,20 +259,15 @@ export interface FileRoutesByFullPath {
   '/purchase/': typeof AppPurchaseIndexRoute
   '/stock-location/': typeof AppStockLocationIndexRoute
   '/stock-out/': typeof AppStockOutIndexRoute
-  '/stock-position-report/': typeof AppStockPositionReportIndexRoute
   '/stock-positioning/': typeof AppStockPositioningIndexRoute
   '/stock-requisition/': typeof AppStockRequisitionIndexRoute
+  '/supplier/': typeof AppSupplierIndexRoute
   '/unit/': typeof AppUnitIndexRoute
   '/user/': typeof AppUserIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof AppIndexRoute
   '/define-password': typeof AppDefinePasswordRoute
-  '/check-email': typeof AuthCheckEmailRoute
-  '/forgot-password': typeof AuthForgotPasswordRoute
-  '/reset-password': typeof AuthResetPasswordRoute
-  '/sign-in': typeof AuthSignInRoute
-  '/unauthorized': typeof AuthUnauthorizedRoute
+  '/': typeof AppIndexRoute
   '/category/edit': typeof AppCategoryEditRoute
   '/category/new': typeof AppCategoryNewRoute
   '/department/edit': typeof AppDepartmentEditRoute
@@ -315,6 +283,8 @@ export interface FileRoutesByTo {
   '/stock-out/new': typeof AppStockOutNewRoute
   '/stock-requisition/edit': typeof AppStockRequisitionEditRoute
   '/stock-requisition/new': typeof AppStockRequisitionNewRoute
+  '/supplier/edit': typeof AppSupplierEditRoute
+  '/supplier/new': typeof AppSupplierNewRoute
   '/unit/edit': typeof AppUnitEditRoute
   '/unit/new': typeof AppUnitNewRoute
   '/user/edit': typeof AppUserEditRoute
@@ -326,22 +296,16 @@ export interface FileRoutesByTo {
   '/purchase': typeof AppPurchaseIndexRoute
   '/stock-location': typeof AppStockLocationIndexRoute
   '/stock-out': typeof AppStockOutIndexRoute
-  '/stock-position-report': typeof AppStockPositionReportIndexRoute
   '/stock-positioning': typeof AppStockPositioningIndexRoute
   '/stock-requisition': typeof AppStockRequisitionIndexRoute
+  '/supplier': typeof AppSupplierIndexRoute
   '/unit': typeof AppUnitIndexRoute
   '/user': typeof AppUserIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppLayoutRouteWithChildren
-  '/_auth': typeof AuthLayoutRouteWithChildren
   '/_app/define-password': typeof AppDefinePasswordRoute
-  '/_auth/check-email': typeof AuthCheckEmailRoute
-  '/_auth/forgot-password': typeof AuthForgotPasswordRoute
-  '/_auth/reset-password': typeof AuthResetPasswordRoute
-  '/_auth/sign-in': typeof AuthSignInRoute
-  '/_auth/unauthorized': typeof AuthUnauthorizedRoute
   '/_app/': typeof AppIndexRoute
   '/_app/category/edit': typeof AppCategoryEditRoute
   '/_app/category/new': typeof AppCategoryNewRoute
@@ -358,6 +322,8 @@ export interface FileRoutesById {
   '/_app/stock-out/new': typeof AppStockOutNewRoute
   '/_app/stock-requisition/edit': typeof AppStockRequisitionEditRoute
   '/_app/stock-requisition/new': typeof AppStockRequisitionNewRoute
+  '/_app/supplier/edit': typeof AppSupplierEditRoute
+  '/_app/supplier/new': typeof AppSupplierNewRoute
   '/_app/unit/edit': typeof AppUnitEditRoute
   '/_app/unit/new': typeof AppUnitNewRoute
   '/_app/user/edit': typeof AppUserEditRoute
@@ -369,9 +335,9 @@ export interface FileRoutesById {
   '/_app/purchase/': typeof AppPurchaseIndexRoute
   '/_app/stock-location/': typeof AppStockLocationIndexRoute
   '/_app/stock-out/': typeof AppStockOutIndexRoute
-  '/_app/stock-position-report/': typeof AppStockPositionReportIndexRoute
   '/_app/stock-positioning/': typeof AppStockPositioningIndexRoute
   '/_app/stock-requisition/': typeof AppStockRequisitionIndexRoute
+  '/_app/supplier/': typeof AppSupplierIndexRoute
   '/_app/unit/': typeof AppUnitIndexRoute
   '/_app/user/': typeof AppUserIndexRoute
 }
@@ -380,11 +346,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/define-password'
-    | '/check-email'
-    | '/forgot-password'
-    | '/reset-password'
-    | '/sign-in'
-    | '/unauthorized'
     | '/category/edit'
     | '/category/new'
     | '/department/edit'
@@ -400,6 +361,8 @@ export interface FileRouteTypes {
     | '/stock-out/new'
     | '/stock-requisition/edit'
     | '/stock-requisition/new'
+    | '/supplier/edit'
+    | '/supplier/new'
     | '/unit/edit'
     | '/unit/new'
     | '/user/edit'
@@ -411,20 +374,15 @@ export interface FileRouteTypes {
     | '/purchase/'
     | '/stock-location/'
     | '/stock-out/'
-    | '/stock-position-report/'
     | '/stock-positioning/'
     | '/stock-requisition/'
+    | '/supplier/'
     | '/unit/'
     | '/user/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
     | '/define-password'
-    | '/check-email'
-    | '/forgot-password'
-    | '/reset-password'
-    | '/sign-in'
-    | '/unauthorized'
+    | '/'
     | '/category/edit'
     | '/category/new'
     | '/department/edit'
@@ -440,6 +398,8 @@ export interface FileRouteTypes {
     | '/stock-out/new'
     | '/stock-requisition/edit'
     | '/stock-requisition/new'
+    | '/supplier/edit'
+    | '/supplier/new'
     | '/unit/edit'
     | '/unit/new'
     | '/user/edit'
@@ -451,21 +411,15 @@ export interface FileRouteTypes {
     | '/purchase'
     | '/stock-location'
     | '/stock-out'
-    | '/stock-position-report'
     | '/stock-positioning'
     | '/stock-requisition'
+    | '/supplier'
     | '/unit'
     | '/user'
   id:
     | '__root__'
     | '/_app'
-    | '/_auth'
     | '/_app/define-password'
-    | '/_auth/check-email'
-    | '/_auth/forgot-password'
-    | '/_auth/reset-password'
-    | '/_auth/sign-in'
-    | '/_auth/unauthorized'
     | '/_app/'
     | '/_app/category/edit'
     | '/_app/category/new'
@@ -482,6 +436,8 @@ export interface FileRouteTypes {
     | '/_app/stock-out/new'
     | '/_app/stock-requisition/edit'
     | '/_app/stock-requisition/new'
+    | '/_app/supplier/edit'
+    | '/_app/supplier/new'
     | '/_app/unit/edit'
     | '/_app/unit/new'
     | '/_app/user/edit'
@@ -493,27 +449,19 @@ export interface FileRouteTypes {
     | '/_app/purchase/'
     | '/_app/stock-location/'
     | '/_app/stock-out/'
-    | '/_app/stock-position-report/'
     | '/_app/stock-positioning/'
     | '/_app/stock-requisition/'
+    | '/_app/supplier/'
     | '/_app/unit/'
     | '/_app/user/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   AppLayoutRoute: typeof AppLayoutRouteWithChildren
-  AuthLayoutRoute: typeof AuthLayoutRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_auth': {
-      id: '/_auth'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AuthLayoutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_app': {
       id: '/_app'
       path: ''
@@ -527,41 +475,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppLayoutRoute
-    }
-    '/_auth/unauthorized': {
-      id: '/_auth/unauthorized'
-      path: '/unauthorized'
-      fullPath: '/unauthorized'
-      preLoaderRoute: typeof AuthUnauthorizedRouteImport
-      parentRoute: typeof AuthLayoutRoute
-    }
-    '/_auth/sign-in': {
-      id: '/_auth/sign-in'
-      path: '/sign-in'
-      fullPath: '/sign-in'
-      preLoaderRoute: typeof AuthSignInRouteImport
-      parentRoute: typeof AuthLayoutRoute
-    }
-    '/_auth/reset-password': {
-      id: '/_auth/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof AuthResetPasswordRouteImport
-      parentRoute: typeof AuthLayoutRoute
-    }
-    '/_auth/forgot-password': {
-      id: '/_auth/forgot-password'
-      path: '/forgot-password'
-      fullPath: '/forgot-password'
-      preLoaderRoute: typeof AuthForgotPasswordRouteImport
-      parentRoute: typeof AuthLayoutRoute
-    }
-    '/_auth/check-email': {
-      id: '/_auth/check-email'
-      path: '/check-email'
-      fullPath: '/check-email'
-      preLoaderRoute: typeof AuthCheckEmailRouteImport
-      parentRoute: typeof AuthLayoutRoute
     }
     '/_app/define-password': {
       id: '/_app/define-password'
@@ -584,6 +497,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppUnitIndexRouteImport
       parentRoute: typeof AppLayoutRoute
     }
+    '/_app/supplier/': {
+      id: '/_app/supplier/'
+      path: '/supplier'
+      fullPath: '/supplier/'
+      preLoaderRoute: typeof AppSupplierIndexRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
     '/_app/stock-requisition/': {
       id: '/_app/stock-requisition/'
       path: '/stock-requisition'
@@ -596,13 +516,6 @@ declare module '@tanstack/react-router' {
       path: '/stock-positioning'
       fullPath: '/stock-positioning/'
       preLoaderRoute: typeof AppStockPositioningIndexRouteImport
-      parentRoute: typeof AppLayoutRoute
-    }
-    '/_app/stock-position-report/': {
-      id: '/_app/stock-position-report/'
-      path: '/stock-position-report'
-      fullPath: '/stock-position-report/'
-      preLoaderRoute: typeof AppStockPositionReportIndexRouteImport
       parentRoute: typeof AppLayoutRoute
     }
     '/_app/stock-out/': {
@@ -680,6 +593,20 @@ declare module '@tanstack/react-router' {
       path: '/unit/edit'
       fullPath: '/unit/edit'
       preLoaderRoute: typeof AppUnitEditRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
+    '/_app/supplier/new': {
+      id: '/_app/supplier/new'
+      path: '/supplier/new'
+      fullPath: '/supplier/new'
+      preLoaderRoute: typeof AppSupplierNewRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
+    '/_app/supplier/edit': {
+      id: '/_app/supplier/edit'
+      path: '/supplier/edit'
+      fullPath: '/supplier/edit'
+      preLoaderRoute: typeof AppSupplierEditRouteImport
       parentRoute: typeof AppLayoutRoute
     }
     '/_app/stock-requisition/new': {
@@ -808,6 +735,8 @@ interface AppLayoutRouteChildren {
   AppStockOutNewRoute: typeof AppStockOutNewRoute
   AppStockRequisitionEditRoute: typeof AppStockRequisitionEditRoute
   AppStockRequisitionNewRoute: typeof AppStockRequisitionNewRoute
+  AppSupplierEditRoute: typeof AppSupplierEditRoute
+  AppSupplierNewRoute: typeof AppSupplierNewRoute
   AppUnitEditRoute: typeof AppUnitEditRoute
   AppUnitNewRoute: typeof AppUnitNewRoute
   AppUserEditRoute: typeof AppUserEditRoute
@@ -819,9 +748,9 @@ interface AppLayoutRouteChildren {
   AppPurchaseIndexRoute: typeof AppPurchaseIndexRoute
   AppStockLocationIndexRoute: typeof AppStockLocationIndexRoute
   AppStockOutIndexRoute: typeof AppStockOutIndexRoute
-  AppStockPositionReportIndexRoute: typeof AppStockPositionReportIndexRoute
   AppStockPositioningIndexRoute: typeof AppStockPositioningIndexRoute
   AppStockRequisitionIndexRoute: typeof AppStockRequisitionIndexRoute
+  AppSupplierIndexRoute: typeof AppSupplierIndexRoute
   AppUnitIndexRoute: typeof AppUnitIndexRoute
   AppUserIndexRoute: typeof AppUserIndexRoute
 }
@@ -844,6 +773,8 @@ const AppLayoutRouteChildren: AppLayoutRouteChildren = {
   AppStockOutNewRoute: AppStockOutNewRoute,
   AppStockRequisitionEditRoute: AppStockRequisitionEditRoute,
   AppStockRequisitionNewRoute: AppStockRequisitionNewRoute,
+  AppSupplierEditRoute: AppSupplierEditRoute,
+  AppSupplierNewRoute: AppSupplierNewRoute,
   AppUnitEditRoute: AppUnitEditRoute,
   AppUnitNewRoute: AppUnitNewRoute,
   AppUserEditRoute: AppUserEditRoute,
@@ -855,9 +786,9 @@ const AppLayoutRouteChildren: AppLayoutRouteChildren = {
   AppPurchaseIndexRoute: AppPurchaseIndexRoute,
   AppStockLocationIndexRoute: AppStockLocationIndexRoute,
   AppStockOutIndexRoute: AppStockOutIndexRoute,
-  AppStockPositionReportIndexRoute: AppStockPositionReportIndexRoute,
   AppStockPositioningIndexRoute: AppStockPositioningIndexRoute,
   AppStockRequisitionIndexRoute: AppStockRequisitionIndexRoute,
+  AppSupplierIndexRoute: AppSupplierIndexRoute,
   AppUnitIndexRoute: AppUnitIndexRoute,
   AppUserIndexRoute: AppUserIndexRoute,
 }
@@ -866,29 +797,8 @@ const AppLayoutRouteWithChildren = AppLayoutRoute._addFileChildren(
   AppLayoutRouteChildren,
 )
 
-interface AuthLayoutRouteChildren {
-  AuthCheckEmailRoute: typeof AuthCheckEmailRoute
-  AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
-  AuthResetPasswordRoute: typeof AuthResetPasswordRoute
-  AuthSignInRoute: typeof AuthSignInRoute
-  AuthUnauthorizedRoute: typeof AuthUnauthorizedRoute
-}
-
-const AuthLayoutRouteChildren: AuthLayoutRouteChildren = {
-  AuthCheckEmailRoute: AuthCheckEmailRoute,
-  AuthForgotPasswordRoute: AuthForgotPasswordRoute,
-  AuthResetPasswordRoute: AuthResetPasswordRoute,
-  AuthSignInRoute: AuthSignInRoute,
-  AuthUnauthorizedRoute: AuthUnauthorizedRoute,
-}
-
-const AuthLayoutRouteWithChildren = AuthLayoutRoute._addFileChildren(
-  AuthLayoutRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   AppLayoutRoute: AppLayoutRouteWithChildren,
-  AuthLayoutRoute: AuthLayoutRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
