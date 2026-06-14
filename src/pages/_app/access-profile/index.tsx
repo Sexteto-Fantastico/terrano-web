@@ -3,6 +3,8 @@ import { requirePermission } from "@/lib/route-guard";
 import { type PaginatedData } from "@/components/ui/data-table/@types";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
 import { useMemo } from "react";
+import { toast } from "sonner";
+import { getApiErrorMessage } from "@/lib/errors";
 
 import {
   fetchRoles,
@@ -66,8 +68,12 @@ function AccessProfilePage() {
       });
       return { previousData };
     },
-    onError: (_err, _roleId, context) => {
+    onSuccess: () => {
+      toast.success("Perfil de acesso desativado com sucesso!");
+    },
+    onError: (error, _roleId, context) => {
       queryClient.setQueryData(["roles", filters], context?.previousData);
+      toast.error(getApiErrorMessage(error));
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["roles"] });
@@ -92,8 +98,12 @@ function AccessProfilePage() {
       });
       return { previousData };
     },
-    onError: (_err, _roleId, context) => {
+    onSuccess: () => {
+      toast.success("Perfil de acesso ativado com sucesso!");
+    },
+    onError: (error, _roleId, context) => {
       queryClient.setQueryData(["roles", filters], context?.previousData);
+      toast.error(getApiErrorMessage(error));
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["roles"] });

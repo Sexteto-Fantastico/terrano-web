@@ -2,8 +2,12 @@ import { useSearch, useNavigate, createFileRoute } from "@tanstack/react-router"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { z } from "zod";
+import { toast } from "sonner";
 import { CreateView } from "@/components/views/create-view";
 import { Separator } from "@/components/ui/separator";
+import { FeedbackDialog } from "@/components/ui/feedback-dialog";
+import { useFeedbackDialog } from "@/hooks/use-feedback-dialog";
+import { getApiErrorMessage } from "@/lib/errors";
 import {
   AccessProfileForm,
   type AccessProfileFormValues,
@@ -30,6 +34,7 @@ function AccessProfileEditComponent() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
+  const feedback = useFeedbackDialog();
   const [selectedPolicyIds, setSelectedPolicyIds] = useState<number[]>([]);
   const [initialized, setInitialized] = useState(false);
 
@@ -46,13 +51,7 @@ function AccessProfileEditComponent() {
     }
   }, [roleQuery.data, initialized]);
 
-  const updateMutation = useMutation({
-    mutationFn: updateRole,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["roles"] });
-      queryClient.invalidateQueries({ queryKey: ["role", search.id] });
-    },
-  });
+  const updateMutation = useMutation({ mutationFn: updateRole });
 
   const policiesMutation = useMutation({
     mutationFn: (policyIds: number[]) =>
@@ -73,9 +72,17 @@ function AccessProfileEditComponent() {
         await deleteRole(id);
       }
     },
-    onSuccess: (_data, { id }) => {
+    onSuccess: (_data, { id, value }) => {
       queryClient.invalidateQueries({ queryKey: ["role", String(id)] });
       queryClient.invalidateQueries({ queryKey: ["roles"] });
+      toast.success(
+        value
+          ? "Perfil de acesso ativado com sucesso!"
+          : "Perfil de acesso desativado com sucesso!"
+      );
+    },
+    onError: (error) => {
+      toast.error(getApiErrorMessage(error));
     },
   });
 
@@ -86,17 +93,24 @@ function AccessProfileEditComponent() {
   const role = roleQuery.data;
 
   async function handleSubmit(values: AccessProfileFormValues) {
-    await updateMutation.mutateAsync({
-      id: role.id,
-      name: values.name,
-      description: values.description,
-    });
+    try {
+      await updateMutation.mutateAsync({
+        id: role.id,
+        name: values.name,
+        description: values.description,
+      });
 
-    await policiesMutation.mutateAsync(selectedPolicyIds);
+      await policiesMutation.mutateAsync(selectedPolicyIds);
 
-    queryClient.invalidateQueries({ queryKey: ["roles"] });
-    queryClient.invalidateQueries({ queryKey: ["role", search.id] });
-    navigate({ to: "/access-profile" });
+      queryClient.invalidateQueries({ queryKey: ["roles"] });
+      queryClient.invalidateQueries({ queryKey: ["role", search.id] });
+
+      feedback.success("Perfil de acesso atualizado com sucesso!", () =>
+        navigate({ to: "/access-profile" })
+      );
+    } catch (error) {
+      feedback.error(getApiErrorMessage(error));
+    }
   }
 
   return (
@@ -123,6 +137,7 @@ function AccessProfileEditComponent() {
           disabled={!role.isActive}
         />
       </div>
+      <FeedbackDialog {...feedback.props} />
     </CreateView>
   );
 }

@@ -3,6 +3,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { CreateView } from "@/components/views/create-view";
 import { Separator } from "@/components/ui/separator";
+import { FeedbackDialog } from "@/components/ui/feedback-dialog";
+import { useFeedbackDialog } from "@/hooks/use-feedback-dialog";
+import { getApiErrorMessage } from "@/lib/errors";
 import {
   AccessProfileForm,
   type AccessProfileFormValues,
@@ -20,13 +23,19 @@ export const Route = createFileRoute("/_app/access-profile/new")({
 function AccessProfileNewPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const feedback = useFeedbackDialog();
   const [selectedPolicyIds, setSelectedPolicyIds] = useState<number[]>([]);
 
   const createMutation = useMutation({
     mutationFn: createRole,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["roles"] });
-      navigate({ to: "/access-profile" });
+      feedback.success("Perfil de acesso criado com sucesso!", () =>
+        navigate({ to: "/access-profile" })
+      );
+    },
+    onError: (error) => {
+      feedback.error(getApiErrorMessage(error));
     },
   });
 
@@ -48,6 +57,7 @@ function AccessProfileNewPage() {
           onChange={setSelectedPolicyIds}
         />
       </div>
+      <FeedbackDialog {...feedback.props} />
     </CreateView>
   );
 }
