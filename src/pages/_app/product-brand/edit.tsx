@@ -2,6 +2,9 @@ import { useSearch, useNavigate, createFileRoute } from '@tanstack/react-router'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { z } from 'zod'
 import { CreateView } from '@/components/views/create-view'
+import { FeedbackDialog } from '@/components/ui/feedback-dialog'
+import { useFeedbackDialog } from '@/hooks/use-feedback-dialog'
+import { getApiErrorMessage } from '@/lib/errors'
 import { ProductBrandForm } from './-components/product-brand-form'
 import {
   fetchProductBrandById,
@@ -26,6 +29,7 @@ function BrandComponent() {
   const search = useSearch({ from: '/_app/product-brand/edit' })
   const navigate = useNavigate()
   const queryClient = useQueryClient()
+  const feedback = useFeedbackDialog()
 
   const brandQuery = useQuery({
     queryKey: ['product-brand', search.id],
@@ -37,7 +41,12 @@ function BrandComponent() {
     mutationFn: updateProductBrand,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['product-brands'] })
-      navigate({ to: '/product-brand' })
+      feedback.success('Marca atualizada com sucesso!', () =>
+        navigate({ to: '/product-brand' })
+      )
+    },
+    onError: (error) => {
+      feedback.error(getApiErrorMessage(error))
     },
   })
 
@@ -83,6 +92,7 @@ function BrandComponent() {
           await updateMutation.mutateAsync({ id: brandQuery.data.id, name: values.name })
         }}
       />
+      <FeedbackDialog {...feedback.props} />
     </CreateView>
   )
 }

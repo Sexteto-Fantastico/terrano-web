@@ -23,6 +23,7 @@ import { Route as AppUserIndexRouteImport } from './pages/_app/user/index'
 import { Route as AppUnitIndexRouteImport } from './pages/_app/unit/index'
 import { Route as AppStockRequisitionIndexRouteImport } from './pages/_app/stock-requisition/index'
 import { Route as AppStockPositioningIndexRouteImport } from './pages/_app/stock-positioning/index'
+import { Route as AppStockPositionReportIndexRouteImport } from './pages/_app/stock-position-report/index'
 import { Route as AppStockOutIndexRouteImport } from './pages/_app/stock-out/index'
 import { Route as AppStockLocationIndexRouteImport } from './pages/_app/stock-location/index'
 import { Route as AppPurchaseIndexRouteImport } from './pages/_app/purchase/index'
@@ -121,6 +122,12 @@ const AppStockPositioningIndexRoute =
   AppStockPositioningIndexRouteImport.update({
     id: '/stock-positioning/',
     path: '/stock-positioning/',
+    getParentRoute: () => AppLayoutRoute,
+  } as any)
+const AppStockPositionReportIndexRoute =
+  AppStockPositionReportIndexRouteImport.update({
+    id: '/stock-position-report/',
+    path: '/stock-position-report/',
     getParentRoute: () => AppLayoutRoute,
   } as any)
 const AppStockOutIndexRoute = AppStockOutIndexRouteImport.update({
@@ -307,6 +314,7 @@ export interface FileRoutesByFullPath {
   '/purchase/': typeof AppPurchaseIndexRoute
   '/stock-location/': typeof AppStockLocationIndexRoute
   '/stock-out/': typeof AppStockOutIndexRoute
+  '/stock-position-report/': typeof AppStockPositionReportIndexRoute
   '/stock-positioning/': typeof AppStockPositioningIndexRoute
   '/stock-requisition/': typeof AppStockRequisitionIndexRoute
   '/unit/': typeof AppUnitIndexRoute
@@ -350,6 +358,7 @@ export interface FileRoutesByTo {
   '/purchase': typeof AppPurchaseIndexRoute
   '/stock-location': typeof AppStockLocationIndexRoute
   '/stock-out': typeof AppStockOutIndexRoute
+  '/stock-position-report': typeof AppStockPositionReportIndexRoute
   '/stock-positioning': typeof AppStockPositioningIndexRoute
   '/stock-requisition': typeof AppStockRequisitionIndexRoute
   '/unit': typeof AppUnitIndexRoute
@@ -396,6 +405,7 @@ export interface FileRoutesById {
   '/_app/purchase/': typeof AppPurchaseIndexRoute
   '/_app/stock-location/': typeof AppStockLocationIndexRoute
   '/_app/stock-out/': typeof AppStockOutIndexRoute
+  '/_app/stock-position-report/': typeof AppStockPositionReportIndexRoute
   '/_app/stock-positioning/': typeof AppStockPositioningIndexRoute
   '/_app/stock-requisition/': typeof AppStockRequisitionIndexRoute
   '/_app/unit/': typeof AppUnitIndexRoute
@@ -441,6 +451,7 @@ export interface FileRouteTypes {
     | '/purchase/'
     | '/stock-location/'
     | '/stock-out/'
+    | '/stock-position-report/'
     | '/stock-positioning/'
     | '/stock-requisition/'
     | '/unit/'
@@ -484,6 +495,7 @@ export interface FileRouteTypes {
     | '/purchase'
     | '/stock-location'
     | '/stock-out'
+    | '/stock-position-report'
     | '/stock-positioning'
     | '/stock-requisition'
     | '/unit'
@@ -529,6 +541,7 @@ export interface FileRouteTypes {
     | '/_app/purchase/'
     | '/_app/stock-location/'
     | '/_app/stock-out/'
+    | '/_app/stock-position-report/'
     | '/_app/stock-positioning/'
     | '/_app/stock-requisition/'
     | '/_app/unit/'
@@ -638,6 +651,13 @@ declare module '@tanstack/react-router' {
       path: '/stock-positioning'
       fullPath: '/stock-positioning/'
       preLoaderRoute: typeof AppStockPositioningIndexRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
+    '/_app/stock-position-report/': {
+      id: '/_app/stock-position-report/'
+      path: '/stock-position-report'
+      fullPath: '/stock-position-report/'
+      preLoaderRoute: typeof AppStockPositionReportIndexRouteImport
       parentRoute: typeof AppLayoutRoute
     }
     '/_app/stock-out/': {
@@ -879,6 +899,7 @@ interface AppLayoutRouteChildren {
   AppPurchaseIndexRoute: typeof AppPurchaseIndexRoute
   AppStockLocationIndexRoute: typeof AppStockLocationIndexRoute
   AppStockOutIndexRoute: typeof AppStockOutIndexRoute
+  AppStockPositionReportIndexRoute: typeof AppStockPositionReportIndexRoute
   AppStockPositioningIndexRoute: typeof AppStockPositioningIndexRoute
   AppStockRequisitionIndexRoute: typeof AppStockRequisitionIndexRoute
   AppUnitIndexRoute: typeof AppUnitIndexRoute
@@ -918,6 +939,7 @@ const AppLayoutRouteChildren: AppLayoutRouteChildren = {
   AppPurchaseIndexRoute: AppPurchaseIndexRoute,
   AppStockLocationIndexRoute: AppStockLocationIndexRoute,
   AppStockOutIndexRoute: AppStockOutIndexRoute,
+  AppStockPositionReportIndexRoute: AppStockPositionReportIndexRoute,
   AppStockPositioningIndexRoute: AppStockPositioningIndexRoute,
   AppStockRequisitionIndexRoute: AppStockRequisitionIndexRoute,
   AppUnitIndexRoute: AppUnitIndexRoute,
