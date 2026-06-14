@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { requirePermission } from "@/lib/route-guard";
 import { useMemo } from "react";
 import {
   keepPreviousData,
@@ -6,111 +7,128 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-
-import { DataView } from "@/components/views/data-view";
-import { DataTable } from "@/components/ui/data-table/data-table";
-import { DataTableToolbar } from "@/components/ui/data-table/data-table-toolbar";
+import type { PaginatedData } from "@/components/ui/data-table/@types";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
-import { DataTableFilterMenu } from "@/components/ui/data-table/data-table-filter-menu";
-import { Separator } from "@/components/ui/separator";
-import { AddButton } from "@/components/button/add-button";
-
+import { DataView } from "@/components/views/data-view";
 import { useFilters } from "@/hooks/use-filters";
+import { DataTable } from "@/components/ui/data-table/data-table";
 import { useDataTable } from "@/hooks/use-data-table";
-
+import { Separator } from "@/components/ui/separator";
+import { DataTableToolbar } from "@/components/ui/data-table/data-table-toolbar";
+import { DataTableFilterMenu } from "@/components/ui/data-table/data-table-filter-menu";
+import { AddButton } from "@/components/button/add-button";
 import {
   deleteSupplier,
   fetchSuppliers,
   restoreSupplier,
   type Supplier,
   type SupplierFilters,
-} from "@/api/supplier";
-
+} from "@/api/suppliers";
 import { getSupplierFilterConfig } from "./-components/supplier-filter-config";
 import { getSupplierTableColumns } from "./-components/supplier-table-columns";
 
 export const Route = createFileRoute("/_app/supplier/")({
   component: SupplierPage,
-  validateSearch: (
-    search: Record<string, unknown>
-  ): SupplierFilters => ({
-    pageIndex: search.pageIndex
-      ? Number(search.pageIndex)
-      : undefined,
-    pageSize: search.pageSize
-      ? Number(search.pageSize)
-      : undefined,
-    corporateName: search.corporateName as string | undefined,
-    tradeName: search.tradeName as string | undefined,
-    cnpj: search.cnpj as string | undefined,
-    activeOnly:
-      search.activeOnly !== undefined
-        ? (String(search.activeOnly) as "true" | "false")
-        : "true",
+  beforeLoad: requirePermission("SUPPLIER", "read"),
+  validateSearch: (): SupplierFilters => ({}),
+  head: () => ({
+    meta: [
+      {
+        title: "Fornecedores",
+      },
+    ],
   }),
 });
 
 function SupplierPage() {
+  const { filters, setFilters, resetFilters } = useFilters(Route.id);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const { filters, setFilters, resetFilters } =
-    useFilters(Route.id);
-
-  const queryKey = useMemo(
-    () => [
-      "suppliers",
-      filters.pageIndex,
-      filters.pageSize,
-      filters.corporateName,
-      filters.tradeName,
-      filters.cnpj,
-      filters.activeOnly,
-    ],
-    [filters]
-  );
-
-  const { data, isLoading } = useQuery({
-    queryKey,
+  const { data, isLoading } = useQuery<PaginatedData<Supplier>>({
+    queryKey: ["suppliers", filters],
     queryFn: () => fetchSuppliers(filters),
     placeholderData: keepPreviousData,
   });
 
   const deleteMutation = useMutation({
     mutationFn: deleteSupplier,
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["suppliers"],
+    onMutate: async (supplierId) => {
+      await queryClient.cancelQueries({ queryKey: ["suppliers"] });
+      const previousData = queryClient.getQueryData(["suppliers", filters]);
+      queryClient.setQueryData(["suppliers", filters], (old: any) => {
+        if (!old) return old;
+        return {
+          ...old,
+          result: old.result.map((supplier: Supplier) =>
+            supplier.id === supplierId
+              ? {
+                  ...supplier,
+                  isActive: false,
+                  deletedAt: new Date().toISOString(),
+                }
+              : supplier
+          ),
+        };
       });
+      return { previousData };
+    },
+    onError: (_err, _supplierId, context) => {
+      queryClient.setQueryData(
+        ["suppliers", filters],
+        context?.previousData
+      );
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["suppliers"] });
     },
   });
 
   const restoreMutation = useMutation({
     mutationFn: restoreSupplier,
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["suppliers"],
+    onMutate: async (supplierId) => {
+      await queryClient.cancelQueries({ queryKey: ["suppliers"] });
+      const previousData = queryClient.getQueryData(["suppliers", filters]);
+      queryClient.setQueryData(["suppliers", filters], (old: any) => {
+        if (!old) return old;
+        return {
+          ...old,
+          result: old.result.map((supplier: Supplier) =>
+            supplier.id === supplierId
+              ? {
+                  ...supplier,
+                  isActive: true,
+                  deletedAt: null,
+                }
+              : supplier
+          ),
+        };
       });
+      return { previousData };
+    },
+    onError: (_err, _supplierId, context) => {
+      queryClient.setQueryData(
+        ["suppliers", filters],
+        context?.previousData
+      );
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["suppliers"] });
     },
   });
 
-  function handleEdit(id: number) {
+  function handleEdit(supplierId: number) {
     navigate({
       to: "/supplier/edit",
-      search: {
-        id: id.toString(),
-      },
+      search: { id: supplierId.toString() },
     });
   }
 
-  function handleToggleActive(
-    supplier: Supplier,
-    value: boolean
-  ) {
+  function handleToggleActive(supplierId: number, value: boolean) {
     if (value) {
-      restoreMutation.mutate(supplier.id);
+      restoreMutation.mutate(supplierId);
     } else {
-      deleteMutation.mutate(supplier.id);
+      deleteMutation.mutate(supplierId);
     }
   }
 
@@ -120,20 +138,17 @@ function SupplierPage() {
         onEdit: handleEdit,
         onToggleActive: handleToggleActive,
       }),
-    []
+    [deleteMutation, restoreMutation]
   );
+
+  const filterConfig = useMemo(() => getSupplierFilterConfig(), []);
 
   const { table } = useDataTable({
     data,
     columns,
-    filters,
-    setFilters,
+    filters: filters as any,
+    setFilters: setFilters as any,
   });
-
-  const filterConfig = useMemo(
-    () => getSupplierFilterConfig(),
-    []
-  );
 
   return (
     <DataView>
@@ -141,12 +156,7 @@ function SupplierPage() {
         filterConfig={filterConfig}
         isLoading={isLoading}
         filters={filters}
-        onFilter={(newFilters) =>
-          setFilters({
-            ...newFilters,
-            pageIndex: 0,
-          })
-        }
+        onFilter={setFilters}
         onClearFilters={resetFilters}
       />
 
@@ -156,7 +166,7 @@ function SupplierPage() {
         table={table}
         isLoading={isLoading}
         getRowClassName={(row) =>
-          row.original.deletedAt
+          row.original.isActive === false || row.original.deletedAt
             ? "line-through text-muted-foreground"
             : ""
         }
@@ -167,10 +177,7 @@ function SupplierPage() {
         }
       />
 
-      <DataTablePagination
-        table={table}
-        isLoading={isLoading}
-      />
+      <DataTablePagination table={table} isLoading={isLoading} />
     </DataView>
   );
 }
