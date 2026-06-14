@@ -155,7 +155,7 @@ const MENU_DATA: MenuGroup[] = [
         href: "/stock-positioning",
         permission: { resource: "STOCK_POSITION", action: "read" },
       },
-      { title: "Rastreamento de Produto", href: "/product-tracking", permission: { resource: "PRODUCT_TRACKING", action: "read" } },
+      { title: "Rastreamento de Produto", href: "/product-tracking", permission: { resource: "PRODUCT_TRACE", action: "read" } },
     ],
   },
   {
