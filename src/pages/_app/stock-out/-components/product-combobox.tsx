@@ -11,9 +11,10 @@ interface ProductComboboxProps {
   value: string;
   onValueChange: (value: string) => void;
   required?: boolean;
+  disabled?: boolean;
 }
 
-export function ProductCombobox({ value, onValueChange, required }: ProductComboboxProps) {
+export function ProductCombobox({ value, onValueChange, required, disabled }: ProductComboboxProps) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -45,12 +46,13 @@ export function ProductCombobox({ value, onValueChange, required }: ProductCombo
 
   return (
     <>
-      <Popover open={open} onOpenChange={setOpen}>
+      <Popover open={open} onOpenChange={disabled ? undefined : setOpen}>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
             role="combobox"
             aria-expanded={open}
+            disabled={disabled}
             className={cn("w-full justify-between bg-background font-normal", !value && "text-muted-foreground")}
           >
             {selectedProduct ? selectedProduct.name : "Selecione o produto"}
