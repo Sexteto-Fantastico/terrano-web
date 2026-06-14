@@ -55,7 +55,7 @@ function RouteComponent() {
       }
     >
       <div className="flex flex-col gap-6">
-        <div className="m-1 grid grid-cols-4 gap-6">
+        <div className="m-1 grid grid-cols-2 gap-6 md:grid-cols-4">
           {isLoading ? (
             <>
               <MetricSkeleton />

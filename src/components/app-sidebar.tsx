@@ -68,13 +68,6 @@ interface MenuGroup {
 
 const MENU_DATA: MenuGroup[] = [
   {
-    title: "Dashboard",
-    icon: LayoutDashboardIcon,
-    items: [
-      { title: "Dashboard", href: "/dashboard", permission: { resource: "DASHBOARD", action: "read" } },
-    ],
-  },
-  {
     title: "Cadastros",
     icon: CircleFadingPlusIcon,
     items: [
