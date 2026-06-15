@@ -48,6 +48,13 @@ validateSearch: (search: Record<string, unknown>): StockRequisitionFilters => ({
   endDate: search.endDate as string | undefined,
   period: search.period as { from?: string; to?: string } | undefined,
 }),
+head: () => ({
+    meta: [
+      {
+        title: "Solicitação de Material",
+      },
+    ],
+  }),
 });
 
 function StockRequisitionPage() {

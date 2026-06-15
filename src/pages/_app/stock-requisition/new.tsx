@@ -16,6 +16,13 @@ import { getMe } from "@/api/auth";
 
 export const Route = createFileRoute("/_app/stock-requisition/new")({
   component: StockRequisitionNewPage,
+  head: () => ({
+    meta: [
+      {
+        title: "Adicionar Solicitação de Material",
+      },
+    ],
+  }),
 });
 
 function StockRequisitionNewPage() {
