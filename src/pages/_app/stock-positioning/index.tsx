@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { requirePermission } from "@/lib/route-guard";
 import { useQuery } from "@tanstack/react-query";
 import { DataView } from "@/components/views/data-view";
@@ -122,8 +122,15 @@ function StockPositioningPage() {
     }
   };
 
+  const navigate = useNavigate();
+
   const handleViewHistory = (item: StockPositioning) => {
-    toast.info(`Histórico do produto ${item.product.name} (Funcionalidade simulada)`);
+    navigate({
+      to: "/product-tracking",
+      search: {
+        productId: item.productId,
+      } as any,
+    });
   };
 
   const columns = useMemo(

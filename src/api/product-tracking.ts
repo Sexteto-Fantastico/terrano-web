@@ -5,13 +5,20 @@ export type MovementType = "IN" | "OUT";
 export type MovementPurpose =
   | "PURCHASE"
   | "STOCK_REQUISITION"
+  | "MATERIAL_REQUEST"
+  | "STOCK_LOCATION_TRANSFER"
+  | "DEFECTIVE"
   | "RETURN"
   | "ADJUSTMENT"
-  | "OTHER";
+  | "OTHER"
+  | (string & {});
 
-export const MOVEMENT_PURPOSE_LABELS: Record<MovementPurpose, string> = {
+export const MOVEMENT_PURPOSE_LABELS: Record<string, string> = {
   PURCHASE: "Compra",
   STOCK_REQUISITION: "Requisição de Estoque",
+  MATERIAL_REQUEST: "Requisição de Material",
+  STOCK_LOCATION_TRANSFER: "Transferência entre Locais",
+  DEFECTIVE: "Defeito / Avaria",
   RETURN: "Devolução",
   ADJUSTMENT: "Ajuste",
   OTHER: "Outro",
