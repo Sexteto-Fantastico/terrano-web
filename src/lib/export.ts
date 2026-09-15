@@ -6,21 +6,30 @@ export function exportTableToCSV<TData>(
     filename?: string;
     excludeColumns?: (keyof TData | "select" | "actions")[];
     onlySelected?: boolean;
+    columnLabels?: Partial<Record<string, string>>;
   } = {}
 ): void {
   const {
     filename = "table",
     excludeColumns = [],
     onlySelected = false,
+    columnLabels = {},
   } = opts;
 
   const headers = table
     .getAllLeafColumns()
     .map((column) => column.id)
-    .filter((id) => !excludeColumns.includes(id));
+    .filter(
+      (id) =>
+        !excludeColumns.includes(
+          id as keyof TData | "select" | "actions"
+        )
+    );
+
+  const headerLabels = headers.map((id) => columnLabels[id] ?? id);
 
   const csvContent = [
-    headers.join(","),
+    headerLabels.join(","),
     ...(onlySelected
       ? table.getFilteredSelectedRowModel().rows
       : table.getRowModel().rows

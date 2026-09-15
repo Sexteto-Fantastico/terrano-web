@@ -6,6 +6,7 @@ import { useFeedbackDialog } from "@/hooks/use-feedback-dialog";
 import { getApiErrorMessage } from "@/lib/errors";
 import { UserForm } from "./-components/user-form";
 import { createUser } from "@/api/users";
+import type { CreateUserRequestDTO } from "@/api/users";
 
 export const Route = createFileRoute("/_app/user/new")({
   component: UserNewPage,
@@ -32,14 +33,7 @@ function UserNewPage() {
     },
   });
 
-  async function handleSubmit(values: {
-    name: string;
-    email: string;
-    username: string;
-    roleId: number;
-    cpf?: string;
-    phone?: string;
-  }) {
+  async function handleSubmit(values: CreateUserRequestDTO) {
     await createMutation.mutateAsync(values);
   }
 

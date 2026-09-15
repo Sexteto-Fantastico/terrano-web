@@ -17,7 +17,7 @@ type UserFormValues = {
   username: string;
   roleId: number;
   departmentId: number;
-  password?: string;
+  password: string;
   cpf?: string;
   phone?: string;
 };
@@ -69,7 +69,7 @@ export function UserForm({
         username: username.trim(),
         roleId,
         departmentId,
-        ...(showPassword && { password }),
+        password,
         cpf: cpf.trim() || undefined,
         phone: phone.trim() || undefined,
       });
