@@ -27,6 +27,7 @@ import { Route as AppStockPositioningIndexRouteImport } from './pages/_app/stock
 import { Route as AppStockOutIndexRouteImport } from './pages/_app/stock-out/index'
 import { Route as AppStockLocationIndexRouteImport } from './pages/_app/stock-location/index'
 import { Route as AppStockInIndexRouteImport } from './pages/_app/stock-in/index'
+import { Route as AppStockHealthReportIndexRouteImport } from './pages/_app/stock-health-report/index'
 import { Route as AppPurchaseIndexRouteImport } from './pages/_app/purchase/index'
 import { Route as AppProductIndexRouteImport } from './pages/_app/product/index'
 import { Route as AppProductTrackingIndexRouteImport } from './pages/_app/product-tracking/index'
@@ -150,6 +151,12 @@ const AppStockInIndexRoute = AppStockInIndexRouteImport.update({
   path: '/stock-in/',
   getParentRoute: () => AppLayoutRoute,
 } as any)
+const AppStockHealthReportIndexRoute =
+  AppStockHealthReportIndexRouteImport.update({
+    id: '/stock-health-report/',
+    path: '/stock-health-report/',
+    getParentRoute: () => AppLayoutRoute,
+  } as any)
 const AppPurchaseIndexRoute = AppPurchaseIndexRouteImport.update({
   id: '/purchase/',
   path: '/purchase/',
@@ -352,6 +359,7 @@ export interface FileRoutesByFullPath {
   '/product-tracking/': typeof AppProductTrackingIndexRoute
   '/product/': typeof AppProductIndexRoute
   '/purchase/': typeof AppPurchaseIndexRoute
+  '/stock-health-report/': typeof AppStockHealthReportIndexRoute
   '/stock-in/': typeof AppStockInIndexRoute
   '/stock-location/': typeof AppStockLocationIndexRoute
   '/stock-out/': typeof AppStockOutIndexRoute
@@ -402,6 +410,7 @@ export interface FileRoutesByTo {
   '/product-tracking': typeof AppProductTrackingIndexRoute
   '/product': typeof AppProductIndexRoute
   '/purchase': typeof AppPurchaseIndexRoute
+  '/stock-health-report': typeof AppStockHealthReportIndexRoute
   '/stock-in': typeof AppStockInIndexRoute
   '/stock-location': typeof AppStockLocationIndexRoute
   '/stock-out': typeof AppStockOutIndexRoute
@@ -455,6 +464,7 @@ export interface FileRoutesById {
   '/_app/product-tracking/': typeof AppProductTrackingIndexRoute
   '/_app/product/': typeof AppProductIndexRoute
   '/_app/purchase/': typeof AppPurchaseIndexRoute
+  '/_app/stock-health-report/': typeof AppStockHealthReportIndexRoute
   '/_app/stock-in/': typeof AppStockInIndexRoute
   '/_app/stock-location/': typeof AppStockLocationIndexRoute
   '/_app/stock-out/': typeof AppStockOutIndexRoute
@@ -507,6 +517,7 @@ export interface FileRouteTypes {
     | '/product-tracking/'
     | '/product/'
     | '/purchase/'
+    | '/stock-health-report/'
     | '/stock-in/'
     | '/stock-location/'
     | '/stock-out/'
@@ -557,6 +568,7 @@ export interface FileRouteTypes {
     | '/product-tracking'
     | '/product'
     | '/purchase'
+    | '/stock-health-report'
     | '/stock-in'
     | '/stock-location'
     | '/stock-out'
@@ -609,6 +621,7 @@ export interface FileRouteTypes {
     | '/_app/product-tracking/'
     | '/_app/product/'
     | '/_app/purchase/'
+    | '/_app/stock-health-report/'
     | '/_app/stock-in/'
     | '/_app/stock-location/'
     | '/_app/stock-out/'
@@ -750,6 +763,13 @@ declare module '@tanstack/react-router' {
       path: '/stock-in'
       fullPath: '/stock-in/'
       preLoaderRoute: typeof AppStockInIndexRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
+    '/_app/stock-health-report/': {
+      id: '/_app/stock-health-report/'
+      path: '/stock-health-report'
+      fullPath: '/stock-health-report/'
+      preLoaderRoute: typeof AppStockHealthReportIndexRouteImport
       parentRoute: typeof AppLayoutRoute
     }
     '/_app/purchase/': {
@@ -1014,6 +1034,7 @@ interface AppLayoutRouteChildren {
   AppProductTrackingIndexRoute: typeof AppProductTrackingIndexRoute
   AppProductIndexRoute: typeof AppProductIndexRoute
   AppPurchaseIndexRoute: typeof AppPurchaseIndexRoute
+  AppStockHealthReportIndexRoute: typeof AppStockHealthReportIndexRoute
   AppStockInIndexRoute: typeof AppStockInIndexRoute
   AppStockLocationIndexRoute: typeof AppStockLocationIndexRoute
   AppStockOutIndexRoute: typeof AppStockOutIndexRoute
@@ -1059,6 +1080,7 @@ const AppLayoutRouteChildren: AppLayoutRouteChildren = {
   AppProductTrackingIndexRoute: AppProductTrackingIndexRoute,
   AppProductIndexRoute: AppProductIndexRoute,
   AppPurchaseIndexRoute: AppPurchaseIndexRoute,
+  AppStockHealthReportIndexRoute: AppStockHealthReportIndexRoute,
   AppStockInIndexRoute: AppStockInIndexRoute,
   AppStockLocationIndexRoute: AppStockLocationIndexRoute,
   AppStockOutIndexRoute: AppStockOutIndexRoute,

@@ -11,9 +11,8 @@ import {
   type User,
   type UserFilters,
 } from "@/api/users";
-import { fetchRoles, type Role } from "@/api/roles";
+import { fetchRoles } from "@/api/roles";
 import {
-  keepPreviousData,
   useQuery,
   useMutation,
   useQueryClient,
