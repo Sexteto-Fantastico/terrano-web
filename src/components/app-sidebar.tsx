@@ -8,7 +8,6 @@ import {
   FileTextIcon,
   UserCogIcon,
   BadgeAlertIcon,
-  LayoutDashboardIcon,
   ChevronRight,
   LogOutIcon,
   UploadCloudIcon,

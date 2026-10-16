@@ -4,7 +4,7 @@ import { CreateView } from "@/components/views/create-view";
 import { FeedbackDialog } from "@/components/ui/feedback-dialog";
 import { useFeedbackDialog } from "@/hooks/use-feedback-dialog";
 import { getApiErrorMessage } from "@/lib/errors";
-import { UserForm } from "./-components/user-form";
+import { UserForm, type UserFormValues } from "./-components/user-form";
 import { createUser } from "@/api/users";
 
 export const Route = createFileRoute("/_app/user/new")({
@@ -32,15 +32,11 @@ function UserNewPage() {
     },
   });
 
-  async function handleSubmit(values: {
-    name: string;
-    email: string;
-    username: string;
-    roleId: number;
-    cpf?: string;
-    phone?: string;
-  }) {
-    await createMutation.mutateAsync(values);
+  async function handleSubmit(values: UserFormValues) {
+    await createMutation.mutateAsync({
+      ...values,
+      password: values.password ?? "",
+    });
   }
 
   return (

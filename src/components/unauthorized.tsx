@@ -29,7 +29,7 @@ export function Unauthorized({
 
       <div className="flex flex-col gap-2 sm:flex-row">
         {showLoginButton && (
-          <Link to="/auth/sign-in">
+          <Link to="/sign-in">
             <Button>Fazer Login</Button>
           </Link>
         )}

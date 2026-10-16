@@ -11,7 +11,7 @@ import {
 import { fetchRoles } from "@/api/roles";
 import { fetchAllDepartments } from "@/api/departments";
 
-type UserFormValues = {
+export type UserFormValues = {
   name: string;
   email: string;
   username: string;
