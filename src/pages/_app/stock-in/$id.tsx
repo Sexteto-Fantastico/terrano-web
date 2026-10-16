@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { fetchMovementEntryById, deleteMovementEntry, type MovementEntry } from "@/api/movement-entry";
+import { fetchMovementEntryById, deleteMovementEntry } from "@/api/movement-entry";
 import { Header } from "@/components/header";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
@@ -76,7 +76,6 @@ function StockInDetailPage() {
     );
   }
 
-  const hasReturns = (entry.items?.length ?? 0) > 0 && false; // returns tracked via API
   const total = (entry.items ?? []).reduce(
     (sum, item) => sum + item.quantity * (item.unitCost ?? 0),
     0
@@ -201,7 +200,7 @@ function StockInDetailPage() {
         </div>
 
         {/* Seção de devoluções */}
-        <ReturnsSection entry={entry} />
+        <ReturnsSection />
       </div>
 
       <AlertDialog open={inactivateOpen} onOpenChange={setInactivateOpen}>
@@ -253,7 +252,7 @@ function DetailField({
   );
 }
 
-function ReturnsSection({ entry }: { entry: MovementEntry }) {
+function ReturnsSection() {
   return (
     <div className="rounded-lg border border-border p-4 space-y-3">
       <h2 className="text-base font-semibold">Devoluções</h2>

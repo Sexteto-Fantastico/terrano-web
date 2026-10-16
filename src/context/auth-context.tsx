@@ -94,7 +94,7 @@ export function AuthProvider({
   }, [setToken, setUserState, setMustResetPassword]);
 
   useEffect(() => {
-    const fetchUser = async (token: string) => {
+    const fetchUser = async () => {
       try {
         const [user, permissionsData] = await Promise.all([
           getMe(),
@@ -110,7 +110,7 @@ export function AuthProvider({
     };
 
     if (tokenState) {
-      fetchUser(tokenState);
+      fetchUser();
     } else {
       queueMicrotask(() => {
         setUserState(null);

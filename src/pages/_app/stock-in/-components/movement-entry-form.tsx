@@ -8,8 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { Plus, Trash2 } from "lucide-react";
 import { MovementEntryCategory, type CreateMovementEntryRequest } from "@/api/movement-entry";
-import { fetchStockLocations, type StockLocation } from "@/api/stock-locations";
-import { fetchPurchases, getPurchaseById, type Purchase } from "@/api/purchases";
+import { fetchStockLocations } from "@/api/stock-locations";
+import { fetchPurchases, getPurchaseById } from "@/api/purchases";
 import { MOVEMENT_ENTRY_CATEGORY_LABELS } from "./movement-entry-filter-config";
 import { ProductCombobox } from "../../stock-out/-components/product-combobox";
 
@@ -37,7 +37,6 @@ export function MovementEntryForm({ onSubmit }: MovementEntryFormProps) {
   const [stockLocationId, setStockLocationId] = useState<string>("");
   const [entryDate, setEntryDate] = useState<string>(todayIso());
   const [purchaseId, setPurchaseId] = useState<string>("");
-  const [supplierId, setSupplierId] = useState<string>("");
   const [nfNumber, setNfNumber] = useState<string>("");
   const [nfSerie, setNfSerie] = useState<string>("");
   const [internalNotes, setInternalNotes] = useState<string>("");
@@ -64,7 +63,6 @@ export function MovementEntryForm({ onSubmit }: MovementEntryFormProps) {
   useEffect(() => {
     if (!isPurchase) {
       setPurchaseId("");
-      setSupplierId("");
       setNfNumber("");
       setNfSerie("");
       setItems([{ id: "1", productId: "", quantity: "1", unitCost: "0" }]);
@@ -74,7 +72,6 @@ export function MovementEntryForm({ onSubmit }: MovementEntryFormProps) {
   async function handlePurchaseSelect(pid: string) {
     setPurchaseId(pid);
     if (!pid) {
-      setSupplierId("");
       setNfNumber("");
       setNfSerie("");
       setItems([{ id: "1", productId: "", quantity: "1", unitCost: "0" }]);
@@ -83,7 +80,6 @@ export function MovementEntryForm({ onSubmit }: MovementEntryFormProps) {
 
     try {
       const purchase = await getPurchaseById(Number(pid));
-      setSupplierId(purchase.supplier ? String(purchase.supplier.id) : "");
       setNfNumber(purchase.nfNumber ?? "");
       setNfSerie(purchase.nfSerie ?? "");
 
