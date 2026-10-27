@@ -18,6 +18,7 @@ import {
   FieldDescription,
 } from "@/components/ui/field";
 import { resetPassword } from "@/api/auth";
+import { getApiErrorMessage } from "@/lib/errors";
 
 export const Route = createFileRoute("/_auth/reset-password")({
   validateSearch: z.object({
@@ -28,7 +29,12 @@ export const Route = createFileRoute("/_auth/reset-password")({
 
 const resetPasswordSchema = z
   .object({
-    password: z.string().min(8, "A senha deve ter pelo menos 8 caracteres"),
+    password: z
+      .string()
+      .min(8, "A senha deve ter pelo menos 8 caracteres")
+      .refine((value) => /[A-Za-z]/.test(value) && /\d/.test(value), {
+        message: "A senha deve conter pelo menos uma letra e um número",
+      }),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -54,9 +60,7 @@ function ResetPasswordPage() {
         toast.success("Senha redefinida com sucesso");
         navigate({ to: "/sign-in" });
       } catch (error: unknown) {
-        const message =
-          error instanceof Error ? error.message : "Erro ao redefinir senha";
-        toast.error(message);
+        toast.error(getApiErrorMessage(error, "Erro ao redefinir senha"));
       }
     },
   });

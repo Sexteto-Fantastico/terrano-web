@@ -1,3 +1,4 @@
+import { requirePermission } from "@/lib/route-guard";
 import { useSearch, useNavigate, createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
@@ -14,6 +15,7 @@ import {
 } from "@/api/products";
 
 export const Route = createFileRoute("/_app/product/edit")({
+  beforeLoad: requirePermission("PRODUCT", "update"),
   component: ProductEditPage,
   validateSearch: z.object({ id: z.string().min(1) }),
   head: () => ({

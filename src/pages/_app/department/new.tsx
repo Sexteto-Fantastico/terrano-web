@@ -1,3 +1,4 @@
+import { requirePermission } from "@/lib/route-guard";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreateView } from "@/components/views/create-view";
@@ -11,6 +12,7 @@ import {
 import { createDepartment } from "@/api/departments";
 
 export const Route = createFileRoute("/_app/department/new")({
+  beforeLoad: requirePermission("DEPARTMENT", "create"),
   component: DepartmentNewPage,
   head: () => ({
     meta: [

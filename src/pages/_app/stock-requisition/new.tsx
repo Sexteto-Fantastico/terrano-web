@@ -1,3 +1,4 @@
+import { requirePermission } from "@/lib/route-guard";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -15,6 +16,7 @@ import { createStockRequisition } from "@/api/stock-requisition";
 import { getMe } from "@/api/auth";
 
 export const Route = createFileRoute("/_app/stock-requisition/new")({
+  beforeLoad: requirePermission("MATERIAL_REQUESTER", "create"),
   component: StockRequisitionNewPage,
   head: () => ({
     meta: [

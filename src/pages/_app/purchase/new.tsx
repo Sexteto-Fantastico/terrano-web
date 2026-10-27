@@ -1,3 +1,4 @@
+import { requirePermission } from "@/lib/route-guard";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreateView } from "@/components/views/create-view";
@@ -8,6 +9,7 @@ import { PurchaseForm, type PurchaseFormValues } from "./-components/purchase-fo
 import { createPurchase } from "@/api/purchases";
 
 export const Route = createFileRoute("/_app/purchase/new")({
+  beforeLoad: requirePermission("PURCHASE", "create"),
   component: PurchaseNewPage,
   head: () => ({
     meta: [

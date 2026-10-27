@@ -7,7 +7,7 @@ export const Route = createFileRoute("/_app")({
     if (!context.auth.token) {
       throw redirect({ to: "/sign-in" });
     }
-    if (context.auth.mustResetPassword) {
+    if (context.auth.isReady && context.auth.mustResetPassword) {
       throw redirect({ to: "/define-password" });
     }
   },

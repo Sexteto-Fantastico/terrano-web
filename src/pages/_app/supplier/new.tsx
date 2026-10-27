@@ -1,3 +1,4 @@
+import { requirePermission } from "@/lib/route-guard";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreateView } from "@/components/views/create-view";
@@ -11,6 +12,7 @@ import {
 import { createSupplier } from "@/api/suppliers";
 
 export const Route = createFileRoute("/_app/supplier/new")({
+  beforeLoad: requirePermission("SUPPLIER", "create"),
   component: SupplierNewPage,
   head: () => ({
     meta: [

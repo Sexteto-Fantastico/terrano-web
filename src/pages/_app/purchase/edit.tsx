@@ -1,3 +1,4 @@
+import { requirePermission } from "@/lib/route-guard";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
@@ -9,6 +10,7 @@ import { PurchaseForm, type PurchaseFormValues } from "./-components/purchase-fo
 import { getPurchaseById, updatePurchase } from "@/api/purchases";
 
 export const Route = createFileRoute("/_app/purchase/edit")({
+  beforeLoad: requirePermission("PURCHASE", "update"),
   component: PurchaseEditPage,
   validateSearch: z.object({ id: z.string().min(1) }),
   head: () => ({

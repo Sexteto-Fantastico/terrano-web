@@ -1,3 +1,4 @@
+import { requirePermission } from "@/lib/route-guard";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreateView } from "@/components/views/create-view";
@@ -8,6 +9,7 @@ import { UserForm } from "./-components/user-form";
 import { createUser } from "@/api/users";
 
 export const Route = createFileRoute("/_app/user/new")({
+  beforeLoad: requirePermission("USER", "create"),
   component: UserNewPage,
   head: () => ({
     meta: [{ title: "Usuário" }],

@@ -1,4 +1,4 @@
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/field";
 import { useAuth } from "@/hooks/use-auth";
 import { definePassword } from "@/api/auth";
+import { getApiErrorMessage } from "@/lib/errors";
 
 export const Route = createFileRoute("/_auth/define-password")({
   beforeLoad: ({ context }) => {
@@ -27,7 +28,12 @@ export const Route = createFileRoute("/_auth/define-password")({
 
 const definePasswordSchema = z
   .object({
-    password: z.string().min(8, "A senha deve ter pelo menos 8 caracteres"),
+    password: z
+      .string()
+      .min(8, "A senha deve ter pelo menos 8 caracteres")
+      .refine((value) => /[A-Za-z]/.test(value) && /\d/.test(value), {
+        message: "A senha deve conter pelo menos uma letra e um número",
+      }),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -36,8 +42,7 @@ const definePasswordSchema = z
   });
 
 function DefinePasswordPage() {
-  const { setMustResetPassword } = useAuth();
-  const navigate = useNavigate();
+  const { setToken, updateUser, user, logout, isLoggingOut } = useAuth();
 
   const form = useForm({
     defaultValues: {
@@ -49,14 +54,13 @@ function DefinePasswordPage() {
     },
     onSubmit: async ({ value }) => {
       try {
-        await definePassword({ password: value.password });
-        setMustResetPassword(false);
+        const response = await definePassword({ password: value.password });
+        // The previous sessions were revoked; continue with the one issued for the new password.
+        if (user) updateUser({ ...user, requiresPasswordReset: false });
+        setToken(response.token, response.expiresAt);
         toast.success("Senha atualizada com sucesso");
-        navigate({ to: "/" });
       } catch (error: unknown) {
-        const message =
-          error instanceof Error ? error.message : "Erro ao atualizar senha";
-        toast.error(message);
+        toast.error(getApiErrorMessage(error));
       }
     },
   });
@@ -124,6 +128,15 @@ function DefinePasswordPage() {
           className="w-full"
         >
           Definir senha
+        </Button>
+        <Button
+          type="button"
+          variant="ghost"
+          className="w-full"
+          disabled={isLoggingOut}
+          onClick={logout}
+        >
+          Sair
         </Button>
       </FieldSet>
     </form>

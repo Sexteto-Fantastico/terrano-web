@@ -170,7 +170,7 @@ const MENU_DATA: MenuGroup[] = [
       {
         title: "Perfil de Acesso",
         href: "/access-profile",
-        permission: { resource: "USER", action: "read" },
+        permission: { resource: "ROLE", action: "read" },
       },
     ],
   },

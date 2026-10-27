@@ -1,3 +1,4 @@
+import { requirePermission } from "@/lib/route-guard";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -21,6 +22,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 export const Route = createFileRoute("/_app/stock-in/$id")({
+  beforeLoad: requirePermission("MOVEMENT_ENTRY", "read"),
   component: StockInDetailPage,
   head: () => ({
     meta: [{ title: "Entrada de Estoque" }],

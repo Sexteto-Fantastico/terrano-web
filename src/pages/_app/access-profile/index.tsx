@@ -32,7 +32,7 @@ import { getAccessProfileTableColumns } from "./-components/access-profile-table
 
 export const Route = createFileRoute("/_app/access-profile/")({
   component: AccessProfilePage,
-  beforeLoad: requirePermission("USER", "read"),
+  beforeLoad: requirePermission("ROLE", "read"),
   validateSearch: (): RoleFilters => ({}),
   head: () => ({
     meta: [{ title: "Perfis de Acesso" }],

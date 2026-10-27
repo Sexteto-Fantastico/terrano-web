@@ -1,3 +1,4 @@
+import { requirePermission } from "@/lib/route-guard";
 import {
   createFileRoute,
   useNavigate,
@@ -21,6 +22,7 @@ import {
 } from "@/api/suppliers";
 
 export const Route = createFileRoute("/_app/supplier/edit")({
+  beforeLoad: requirePermission("SUPPLIER", "update"),
   component: SupplierEditPage,
   validateSearch: z.object({ id: z.string().min(1) }),
   head: () => ({

@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { Link } from "@/components/ui/link";
 import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/field";
 import { useAuth } from "@/hooks/use-auth";
 import { login } from "@/api/auth";
+import { getApiErrorMessage } from "@/lib/errors";
 
 export const Route = createFileRoute("/_auth/sign-in")({
   component: SignInPage,
@@ -23,12 +24,11 @@ export const Route = createFileRoute("/_auth/sign-in")({
 
 const signInSchema = z.object({
   email: z.email("Email inválido"),
-  password: z.string().min(8, "A senha deve ter pelo menos 8 caracteres"),
+  password: z.string().min(1, "Informe a senha"),
 });
 
 function SignInPage() {
-  const { setToken, setMustResetPassword } = useAuth();
-  const navigate = useNavigate();
+  const { setToken } = useAuth();
 
   const signInForm = useForm({
     defaultValues: {
@@ -41,17 +41,10 @@ function SignInPage() {
     onSubmit: async ({ value }) => {
       try {
         const response = await login(value);
+        // The route guards send the user to the right place once the account data is loaded.
         setToken(response.token, response.expiresAt);
-        setMustResetPassword(response.mustResetPassword ?? false);
-        if (response.mustResetPassword) {
-          navigate({ to: "/define-password" });
-        } else {
-          navigate({ to: "/" });
-        }
       } catch (error: unknown) {
-        const message =
-          error instanceof Error ? error.message : "Erro ao fazer login";
-        toast.error(message);
+        toast.error(getApiErrorMessage(error));
       }
     },
   });

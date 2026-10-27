@@ -1,3 +1,4 @@
+import { requirePermission } from "@/lib/route-guard";
 import { useSearch, useNavigate, createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
@@ -22,6 +23,7 @@ import {
 } from "@/api/roles";
 
 export const Route = createFileRoute("/_app/access-profile/edit")({
+  beforeLoad: requirePermission("ROLE", "update"),
   component: AccessProfileEditComponent,
   validateSearch: z.object({ id: z.string().min(1) }),
   head: () => ({

@@ -1,3 +1,4 @@
+import { requirePermission } from "@/lib/route-guard";
 import {
   useSearch,
   useNavigate,
@@ -19,6 +20,7 @@ import {
 } from "@/api/measurement-units";
 
 export const Route = createFileRoute("/_app/unit/edit")({
+  beforeLoad: requirePermission("MEASUREMENT_UNIT", "update"),
   component: MeasurementUnitEditPage,
   validateSearch: z.object({ id: z.string().min(1) }),
   head: () => ({

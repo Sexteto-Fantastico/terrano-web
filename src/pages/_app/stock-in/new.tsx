@@ -1,3 +1,4 @@
+import { requirePermission } from "@/lib/route-guard";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreateView } from "@/components/views/create-view";
@@ -8,6 +9,7 @@ import { createMovementEntry, type CreateMovementEntryRequest } from "@/api/move
 import { MovementEntryForm } from "./-components/movement-entry-form";
 
 export const Route = createFileRoute("/_app/stock-in/new")({
+  beforeLoad: requirePermission("MOVEMENT_ENTRY", "create"),
   component: StockInNewPage,
   head: () => ({
     meta: [{ title: "Nova Entrada de Estoque" }],

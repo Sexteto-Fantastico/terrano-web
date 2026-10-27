@@ -1,3 +1,4 @@
+import { requirePermission } from "@/lib/route-guard";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreateView } from "@/components/views/create-view";
@@ -8,6 +9,7 @@ import { MeasurementUnitForm } from "./-components/measurement-unit-form";
 import { createMeasurementUnit, typeFromSymbol } from "@/api/measurement-units";
 
 export const Route = createFileRoute("/_app/unit/new")({
+  beforeLoad: requirePermission("MEASUREMENT_UNIT", "create"),
   component: MeasurementUnitNewPage,
   head: () => ({
     meta: [

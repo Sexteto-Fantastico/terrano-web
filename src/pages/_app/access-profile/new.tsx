@@ -1,3 +1,4 @@
+import { requirePermission } from "@/lib/route-guard";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -14,6 +15,7 @@ import { AccessProfilePolicies } from "./-components/access-profile-policies";
 import { createRole } from "@/api/roles";
 
 export const Route = createFileRoute("/_app/access-profile/new")({
+  beforeLoad: requirePermission("ROLE", "create"),
   component: AccessProfileNewPage,
   head: () => ({
     meta: [{ title: "Novo perfil de acesso" }],

@@ -23,7 +23,11 @@ export type ResetPasswordRequestDto = {
 
 export type DefinePasswordRequestDto = {
   password: string;
+  /** Required only for a voluntary change, not for the forced first access. */
+  currentPassword?: string;
 };
+
+export type DefinePasswordResponseDto = LoginResponseDto & { message: string };
 
 export async function login(data: LoginRequestDto): Promise<LoginResponseDto> {
   const { data: response } = await api.post("/auth/login", data);
@@ -44,10 +48,11 @@ export async function resetPassword(
   return response;
 }
 
+// Changing the password revokes every session, so the API answers with a fresh one.
 export async function definePassword(
   data: DefinePasswordRequestDto
-): Promise<{ message: string }> {
-  const { data: response } = await api.patch("/auth/password", data);
+): Promise<DefinePasswordResponseDto> {
+  const { data: response } = await api.post("/auth/define-password", data);
   return response;
 }
 

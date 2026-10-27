@@ -1,3 +1,4 @@
+import { requirePermission } from "@/lib/route-guard";
 import { createFileRoute } from "@tanstack/react-router";
 import { DataTableFilterMenu } from "@/components/ui/data-table/data-table-filter-menu";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
@@ -26,6 +27,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 export const Route = createFileRoute("/_app/stock-out/")({
+  beforeLoad: requirePermission("MOVEMENT_EXIT", "read"),
   component: StockOutPage,
   validateSearch: () => ({}) as MovementExitFilters,
   head: () => ({

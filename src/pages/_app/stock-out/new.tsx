@@ -1,3 +1,4 @@
+import { requirePermission } from "@/lib/route-guard";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { CreateView } from "@/components/views/create-view";
@@ -9,6 +10,7 @@ import { createMovementExit } from "@/api/movement-exit";
 import { fetchStockLocations } from "@/api/stock-locations";
 
 export const Route = createFileRoute("/_app/stock-out/new")({
+  beforeLoad: requirePermission("MOVEMENT_EXIT", "create"),
   component: StockOutNewPage,
   head: () => ({
     meta: [

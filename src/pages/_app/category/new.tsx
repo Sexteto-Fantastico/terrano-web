@@ -1,3 +1,4 @@
+import { requirePermission } from "@/lib/route-guard";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreateView } from "@/components/views/create-view";
@@ -8,6 +9,7 @@ import { CategoryForm, type CategoryFormValues } from "./-components/category-fo
 import { createProductCategory } from "@/api/product-categories";
 
 export const Route = createFileRoute("/_app/category/new")({
+  beforeLoad: requirePermission("PRODUCT_CATEGORY", "create"),
   component: CategoryNewPage,
   head: () => ({
     meta: [

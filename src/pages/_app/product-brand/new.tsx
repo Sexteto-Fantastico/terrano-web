@@ -1,3 +1,4 @@
+import { requirePermission } from "@/lib/route-guard";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreateView } from "@/components/views/create-view";
@@ -8,6 +9,7 @@ import { ProductBrandForm } from "./-components/product-brand-form";
 import { createProductBrand } from "@/api/product-brands";
 
 export const Route = createFileRoute("/_app/product-brand/new")({
+  beforeLoad: requirePermission("PRODUCT_BRAND", "create"),
   component: BrandNewPage,
   head: () => ({
     meta: [

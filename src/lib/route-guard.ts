@@ -5,9 +5,12 @@ export function requirePermission(resource: string, action: string) {
     context,
   }: {
     context: {
-      auth: { can: (r: string, a: string) => boolean };
+      auth: { can: (r: string, a: string) => boolean; isReady: boolean };
     };
   }) => {
+    // Permissions are still loading: the router is invalidated once they arrive and this guard runs again.
+    if (!context.auth.isReady) return;
+
     if (!context.auth.can(resource, action)) {
       throw redirect({ to: "/" });
     }
